@@ -1,0 +1,56 @@
+<script lang="ts">
+	import type { PageServerData } from './$types';
+	import SignInModal from './signInModal.svelte';
+	import SignOutModal from './signOutModal.svelte';
+	const DEBUG = true
+
+	function debugPrint(x: string, y) {
+		console.log(x + ": \n---------------------")
+		console.log(y)
+		console.log("--------END---------")
+	}
+
+	let { data }: { data: PageServerData } = $props();
+	if (DEBUG) {
+		debugPrint("data.items", data.items)
+		debugPrint("data.inventoryList", data.inventoryList)
+		debugPrint("data.departmentList", data.departmentList)
+	}
+    let signOutModalOpen = $state(false)
+    let signInModalOpen = $state(false)
+</script>
+
+<SignOutModal bind:signOutModalOpen {data}/>
+<SignInModal bind:signInModalOpen {data}/>
+
+<div class="mx-auto w-fit">
+	<button
+		class="m-3"
+		onclick="{() => {
+		signOutModalOpen = true
+	}}">Sign Classifieds Out</button>
+
+	<button 
+		class="m-3"
+		onclick="{() => {
+		signInModalOpen = true
+	}}">Sign Classfieds In </button>
+</div>
+<table>
+	<thead>
+		<tr>
+			<th>Name</th>
+			<th>Issuer</th>
+			<th>Issuee</th>
+		</tr>
+	</thead>
+    <tbody>
+        {#each data.items as row}
+        <tr>
+            <td><h2>{row.itemname}</h2></td>
+			<td><h2>{row.issuer}</h2></td>
+            <td><h2>{row.issuee}</h2></td>
+        </tr>
+        {/each}
+    </tbody>
+</table>
