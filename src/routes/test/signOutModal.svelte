@@ -32,7 +32,7 @@
 	const SCANNER_DELAY = 20 // ms
 	const scannedItems = new Map()
 	let barcodeInput: HTMLInputElement
-	let userNameInput: HTMLInputElement 
+	let userNameInput: HTMLInputElement
 	let statusMessage: HTMLDivElement
 	let formElement: HTMLFormElement
 	let dialog: HTMLDialogElement // HTMLDialogElement
@@ -62,7 +62,7 @@
 	function closeModal() {
 		formElement.reset()
 		scannedItems.clear()
-		dialog.close()	
+		dialog.close()
 		signOutModalOpen = false
 	}
 
@@ -109,12 +109,14 @@
 
 	function receiveScan(e: Event) {
 		if (e.target === null) return
-		if (!(e.target as HTMLInputElement).value) return
-		scannerBuffer += (e.target as HTMLInputElement).value
+		if (!(e.target as HTMLInputElement).value) {
+			return
+		}
+		scannerBuffer += (e.target as HTMLInputElement).value;
 		(e.target as HTMLInputElement).value = ''
 		handleBarcodeScan()
 		clearTimeout(scannerTimeout)
-		scannerTimeout = setTimeout(handleBarcodeScan, SCANNER_DELAY)		
+		scannerTimeout = setTimeout(handleBarcodeScan, SCANNER_DELAY)
 	}
 
 	function reset() {
@@ -122,7 +124,7 @@
 		itemList = []
 		userNameInput.value = ""
 		showStatus('Cleared all items', true)
-		barcodeInput.focus()		
+		barcodeInput.focus()
 	}
 
 </script>
