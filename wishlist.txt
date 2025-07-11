@@ -1,10 +1,12 @@
 Implement SLOC transfer for items <Done>
 Impl issuee does not exist <Done>
-Improve UI for signin
-password retype for users
+Improve UI for signin  <Done>
+password retype for users <Done>
+password strength <Done>
 transactions per sqn for the day
 stocktake feature
 User-based privilege for users and items
 barcode feature for items
 Import items
-Bulky item checkbox                                                                                                                                                                                                                             
+Bulky item checkbox
+2fa authentication with email

@@ -67,7 +67,7 @@
 
     /* dialogue settings */
     dialog {
-        @apply w-[60vw] min-w-[40vw] rounded-sm border-0 p-0 mx-auto my-auto bg-gray-950 text-gray-200 border-2
+        @apply w-[60vw] min-w-[40vw] rounded-sm p-0 mx-auto my-auto bg-gray-950 text-gray-200 border-2
     }
     
 	dialog::backdrop {
@@ -77,9 +77,6 @@
 		animation: zoom 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
 	}
 
-    .internal {
-        @apply m-5 
-    }
 
 	@keyframes zoom {
 		from {

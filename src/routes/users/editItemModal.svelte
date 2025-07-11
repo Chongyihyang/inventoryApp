@@ -1,4 +1,6 @@
 <script lang="ts">
+	import type {  usersTable } from "$lib/server/db/schema";
+
 
 	// init types
 	type User = {
@@ -28,17 +30,20 @@
 		form = $bindable<FormData>(),
 		currentSelectedList = $bindable<User[]>(),
 		departments = $bindable<Department[]>(),
-		roles = $bindable<Roles[]>()
+		roles = $bindable<Roles[]>(),
+		users = $bindable<User[]>(),
     } = $props()
 
     let dialog = $state<HTMLDialogElement>()
-
+	let selected = $state(currentSelectedList.roleid)
+	
 	$effect(() => {
 		if (!dialog) return;
-
+		
 		console.log(editIsOpen)
 		if (editIsOpen) {
 			dialog.showModal();
+			selected = currentSelectedList.roleid
 		} else if (editIsOpen == false){
 			dialog.close()
 
@@ -70,22 +75,28 @@ onclick={(e) => { if (e.target === dialog) closeModal()}}
 				<input  class="box"	type="hidden" name="id" value="{currentSelectedList.id}">
 				<h2 class="my-auto grid" id="username">Username: </h2>
 				<input  class="box"	type="text" name="username" value="{currentSelectedList.username}" required>
-				<h2 class="mr-2 my-auto" id="passwordhash">Edit password: </h2>
-				<input  class="box" type="password" name="passwordhash"> 
+				<h2 class="mr-2 my-auto" id="departmentid">Department: </h2>
+				<select class="box overflow-y-auto"  name="departmentid" id="departmentid" required>
+					{#each departments as department}
+						{#if department.id === currentSelectedList.departmentid}
+							<option value="{department.id}" selected>{department.departmentname}</option>
+						{:else}
+							<option value="{department.id}">{department.departmentname}</option>
+						{/if}
+					{/each}
+				</select>
 				<h2 class="mr-2 my-auto" id="roleid">Role: </h2>
-				<select class="box overflow-y-auto " name="role" id="role" required>
-					<option value="" disabled selected>Select an option</option>
+				<select class="box overflow-y-auto " name="role" id="role" required bind:value={selected}>
 					{#each roles as role}
 						<option value="{role.id}">{role.rolename}</option>
 					{/each}
-				</select>
-				<h2 class="mr-2 my-auto" id="departmentid">Department: </h2>
-				<select class="box overflow-y-auto"  name="departmentid" id="departmentid" required>
-					<option value="" disabled selected>Select an option</option>
-					{#each departments as department}
-						<option value="{department.id}">{department.departmentname}</option>
-					{/each}
-				</select>
+				</select> 
+				{#if selected == '1' || selected == "2"}
+					<h2 class="mr-2 my-auto" id="passwordhash">Edit password: </h2>
+					<input  class="box" type="password" name="passwordhash"> 
+					<h2 class="mr-2 my-auto" id="passwordhash">Password Retype: </h2>
+					<input  class="box" type="password" name="passwordretype" required> 
+				{/if}
 				<input type="submit" class="submit" name="" id="">
 				<button type="button" onclick={closeModal} class="col-span-3">close modal</button>
 			</div>

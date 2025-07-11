@@ -23,7 +23,7 @@ export async function load({ locals }) {
 }
 
 function validatePassword(password: unknown): password is string {
-	return typeof password === 'string' && password.length >= 6 && password.length <= 255;
+	return typeof password === 'string' && /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^\da-zA-Z]).{8,30}$/.test(password)
 }
 
 function generateUserId() {
@@ -40,6 +40,7 @@ async function getUsersWithDepartments() {
             id: table.usersTable.id,
             username: table.usersTable.username,
             rolename: table.rolesTable.rolename,
+            roleid: table.usersTable.roleid,
             departmentid: table.usersTable.departmentid
         })
         .from(table.usersTable)
@@ -62,13 +63,16 @@ async function getAllRoles() {
 }
 
 // Form validation helpers
-function validateUserName(username: string | undefined) {
+async function validateUserName(username: string | undefined) {
     if (username == undefined){
         throw new Error("Username is undefined")
     }
     if (!username.match("^[a-zA-Z0-9]*$")) {
         throw new Error("Usernames must be alphanumeric.");
     }
+    // if ((await getUsersWithDepartments()).find(x => x.username == username) != undefined) {
+    //     throw new Error("username is not unique!");
+    // }
 }
 
 function validateDeleteConfirmation(username: string, confirmation: string) {
@@ -84,11 +88,14 @@ export const actions = {
         const formData = await event.request.formData();
         const id = formData.get('id')?.toString()?.trim() ?? '';
         const username = formData.get('username')?.toString()?.trim() ?? '';
-        let updateData = {username}
         let passwordHash = formData.get('passwordhash')?.toString()?.trim();
+        const passwordRetype = formData.get('passwordretype')?.toString()?.trim()
+        let updateData = {username}
         if (passwordHash != "") {
             updateData["passwordHash"] = passwordHash
         }
+        
+        
         const roleid = formData.get('role');
         if (roleid != undefined) {
             updateData["roleid"] = roleid
@@ -97,22 +104,31 @@ export const actions = {
         if (departmentid != undefined) {
             updateData["departmentid"] = departmentid
         }
-
+        
         try {
             validateUserName(username)
+            if (passwordHash != passwordRetype) {
+                throw new Error("Passwords do not match")
+            }
             
-            if (!validatePassword(passwordHash) && passwordHash != "") {
+            if (!validatePassword(passwordHash) && roleid != "3") {
                 console.log("Invalid password", passwordHash);
-                return fail(400, { message: 'Invalid password' });
+                return fail(400, { message: 'Password does not meet complexity requirements' });
             }
 
-            passwordHash = await hash(passwordHash, {
-                // recommended minimum parameters
-                memoryCost: 19456,
-                timeCost: 2,
-                outputLen: 32,
-                parallelism: 1
-            });
+
+            if (roleid == "1" || roleid == "2") {
+                passwordHash = await hash(passwordHash, {
+                    // recommended minimum parameters
+                    memoryCost: 19456,
+                    timeCost: 2,
+                    outputLen: 32,
+                    parallelism: 1
+                });
+                updateData["passwordHash"] = passwordHash
+            } else {
+                updateData["passwordHash"] = null
+            }
 
             console.log(updateData, id)
             await db
@@ -132,46 +148,62 @@ export const actions = {
 
     create: async (event) => {
         try {
-            const formData = await event.request.formData();
-            const username = formData.get('username')?.toString()?.trim() ?? '';
-            let passwordHash = formData.get('passwordhash')?.toString()?.trim();
-            console.log(passwordHash)
+            const formData = await event.request.formData()
+            const username = formData.get('username')?.toString()?.trim() ?? ''
+            let passwordHash = formData.get('passwordhash')?.toString()?.trim()
+            const passwordRetype = formData.get('passwordretype')?.toString()?.trim()
+
+            // double entry check
+            if (passwordHash != passwordRetype) {
+                throw new Error("Passwords do not match")
+            }
+
             if (passwordHash == undefined) {
                 passwordHash = ""
             }
-            console.log(formData.get('role')?.toString())
-            const roleid = Number(formData.get('role'));
-            console.log(roleid)
-            const departmentid = Number(formData.get('departmentid'));
-            if (roleid == null) {
-                throw new Error("Role cannot be null")
-            } 
-            // if (departmentid == null) {
-            //     throw new Error("Department cannot be null")
-            // } 
 
             validateUserName(username)
-            
-            if (!validatePassword(passwordHash) && passwordHash != "") {
-                console.log("Invalid passowrd", passwordHash);
-                return fail(400, { message: 'Invalid password' });
+            const roleid = Number(formData.get('role')) || 0
+            const departmentid = Number(formData.get('departmentid')) || 0
+
+            if (roleid == 0) {
+                throw new Error("Role cannot be null")
+            } 
+
+            if (departmentid == 0) {
+                throw new Error("Department cannot be null")
+            } 
+            let user: UserInsert
+
+            if (roleid == 3) {
+                user = {
+                    id: generateUserId(),
+                    username,
+                    roleid,
+                    departmentid
+                };
+            } else {
+                if (!validatePassword(passwordHash) && passwordHash != "") {
+                    throw new Error('Password does not meet complexity requirements')
+                }
+    
+                passwordHash = await hash(passwordHash, {
+                    // recommended minimum parameters
+                    memoryCost: 19456,
+                    timeCost: 2,
+                    outputLen: 32,
+                    parallelism: 1
+                });
+    
+                user = {
+                    id: generateUserId(),
+                    username,
+                    roleid,
+                    departmentid,
+                    passwordHash,
+                };
             }
-
-            passwordHash = await hash(passwordHash, {
-                // recommended minimum parameters
-                memoryCost: 19456,
-                timeCost: 2,
-                outputLen: 32,
-                parallelism: 1
-            });
-
-            const user: UserInsert = {
-                id: generateUserId(),
-                username,
-                roleid,
-                departmentid,
-                passwordHash,
-            };
+            
 
             await db.insert(table.usersTable).values(user);
             return { success: true };

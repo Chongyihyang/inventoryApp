@@ -8,6 +8,7 @@
         id: string
         username: string
         rolename: string
+        roleid: number
         departmentid: number
     };
 
@@ -105,8 +106,8 @@
 </script>
 
 <AddItemModal bind:addIsOpen {form} {departments} {roles}/>
-<DeleteItemModal bind:deleteIsOpen {form} {currentSelectedList}/>
-<EditItemModal bind:editIsOpen {currentSelectedList} {form} {roles} {departments}/>
+<DeleteItemModal bind:deleteIsOpen {form} {currentSelectedList} />
+<EditItemModal bind:editIsOpen {currentSelectedList} {form} {roles} {departments} {users}/>
 
 <button onclick="{() => {
         addIsOpen = !addIsOpen

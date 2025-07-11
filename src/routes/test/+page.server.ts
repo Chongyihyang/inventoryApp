@@ -61,9 +61,10 @@ export const actions: Actions = {
         // TODO! Check uniqueness of SN1 and SN2
 		const data = await request.formData();
         const uniqueMap = new Set();
-        const issuee: string = String(data.get('issuee') as FormDataEntryValue).trim();
-		const issuer: string = String(data.get('issuer') as FormDataEntryValue).trim();
-		const HOTO: string = String(data.get('HOTO') as FormDataEntryValue);
+		// formData.get('username')?.toString()?.trim() ?? ''
+        const issuee: string = data.get('issuee')?.toString()?.trim() ?? ""
+		const issuer: string = data.get('issuer')?.toString()?.trim() ?? ""
+		const HOTO  : string = data.get('HOTO')?.toString()?.trim() ?? ""
 
 		
 		// check that issuee is valid
