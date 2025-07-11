@@ -53,13 +53,13 @@
 <div class="mx-auto w-fit">
 	<button
 		class="m-3"
-		onclick="{() => {
+		onmousedown="{() => {
 		signOutModalOpen = true
 	}}">Sign Classifieds Out</button>
 
 	<button 
 		class="m-3"
-		onclick="{() => {
+		onmousedown="{() => {
 		signInModalOpen = true
 	}}">Sign Classfieds In </button>
 </div>

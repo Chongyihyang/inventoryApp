@@ -10,3 +10,4 @@ barcode feature for items
 Import items
 Bulky item checkbox
 2fa authentication with email
+check that SN1 and 2 are unique??

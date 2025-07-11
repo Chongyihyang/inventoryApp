@@ -84,6 +84,7 @@ function validateDeleteConfirmation(username: string, confirmation: string) {
 
 // Action handlers
 export const actions = {
+
     edit: async (event) => {
         const formData = await event.request.formData();
         const id = formData.get('id')?.toString()?.trim() ?? '';

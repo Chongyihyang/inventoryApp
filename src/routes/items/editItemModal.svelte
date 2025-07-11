@@ -45,7 +45,7 @@
 <dialog
 bind:this={dialog}
 onclose={() => (editIsOpen = false)}
-onclick={(e) => { if (e.target === dialog) closeModal()}}
+onmousedown={(e) => { if (e.target === dialog) closeModal()}}
 >
 	<div class="internal">
 		<h2 class="title">Edit properties for {currentSelectedList.itemname}</h2>
@@ -68,7 +68,7 @@ onclick={(e) => { if (e.target === dialog) closeModal()}}
 				<textarea class="box h-20 overflow-y-auto" 
 				name="remarks" id="remarks">{currentSelectedList.remarks}</textarea>
 				<input type="submit" class="submit" name="" id="">
-				<button type="button" onclick={closeModal} class="col-span-3">close modal</button>
+				<button type="button" onmousedown={closeModal} class="col-span-3">close modal</button>
 			</div>
 		</form><br>
 	</div>

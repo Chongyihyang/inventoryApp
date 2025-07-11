@@ -40,7 +40,7 @@
 <dialog
 	bind:this={dialog}
 	onclose={() => (addIsOpen = false)}
-	onclick={(e) => { if (e.target === dialog) closeModal()}}
+	onmousedown={(e) => { if (e.target === dialog) closeModal()}}
 >
 <div class="internal">
 	<h2 class="title">Create new item</h2>	
@@ -73,7 +73,7 @@
 			<h2 class="mr-2" id="remarks">remarks: </h2>
 			<textarea class="box overflow-y-auto h-30" name="remarks" id="remarks"></textarea>
 			<input type="submit" class="submit" name="" id="">
-			<button type="button" onclick={closeModal} class="col-span-3">close modal</button>
+			<button type="button" onmousedown={closeModal} class="col-span-3">close modal</button>
 		</div>
 	</form><br>
 </div>

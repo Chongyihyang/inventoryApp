@@ -86,7 +86,7 @@
 			<input  class="box" type="password" name="passwordretype" required> 
 			{/if}
 			<input type="submit" class="submit" name="" id="">
-			<button type="button" onclick={closeModal} class="col-span-3">close modal</button>
+			<button type="button" onmousedown={closeModal} class="col-span-3">close modal</button>
 		</div>
 	</form><br>
 </div>

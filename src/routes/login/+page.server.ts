@@ -46,21 +46,26 @@ export const actions: Actions = {
 
 		console.log(passwordHash)
 
-		const validPassword = await verify(existingUser.passwordHash, password, {
-			memoryCost: 19456,
-			timeCost: 2,
-			outputLen: 32,
-			parallelism: 1
-		});
-		if (!validPassword) {
-			return fail(400, { message: 'Incorrect username or password' });
+		if (existingUser.passwordHash == null || existingUser.passwordHash == "") {
+			return fail(400, { message: 'Unable to log in user' })
+		} else {
+			const validPassword = await verify(existingUser.passwordHash, password, {
+				memoryCost: 19456,
+				timeCost: 2,
+				outputLen: 32,
+				parallelism: 1
+			});
+			if (!validPassword) {
+				return fail(400, { message: 'Incorrect username or password' });
+			}
+	
+			const sessionToken = auth.generateSessionToken();
+			const session = await auth.createSession(sessionToken, existingUser.id);
+			auth.setSessionTokenCookie(event, sessionToken, session.expiresAt);
+	
+			return redirect(302, '/');
 		}
 
-		const sessionToken = auth.generateSessionToken();
-		const session = await auth.createSession(sessionToken, existingUser.id);
-		auth.setSessionTokenCookie(event, sessionToken, session.expiresAt);
-
-		return redirect(302, '/');
 	},
 	register: async (event) => {
 		const formData = await event.request.formData();

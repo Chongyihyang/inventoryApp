@@ -124,7 +124,7 @@
 <dialog
 	bind:this={dialog}
 	onclose={() => (signInModalOpen = false)}
-	onclick={(e) => { if (e.target === dialog) closeModal()}}
+	onmousedown={(e) => { if (e.target === dialog) closeModal()}}
 >
 <div class="internal">
 
@@ -176,7 +176,7 @@
 							<div class="text-white">{itemDatabase[item].itemname}</div>
 							<!-- svelte-ignore a11y_click_events_have_key_events -->
 							<!-- svelte-ignore a11y_no_static_element_interactions -->
-							<div class="justify-right cursor-pointer text-red-800" onclick="{() => {
+							<div class="justify-right cursor-pointer text-red-800" onmousedown="{() => {
 								itemList = itemList.filter(x => x != item)
 								scannedItems.delete(item)
 							}}">✕</div>						
@@ -189,8 +189,8 @@
 		
 		
 		<button id="submitBtn" class="button-normal">Submit Sign-in</button>
-		<button type="button" id="clearBtn" onclick="{reset}" class="button-normal">Clear All Items</button>
-		<button onclick={closeModal} type="button" class="close">close modal</button>
+		<button type="button" id="clearBtn" onmousedown="{reset}" class="button-normal">Clear All Items</button>
+		<button onmousedown={closeModal} type="button" class="close">close modal</button>
 	</form>
 </div>
 

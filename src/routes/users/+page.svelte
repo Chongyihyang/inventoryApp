@@ -109,7 +109,7 @@
 <DeleteItemModal bind:deleteIsOpen {form} {currentSelectedList} />
 <EditItemModal bind:editIsOpen {currentSelectedList} {form} {roles} {departments} {users}/>
 
-<button onclick="{() => {
+<button onmousedown="{() => {
         addIsOpen = !addIsOpen
     }}"
     class="m-3 ml-[70%]"
@@ -141,10 +141,10 @@
             <td><h2 class="font-medium text-gray-900 whitespace-nowrap dark:text-white">{row.username}</h2></td>
             <td><h2>{row.rolename}</h2></td>
             <td class="p-0">
-                <button onclick="{() => {openEditModal(row)}}">✏️</button>
+                <button onmousedown="{() => {openEditModal(row)}}">✏️</button>
             </td>
             <td class="p-0">
-                <button  onclick="{() => {openDeleteModal(row)}}">❌</button>
+                <button  onmousedown="{() => {openDeleteModal(row)}}">❌</button>
             </td>
         </tr>
         {/each}

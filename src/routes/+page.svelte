@@ -48,18 +48,18 @@
 </script>
 
 <SignOutModal bind:signOutModalOpen {data} {form}/>
-<SignInModal bind:signInModalOpen {data}/>
+<SignInModal bind:signInModalOpen {data} {form}/>
 
 <div class="mx-auto w-fit">
 	<button
 		class="m-3"
-		onclick="{() => {
+		onmousedown="{() => {
 		signOutModalOpen = true
 	}}">Sign Classifieds Out / HOTO</button>
 
 	<button 
 		class="m-3"
-		onclick="{() => {
+		onmousedown="{() => {
 		signInModalOpen = true
 	}}">Sign Classfieds In </button>
 </div>

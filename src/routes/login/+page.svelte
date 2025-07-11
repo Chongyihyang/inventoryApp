@@ -11,7 +11,7 @@
 		<h2 class="my-auto grid" id="username">Username: </h2>
 		<input class="box" type="text" name="username" required>
 		<h2 class="mr-2 my-auto" id="password">Password: </h2>
-		<input class="box" type="password" name="password"> 
+		<input class="box" type="password" name="password" required> 
 		<button class="submit">Login</button>
 	</div>
 </form>

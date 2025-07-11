@@ -39,7 +39,7 @@
 <dialog
 	bind:this={dialog}
 	onclose={() => (deleteIsOpen = false)}
-	onclick={(e) => { if (e.target === dialog) closeModal()}}
+	onmousedown={(e) => { if (e.target === dialog) closeModal()}}
 >
 	<h2 class="title">Deleting item</h2>
     <h2 class="mx-auto w-fit">Are you sure you want to delete item: {currentSelectedList.username}?</h2>
@@ -53,7 +53,7 @@
 			<div class="w-fit mx-auto">
 				<input class="box" type="text" name="confirmation" placeholder="Type in the item's name to delete" required>
 				<input type="submit" value="✅" class="submit"/>
-				<button onclick="{closeModal}" type="button">❌</button>
+				<button onmousedown="{closeModal}" type="button">❌</button>
 			</div>
 		</form>
 	</div>
