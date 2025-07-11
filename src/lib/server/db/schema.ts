@@ -17,7 +17,7 @@ export type Department = typeof departmentTable.$inferSelect;
 
 export const usersTable = sqliteTable("user", {
 	id: text().primaryKey(),
-	username: text().notNull(),
+	username: text().unique().notNull(),
 	passwordHash: text(),
 	roleid: int().notNull().references(() => rolesTable.id),
 	departmentid: int().references(() => departmentTable.id),

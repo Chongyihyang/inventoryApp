@@ -20,12 +20,14 @@
 		console.log(y)
 		console.log("--------END---------")
 	}
+	
 	inventoryList.map((x) => {
-		itemDatabase[x.itemid] = "1"
+		itemDatabase[x.id] = "1"
 	})
 	rows.map((x) => {
-		itemDatabase[x.itemid] = {"ItemName": x.itemname, "Name": x.issuee, "OutTime": x.outtime}
+		itemDatabase[x.id] = {"ItemName": x.itemname, "Name": x.issuee, "OutTime": x.outtime}
 	})
+	debugPrint("itemDatabase", itemDatabase)
 	let dialog: HTMLDialogElement = $state(); // HTMLDialogElement
 	
 	function page_reload () {
@@ -131,7 +133,7 @@
 			class="text" list="names" required>
 			<datalist id="names">
 				{#each data.users as user}
-					<option data-value="{user.id}">{user.username}</option>
+					<option value="{user.id}">{user.username}</option>
 				{/each}
 			</datalist>
 		</div>
@@ -143,7 +145,7 @@
 			autocomplete="off" class="text"
 			oninput="{(e) => {
 				if (!e.target.value) return;
-				scannerBuffer += e.target.value.toUpperCase();
+				scannerBuffer += e.target.value;
 				e.target.value = '';
 				scannerStatus.textContent = `Scanning: ${scannerBuffer}`;
 				clearTimeout(scannerTimeout);

@@ -7,7 +7,7 @@ import * as table from '$lib/server/db/schema';
 import { and, eq, isNull } from 'drizzle-orm';
 import { alias } from 'drizzle-orm/sqlite-core';
 
-const DEBUG = false;
+const DEBUG = true;
 
 function debugPrint(x: string, y) {
 	if (DEBUG) {
@@ -71,12 +71,16 @@ export const actions: Actions = {
         // TODO! Check uniqueness of SN1 and SN2
 		const data = await request.formData();
         let uniqueMap = new Set();
-        const issuee: string = data.get('name').trim();
+        const issuee: string = data.get('issuee').trim();
 		const issuer: string = data.get('issuer').trim();
+		debugPrint("issuee", issuee)
+		debugPrint("issuer", issuer)
         let item: string = data.get('items').trim()
 		.split(",").map(x => { if (x != "") uniqueMap.add(x)})
-        item = Array.from(uniqueMap)
+		item = Array.from(uniqueMap)
+		console.log("signout in src/routes/+page.server.ts")
 		debugPrint("item signout <in server>", item)
+		debugPrint("issuee", issuee)
         item.forEach(async itemid => await db.insert(table.transactionTable)
 		.values({
 			itemid,

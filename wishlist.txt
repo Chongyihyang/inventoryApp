@@ -1,0 +1,10 @@
+Implement SLOC transfer for items <Done>
+Impl issuee does not exist <Done>
+Improve UI for signin
+password retype for users
+transactions per sqn for the day
+stocktake feature
+User-based privilege for users and items
+barcode feature for items
+Import items
+Bulky item checkbox                                                                                                                                                                                                                             

@@ -12,15 +12,16 @@
 	let userNameInput: HTMLInputElement; 
 	let statusMessage: HTMLDivElement;
 	let { signOutModalOpen = $bindable(), data} = $props();
-	debugPrint(" data.currentuser.id", data.currentuser.id)
+	// debugPrint(" data.currentuser.id", data.currentuser.id)
     let rows = $state(data.items)
     let inventoryList = $state(data.inventoryList)
 	let itemDatabase = {}
+	console.log(inventoryList)
 	inventoryList.map((x) => {
-		itemDatabase[x.itemid] = "1"
+		itemDatabase[x.id] = "1"
 	})
 	rows.map((x) => {
-		itemDatabase[x.itemid] = {"ItemName": x.itemname, "Name": x.issuee, "OutTime": x.outtime}
+		itemDatabase[x.id] = {"ItemName": x.itemname, "Name": x.issuee, "OutTime": x.outtime}
 	})
 
 	function debugPrint(x: string, y) {
@@ -29,7 +30,7 @@
 		console.log("--------END---------")
 	}
 
-	debugPrint("itemDatabase", itemDatabase)
+	// debugPrint("itemDatabase", itemDatabase)
 	let dialog: HTMLDialogElement = $state(); // HTMLDialogElement
 	
 	function page_reload () {
@@ -37,7 +38,9 @@
 	}
 	
 	$effect(() => {
-		if (signOutModalOpen) dialog.showModal();
+		if (signOutModalOpen) {
+			dialog.showModal()
+		}
 	});
 	
 
@@ -57,6 +60,7 @@
             scannerStatus.textContent = "Scanner ready - scan an item";
             return;
         }
+		console.log(itemDatabase)
         if (itemDatabase && itemDatabase[barcode]) {
             if (!scannedItems.has(barcode)) {
                 if (itemDatabase[barcode] === "1") {
@@ -114,6 +118,7 @@
             setTimeout(() => statusMessage.style.display = 'none', 3000);
         }
     }
+
 </script>
 
 <dialog
@@ -121,6 +126,7 @@
 	onclose={() => (signOutModalOpen = false)}
 	onclick={(e) => { if (e.target === dialog) closeModal()}}
 >
+
 <div class="internal">
 	<h1 class="title">Inventory Sign-Out / HOTO Out</h1>
 	<form method="POST" action="?/signout" id="form">
@@ -128,10 +134,10 @@
 		<div class="form-group">
 			<label for="userName">Your Name:</label>
 			<input type="text" bind:this={userNameInput} 
-			placeholder="Enter your name" name="name" class="text"  list="names" required>
+			placeholder="Enter your name"  class="text" name="issuee" list="names" required>
 			<datalist id="names">
 				{#each data.users as user}
-					<option data-value="{user.id}">{user.username}</option>
+					<option value="{user.id}">{user.username}</option>
 				{/each}
 			</datalist>
 		</div>
@@ -143,7 +149,7 @@
 			autocomplete="off" class="text"
 			oninput="{(e) => {
 				if (!e.target.value) return;
-				scannerBuffer += e.target.value.toUpperCase();
+				scannerBuffer += e.target.value;
 				e.target.value = '';
 				scannerStatus.textContent = `Scanning: ${scannerBuffer}`;
 				clearTimeout(scannerTimeout);

@@ -3,10 +3,12 @@ import { db } from '$lib/server/db';
 import * as table from '$lib/server/db/schema';
 import { and, eq, isNull } from 'drizzle-orm';
 import { alias } from 'drizzle-orm/sqlite-core';
+import { requireLogin } from '$lib';
 
 
 
 export const load: PageServerLoad = async ({ locals }) => {
+	const user = requireLogin();
 	const usersTable1 = alias(table.usersTable, "usersTable1");
     const items = await db
 	.select({
@@ -31,5 +33,5 @@ export const load: PageServerLoad = async ({ locals }) => {
 
 	const currentdept = locals.department;
 
-	return { items, departmentList, currentdept };
+	return { user, items, departmentList, currentdept };
 };

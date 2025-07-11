@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type { PageServerData } from './$types';
-	import SignInModal from './signInModal.svelte';
+	// import SignInModal from './signInModal.svelte';
 	import SignOutModal from './signOutModal.svelte';
 	const DEBUG = false
 
@@ -10,18 +10,45 @@
 		console.log("--------END---------")
 	}
 
-	let { data }: { data: PageServerData } = $props();
+	let { form, data }: { 
+		form?: FormData; 
+		data: PageServerData 
+	} = $props();
+
 	if (DEBUG) {
 		debugPrint("data.items", data.items)
 		debugPrint("data.inventoryList", data.inventoryList)
 		debugPrint("data.departmentList", data.departmentList)
 	}
+
+	$effect(() => {
+        if (!form) return;
+
+        if (form.error) {
+            switch (form.action) {
+                case 'signout':
+                    signOutModalOpen = true;
+                    break;
+                case 'signin':
+                    signInModalOpen = true;
+                    break;
+            }
+        } else if (form.success) {
+            closeAllModals();
+        }
+    })
+
+	function closeAllModals() {
+		signOutModalOpen = false
+		signInModalOpen = false
+    }
+
     let signOutModalOpen = $state(false)
     let signInModalOpen = $state(false)
 </script>
 
-<SignOutModal bind:signOutModalOpen {data}/>
-<SignInModal bind:signInModalOpen {data}/>
+<SignOutModal bind:signOutModalOpen {data} {form}/>
+<!-- <SignInModal bind:signInModalOpen {data}/> -->
 
 <div class="mx-auto w-fit">
 	<button
