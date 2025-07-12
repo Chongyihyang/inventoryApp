@@ -20,7 +20,8 @@ export const usersTable = sqliteTable("user", {
 	username: text().unique().notNull(),
 	passwordHash: text(),
 	roleid: int().notNull().references(() => rolesTable.id),
-	departmentid: int().references(() => departmentTable.id),
+	departmentid: int().notNull().references(() => departmentTable.id),
+	email: text(),
 });
 
 export type User = typeof usersTable.$inferSelect;
