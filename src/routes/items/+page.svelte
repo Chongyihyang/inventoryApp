@@ -1,5 +1,6 @@
 <script lang="ts">
 	import AddItemModal from './addItemModal.svelte'
+	import BarcodeModal from './barcodeModal.svelte';
 	import DeleteItemModal from './deleteItemModal.svelte'
 	import EditItemModal from './editItemModal.svelte'
 	import ImportItemModal from './importItemModal.svelte';
@@ -56,8 +57,8 @@
     let deleteIsOpen = $state(false)
     let editIsOpen = $state(false)
     let importIsOpen = $state(false)
+    let barcodeIsOpen = $state(false)
     let departmentsList:Map<string, string> = new Map()  
-    let fileOpener: HTMLInputElement
     let selecteditems: Item[] = $state([]);
     let selecteddept = $state(currentdept)
     let importResults = $state<Results>({
@@ -125,9 +126,6 @@
             closeAllModals();
         }
 
-        if (fileOpener.value != null) {
-            console.log(fileOpener.value)
-        }
     });
     
     function closeAllModals() {
@@ -154,8 +152,13 @@
 <DeleteItemModal bind:deleteIsOpen {form} {currentSelectedList}/>
 <EditItemModal bind:editIsOpen {currentSelectedList} {form}/>
 <ImportItemModal bind:importIsOpen {form} {importResults}/>
+<BarcodeModal bind:barcodeIsOpen {selecteditems}/>
 
-<div class="flex w-fit ml-[50%]">
+<div class="flex w-fit ml-[30%]">
+    <button class="m-3" onmousedown="{() => {
+        barcodeIsOpen = true
+    }}">Print Barcodes</button>
+
     <button onmousedown="{() => {
     addIsOpen = !addIsOpen
     }}" class="m-3"

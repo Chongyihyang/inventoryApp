@@ -16,7 +16,7 @@
         form = $bindable<FormData>(),
 		importResults = $bindable<Results>(),
     } = $props()
-	console.log(importResults)
+
     let dialog = $state<HTMLDialogElement>()
 	// Effect to handle modal open/close
 	$effect(() => {
