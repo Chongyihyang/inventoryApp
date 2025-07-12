@@ -17,13 +17,14 @@ function generateUserId() {
 	return id;
 }
 
+
+
 export async function load({ locals }) {
     const user = requireLogin();
     
     const items = await getItemsWithDepartments();
     const departments = await getAllDepartments();
     const currentdept = locals.department;
-    console.log("i", departments, currentdept)
 
     return { user, items, departments, currentdept };
 }
@@ -69,6 +70,132 @@ function validateDeleteConfirmation(itemname: string, confirmation: string) {
 
 // Action handlers
 export const actions = {
+
+    upload: async ({ request }) => {
+        const formData = await request.formData();
+        const file = formData.get('file') as File;
+
+
+        if (!file) {
+            return fail(400, { error: 'No file provided' });
+        }
+
+        try {
+            const content = await file.text()
+            const rows = content.split(/\r?\n/).filter(row => row.trim() !== '');
+            const params = []
+            const results = {
+                totalItems: 0,
+                successCount: 0,
+                errorCount: 0,
+                successfulItems: [],
+                failedItems: [],
+                details: []
+            };
+            const alphanumericRegex = /^[a-zA-Z0-9]+$/;
+            let itemIdsList = [];
+            for (let i = 0; i < rows.length; i++) {
+                const row = rows[i];
+                const rowNumber = i + 1;
+                const columns = row.split(',');
+                if (i === 0) continue; // Skip header
+                results.totalItems++;
+                let isValid = true;
+                let messages = [];
+        
+                // check itemId
+                const itemid = columns[0] ? columns[0].trim() : '';
+                if (!itemid) {
+                    isValid = false;
+                    messages.push("Missing item ID");
+                } else if (!alphanumericRegex.test(itemid)) {
+                    isValid = false;
+                    messages.push("Item ID contains invalid characters");
+                }
+        
+                const SN1 = columns[1] ? columns[1].trim() : '';
+        
+                //check SN2
+                const SN2 = columns[2] ? columns[2].trim() : '';
+                 if (!/^[0-9]*$/.test(SN2)) {
+                    isValid = false;
+                    messages.push("SN2 contains characters other than numerals");
+                }
+        
+                const currentholdertmp = columns[3] ? columns[3].trim() : '';
+                let currentholder = 0
+                 if (!alphanumericRegex.test(currentholdertmp)) {
+                    isValid = false;
+                    messages.push("currentholder contains characters other than numerals");
+                } else if ((await getAllDepartments()).filter(x => 
+                    x.departmentname == currentholdertmp)
+                    .length != 1) {
+                    isValid = false
+                    messages.push("Cannot find department for current holder")
+                } else {
+                    currentholder = (await getAllDepartments()).filter(x => 
+                        x.departmentname == currentholdertmp)[0].id
+                }
+        
+        
+                const originalholdertmp = columns[4] ? columns[4].trim() : '';
+                let originalholder = 0
+                 if (!alphanumericRegex.test(originalholdertmp)) {
+                    isValid = false;
+                    messages.push("originalholder contains characters other than numerals");
+                } else if ((await getAllDepartments()).filter(x => 
+                    x.departmentname == originalholdertmp)
+                    .length != 1) {
+                    isValid = false
+                    messages.push("Cannot find department for original holder")
+                } else {
+                    originalholder = (await getAllDepartments()).filter(x => 
+                        x.departmentname == originalholdertmp)[0].id
+                }
+        
+                const remarks = columns[5] ? columns[5].trim() : '';
+        
+                const itemResult = {
+                    row: rowNumber,
+                    itemid,
+                    status: isValid ? "Success" : "Failed",
+                    SN1,
+                    SN2,
+                    remarks,
+                    messages: messages.join(", ")
+                };
+                if (isValid) {
+                    const toFunc = {
+                        id: generateUserId(),
+                        itemname: itemid,
+                        SN1,
+                        SN2,
+                        remarks,
+                        currentholder,
+                        originalholder
+                    }
+                    params.push(toFunc)
+                    results.successCount++;
+                    results.successfulItems.push(itemResult);
+                    itemIdsList.push(itemid);
+                } else {
+                    results.errorCount++;
+                    results.failedItems.push(itemResult);
+                }
+                results.details.push(itemResult);
+            }
+            await db.transaction(async (tx) => {
+                console.log("in transaction")
+                const x = await tx.insert(table.itemsTable).values(params).returning();
+                console.log(x)
+            });
+            return { success: true, results };
+        } catch (error) {
+            console.log(error)
+            return fail(500, { error: error instanceof Error ? error.message : "Failed to create item" });
+        }
+    },
+
     edit: async ({ request }) => {
         const data = await request.formData();
         const id = data.get("id")?.toString();

@@ -44,7 +44,6 @@ export const actions: Actions = {
 			parallelism: 1
 		});
 
-		console.log(passwordHash)
 
 		if (existingUser.passwordHash == null || existingUser.passwordHash == "") {
 			return fail(400, { message: 'Unable to log in user' })
