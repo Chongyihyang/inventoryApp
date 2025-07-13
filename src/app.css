@@ -123,6 +123,7 @@
     }
 
     .internal {
+<<<<<<< HEAD
         @apply px-10 py-5 
     }
     
@@ -130,6 +131,11 @@
         display: none; /* Hides the scrollbar */
     }
 
+=======
+        @apply px-10 py-5
+    }
+    
+>>>>>>> a3ce17506991975e24893b0f00fc3cff0f731719
     .title {
         @apply text-white font-bold 
         text-[20px] border-b-[1px] border-[#eee] 

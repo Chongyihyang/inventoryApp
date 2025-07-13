@@ -19,9 +19,12 @@
     } = $props()
 	
     let dialog = $state<HTMLDialogElement>()
+<<<<<<< HEAD
 	// svelte-ignore non_reactive_update
 	let error:HTMLParagraphElement
 
+=======
+>>>>>>> a3ce17506991975e24893b0f00fc3cff0f731719
 	$effect(() => {
 		console.log(currentSelectedList, "i")
 		if (!dialog) return;
@@ -38,8 +41,13 @@
 
 	function closeModal() {
 		editIsOpen = false
+<<<<<<< HEAD
 		if (error != null) {
 			error.innerHTML = ""
+=======
+		if (document.getElementById("error") != null) {
+			document.getElementById("error").innerHTML = ""
+>>>>>>> a3ce17506991975e24893b0f00fc3cff0f731719
 		}
 	}
 </script>
@@ -53,7 +61,11 @@ onmousedown={(e) => { if (e.target === dialog) closeModal()}}
 	<div class="internal">
 		<h2 class="title">Edit properties for {currentSelectedList.itemname}</h2>
 		{#if form?.error && form?.action === 'edit'}
+<<<<<<< HEAD
 			<p id="error" bind:this={error} >{form.error}</p>
+=======
+			<p id="error">{form.error}</p>
+>>>>>>> a3ce17506991975e24893b0f00fc3cff0f731719
 		{/if}
 		<form method="POST" action="?/edit" id="form_edit">
 			<div class="grid grid-cols-3 gap-y-4">

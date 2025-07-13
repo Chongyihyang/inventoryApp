@@ -43,11 +43,18 @@
             departments: Department[];
             items: Item[];
             currentdept: string | null;
+<<<<<<< HEAD
             currentrole: string | null
         };
         form?: FormData;
     }>();
     const { departments, items, currentdept, currentrole } = data
+=======
+        };
+        form?: FormData;
+    }>();
+    const { departments, items, currentdept } = data
+>>>>>>> a3ce17506991975e24893b0f00fc3cff0f731719
     
     
     // State
@@ -99,9 +106,15 @@
         
     // Handle form state changes
     $effect(() => {
+<<<<<<< HEAD
         // if (importResults) {
 
         // }
+=======
+        if (importResults) {
+            console.log("Results updated:", importResults);
+        }
+>>>>>>> a3ce17506991975e24893b0f00fc3cff0f731719
 
         if (!form) return;
         
@@ -113,6 +126,10 @@
                     break;
                 case 'add':
                     addIsOpen = true;
+<<<<<<< HEAD
+=======
+                    $inspect(form?.error)
+>>>>>>> a3ce17506991975e24893b0f00fc3cff0f731719
                     break;
                 case 'delete':
                     deleteIsOpen = true;
@@ -122,7 +139,10 @@
         } else if (form.results){
             importIsOpen = true
             importResults = form.results
+<<<<<<< HEAD
             form.results = false
+=======
+>>>>>>> a3ce17506991975e24893b0f00fc3cff0f731719
         } else if (form.success) {
             closeAllModals();
         }
@@ -226,6 +246,7 @@
             <td><h2>{row.SN2}</h2></td>
             <td><h2>{row.originalholder}</h2></td>
             <td class="p-0">
+<<<<<<< HEAD
                 {#if (currentrole == "1") || (currentrole == "2" && currentdept == selecteddept)}
                     <button onmousedown="{() => {openEditModal(row)}}">✏️</button>
                 {/if}
@@ -234,6 +255,12 @@
                 {#if (currentrole == "1") || (currentrole == "2" && currentdept == selecteddept)}
                     <button  onmousedown="{() => {openDeleteModal(row)}}">❌</button>
                 {/if}
+=======
+                <button onmousedown="{() => {openEditModal(row)}}">✏️</button>
+            </td>
+            <td class="p-0">
+                <button  onmousedown="{() => {openDeleteModal(row)}}">❌</button>
+>>>>>>> a3ce17506991975e24893b0f00fc3cff0f731719
             </td>
         </tr>
         {/each}

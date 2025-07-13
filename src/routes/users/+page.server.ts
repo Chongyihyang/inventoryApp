@@ -17,10 +17,16 @@ export async function load({ locals }) {
     const users = await getUsersWithDepartments();
     const departments = await getAllDepartments();
     const currentdept = locals.department;
+<<<<<<< HEAD
     const currentrole = locals.role
     const roles = await getAllRoles();
 
     return { user, users, departments, currentdept, roles, currentrole };
+=======
+    const roles = await getAllRoles();
+
+    return { user, users, departments, currentdept, roles };
+>>>>>>> a3ce17506991975e24893b0f00fc3cff0f731719
 }
 
 function validatePassword(password: unknown): password is string {

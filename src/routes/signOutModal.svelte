@@ -206,4 +206,8 @@
 		<button onmousedown={closeModal} type="button" class="close">close modal</button>
 	</form>
 </div>
+<<<<<<< HEAD
+=======
+
+>>>>>>> a3ce17506991975e24893b0f00fc3cff0f731719
 </dialog>

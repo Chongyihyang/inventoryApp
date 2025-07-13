@@ -1,0 +1,21 @@
+Implement SLOC transfer for items <Done>
+Impl issuee does not exist <Done>
+Improve UI for signin  <Done>
+password retype for users <Done>
+password strength <Done>
+Import items <Done>
+barcode feature for items <Done>
+
+transactions per sqn for the day 
+stocktake feature
+User-based privilege for users and items
+Bulky item checkbox
+2fa authentication with email
+check that SN1 and 2 are unique??
+click on scrollbar shldnt close
+
+ADMIN should only be able to access their own items:
+1.  CRUD only their items
+2.  CRUD only their users
+
+They cannot HOTO
