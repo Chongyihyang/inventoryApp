@@ -9,7 +9,6 @@ import { encodeBase32LowerCase } from '@oslojs/encoding';
 type Item = typeof table.itemsTable.$inferSelect;
 type Department = typeof table.departmentTable.$inferSelect;
 type ItemInsert = typeof table.itemsTable.$inferInsert;
-<<<<<<< HEAD
 type Param = {
     id: string,
     itemname: string,
@@ -19,8 +18,6 @@ type Param = {
     currentholder: number,
     originalholder: number
 }
-=======
->>>>>>> a3ce17506991975e24893b0f00fc3cff0f731719
 
 function generateUserId() {
 	// ID with 120 bits of entropy, or about the same as UUID v4.
@@ -32,7 +29,6 @@ function generateUserId() {
 
 
 export async function load({ locals }) {
-<<<<<<< HEAD
     requireLogin()
     
     const items = await getItemsWithDepartments()
@@ -41,15 +37,6 @@ export async function load({ locals }) {
     const currentrole = locals.role
 
     return { items, departments, currentdept, currentrole };
-=======
-    const user = requireLogin();
-    
-    const items = await getItemsWithDepartments();
-    const departments = await getAllDepartments();
-    const currentdept = locals.department;
-
-    return { user, items, departments, currentdept };
->>>>>>> a3ce17506991975e24893b0f00fc3cff0f731719
 }
 
 // Database query functions
@@ -94,11 +81,7 @@ function validateDeleteConfirmation(itemname: string, confirmation: string) {
 // Action handlers
 export const actions = {
 
-<<<<<<< HEAD
     upload: async ({ request, locals }) => {
-=======
-    upload: async ({ request }) => {
->>>>>>> a3ce17506991975e24893b0f00fc3cff0f731719
         const formData = await request.formData();
         const file = formData.get('file') as File;
 
@@ -110,11 +93,7 @@ export const actions = {
         try {
             const content = await file.text()
             const rows = content.split(/\r?\n/).filter(row => row.trim() !== '');
-<<<<<<< HEAD
             const params: Param[] = []
-=======
-            const params = []
->>>>>>> a3ce17506991975e24893b0f00fc3cff0f731719
             const results = {
                 totalItems: 0,
                 successCount: 0,
@@ -124,11 +103,7 @@ export const actions = {
                 details: []
             };
             const alphanumericRegex = /^[a-zA-Z0-9]+$/;
-<<<<<<< HEAD
             const itemIdsList = [];
-=======
-            let itemIdsList = [];
->>>>>>> a3ce17506991975e24893b0f00fc3cff0f731719
             for (let i = 0; i < rows.length; i++) {
                 const row = rows[i];
                 const rowNumber = i + 1;
@@ -136,11 +111,7 @@ export const actions = {
                 if (i === 0) continue; // Skip header
                 results.totalItems++;
                 let isValid = true;
-<<<<<<< HEAD
                 const messages = [];
-=======
-                let messages = [];
->>>>>>> a3ce17506991975e24893b0f00fc3cff0f731719
         
                 // check itemId
                 const itemid = columns[0] ? columns[0].trim() : '';
@@ -153,29 +124,23 @@ export const actions = {
                 }
         
                 const SN1 = columns[1] ? columns[1].trim() : '';
-<<<<<<< HEAD
                 if ((await getItemsWithDepartments()).filter(x => 
                     x.SN1 == SN1)
                     .length != 0) {
                         isValid = false;
                         messages.push("SN1 is not unique");
                 }
-=======
->>>>>>> a3ce17506991975e24893b0f00fc3cff0f731719
         
                 //check SN2
                 const SN2 = columns[2] ? columns[2].trim() : '';
                  if (!/^[0-9]*$/.test(SN2)) {
                     isValid = false;
                     messages.push("SN2 contains characters other than numerals");
-<<<<<<< HEAD
                 } else if ((await getItemsWithDepartments()).filter(x => 
                     x.SN2 == SN2)
                     .length != 0) {
                         isValid = false;
                         messages.push("SN2 is not unique");
-=======
->>>>>>> a3ce17506991975e24893b0f00fc3cff0f731719
                 }
         
                 const currentholdertmp = columns[3] ? columns[3].trim() : '';
@@ -188,12 +153,9 @@ export const actions = {
                     .length != 1) {
                     isValid = false
                     messages.push("Cannot find department for current holder")
-<<<<<<< HEAD
                 } else if (locals.role == "2" && locals.department != currentholdertmp){
                     isValid = false
                     messages.push("current holder is not user's sqn")
-=======
->>>>>>> a3ce17506991975e24893b0f00fc3cff0f731719
                 } else {
                     currentholder = (await getAllDepartments()).filter(x => 
                         x.departmentname == currentholdertmp)[0].id
@@ -227,11 +189,7 @@ export const actions = {
                     messages: messages.join(", ")
                 };
                 if (isValid) {
-<<<<<<< HEAD
                     const toFunc: Param = {
-=======
-                    const toFunc = {
->>>>>>> a3ce17506991975e24893b0f00fc3cff0f731719
                         id: generateUserId(),
                         itemname: itemid,
                         SN1,
@@ -250,7 +208,6 @@ export const actions = {
                 }
                 results.details.push(itemResult);
             }
-<<<<<<< HEAD
             if (params.length != 0) {
                 await db.transaction(async (tx) => {
                     console.log("in transaction")
@@ -258,13 +215,6 @@ export const actions = {
                     console.log(x)
                 });
             }
-=======
-            await db.transaction(async (tx) => {
-                console.log("in transaction")
-                const x = await tx.insert(table.itemsTable).values(params).returning();
-                console.log(x)
-            });
->>>>>>> a3ce17506991975e24893b0f00fc3cff0f731719
             return { success: true, results };
         } catch (error) {
             console.log(error)
@@ -324,7 +274,6 @@ export const actions = {
                 originalholder = currentholder;
             }
 
-<<<<<<< HEAD
             if ((await getItemsWithDepartments()).filter(x => 
                 x.SN1 == SN1)
                 .length != 0) {
@@ -337,8 +286,6 @@ export const actions = {
                     throw new Error("SN2 is not unique")
             }
 
-=======
->>>>>>> a3ce17506991975e24893b0f00fc3cff0f731719
             const item: ItemInsert = {
                 id: generateUserId(),
                 itemname,

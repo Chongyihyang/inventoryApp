@@ -2,21 +2,12 @@
 
 
 	type Results = {
-<<<<<<< HEAD
 		totalItems: number,
 		successCount: number,
 		errorCount: number,
 		successfulItems: Array<string>,
 		failedItems: Array<string>,
 		details: Array<string>
-=======
-            totalItems: number,
-            successCount: number,
-            errorCount: number,
-            successfulItems: Array<string>,
-            failedItems: Array<string>,
-            details: Array<string>
->>>>>>> a3ce17506991975e24893b0f00fc3cff0f731719
     };
 
     // Props with type annotations
@@ -29,17 +20,8 @@
     let dialog = $state<HTMLDialogElement>()
 	// Effect to handle modal open/close
 	$effect(() => {
-<<<<<<< HEAD
 		if (!dialog) return;
 
-=======
-        if (importResults) {
-            console.log("Results updated:", importResults);
-        }
-
-		if (!dialog) return
-		
->>>>>>> a3ce17506991975e24893b0f00fc3cff0f731719
 		if (importIsOpen) {
 			dialog.showModal()
 		} else {
@@ -66,13 +48,9 @@
 			<span class="modal-title" id="modalTitle">Import Results ({importResults.successCount} success,
 				{importResults.errorCount} errors)
 			</span>
-<<<<<<< HEAD
 			<!-- svelte-ignore a11y_click_events_have_key_events -->
 			<!-- svelte-ignore a11y_no_static_element_interactions -->
 			<span class="close-btn" id="closeModalBtn" onclick="{closeModal}">&times;</span>
-=======
-			<span class="close-btn" id="closeModalBtn" onclick="{importIsOpen = false}">&times;</span>
->>>>>>> a3ce17506991975e24893b0f00fc3cff0f731719
 		</div>
 		<div id="importSummary" class="results-section">
 			<p>Total items processed: <strong>{importResults.totalItems}</strong></p>
@@ -133,11 +111,7 @@
 			</table>
 		</div>
 		<button class="btn" id="closeModalBtn2" 
-<<<<<<< HEAD
 		style="margin-top: 20px;" onclick="{closeModal}">Close</button>
-=======
-		style="margin-top: 20px;", onclick="{importIsOpen = false}">Close</button>
->>>>>>> a3ce17506991975e24893b0f00fc3cff0f731719
 	</div>
 </div>
 
@@ -256,9 +230,4 @@
 	.results-table th {
 		background-color: #364153;
 	}
-<<<<<<< HEAD
-=======
-
-
->>>>>>> a3ce17506991975e24893b0f00fc3cff0f731719
 </style>

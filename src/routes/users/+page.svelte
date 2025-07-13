@@ -35,19 +35,13 @@
             departments: Department[];
             users: User[];
             currentdept: string | null;
-<<<<<<< HEAD
             currentrole: string | null;
-=======
->>>>>>> a3ce17506991975e24893b0f00fc3cff0f731719
             roles: Roles[];
         };
         form?: FormData;
     }>();
-<<<<<<< HEAD
     const { users, departments, currentdept, roles, currentrole } = data
     console.log(currentrole)
-=======
->>>>>>> a3ce17506991975e24893b0f00fc3cff0f731719
 
     
     // State
@@ -56,10 +50,6 @@
     let deleteIsOpen = $state(false)
     let editIsOpen = $state(false)
     let departmentsList:Map<string, string> = new Map()  
-<<<<<<< HEAD
-=======
-    const { users, departments, currentdept, roles } = data
->>>>>>> a3ce17506991975e24893b0f00fc3cff0f731719
     departments.forEach((x: Department) => {
         departmentsList.set(x.departmentname, x.id)
     });
@@ -153,7 +143,6 @@
             <td><h2 class="font-medium text-gray-900 whitespace-nowrap dark:text-white">{row.username}</h2></td>
             <td><h2>{row.rolename}</h2></td>
             <td class="p-0">
-<<<<<<< HEAD
                 {#if (currentrole == "1") || (currentrole == "2" && currentdept == selecteddept)}
                     <button onmousedown="{() => {openEditModal(row)}}">✏️</button>
                 {/if}
@@ -162,12 +151,6 @@
                 {#if (currentrole == "1") || (currentrole == "2" && currentdept == selecteddept)}
                     <button  onmousedown="{() => {openDeleteModal(row)}}">❌</button>
                 {/if}
-=======
-                <button onmousedown="{() => {openEditModal(row)}}">✏️</button>
-            </td>
-            <td class="p-0">
-                <button  onmousedown="{() => {openDeleteModal(row)}}">❌</button>
->>>>>>> a3ce17506991975e24893b0f00fc3cff0f731719
             </td>
         </tr>
         {/each}
