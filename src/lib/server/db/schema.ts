@@ -1,0 +1,61 @@
+import { int, sqliteTable, text } from "drizzle-orm/sqlite-core";
+
+
+export const rolesTable = sqliteTable("role", {
+	id: int().primaryKey({ autoIncrement: true }),
+	rolename: text().unique(),
+});
+
+export type Role = typeof rolesTable.$inferSelect;
+
+export const departmentTable = sqliteTable("department", {
+	id: int().primaryKey({ autoIncrement: true }),
+	departmentname: text().unique(),  
+})
+
+export type Department = typeof departmentTable.$inferSelect;
+
+export const usersTable = sqliteTable("user", {
+	id: text().primaryKey(),
+	username: text().unique().notNull(),
+	passwordHash: text(),
+	roleid: int().notNull().references(() => rolesTable.id),
+	departmentid: int().notNull().references(() => departmentTable.id),
+	email: text(),
+});
+
+export type User = typeof usersTable.$inferSelect;
+
+export const itemsTable = sqliteTable("item", {
+  id: text().primaryKey(),
+  itemname: text().notNull(),
+  SN1: text(),
+  SN2: text(),
+  remarks: text(),
+  currentholder: int().references(() => departmentTable.id),
+  originalholder: int().references(() => departmentTable.id),  
+});
+
+export type Item = typeof itemsTable.$inferSelect;
+
+export const transactionTable = sqliteTable("transactions", {
+  id: int().primaryKey({ autoIncrement: true }),
+  itemid: text().references(() => itemsTable.id),
+  outtime: int(),
+  inttime: int(),
+  issuer: text().references(() => usersTable.id),
+  issuee: text().references(() => usersTable.id),
+})
+
+export type Transactions = typeof transactionTable.$inferSelect;
+
+export const sessionTable = sqliteTable('session', {
+	id: text('id').primaryKey(),
+	userId: text('user_id')
+		.notNull()
+		.references(() => usersTable.id),
+	expiresAt: int('expires_at', { mode: 'timestamp' }).notNull()
+});
+
+export type Session = typeof sessionTable.$inferSelect;
+
