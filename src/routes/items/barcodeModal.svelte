@@ -58,10 +58,6 @@
         doc.save('barcodes.pdf');
     }
 
-<<<<<<< HEAD
-
-=======
->>>>>>> a3ce17506991975e24893b0f00fc3cff0f731719
 	$effect(() => {
 		if (!dialog) return;
 
@@ -97,13 +93,9 @@
                     <td><h2>{row.id}</h2></td>
                     <td><h2>{row.itemname}</h2></td>
                     <td class="p-0">
-<<<<<<< HEAD
                         <input type="checkbox" 
                         value="{row.id} {row.itemname}"
                         name="{row.id} {row.itemname}">
-=======
-                        <input type="checkbox" value="{row.id} {row.itemname}">
->>>>>>> a3ce17506991975e24893b0f00fc3cff0f731719
                     </td>
                 </tr>
                 {/each}

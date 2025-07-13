@@ -54,7 +54,6 @@ export const load: PageServerLoad = async ({ locals }) => {
 	.leftJoin(usersTable1, eq(usersTable1.id, table.transactionTable.issuee))
 	.where(isNull(table.transactionTable.inttime));
 
-<<<<<<< HEAD
 	await db
 	.delete(table.transactionTable)
 	.where(lt(table.transactionTable.outtime,Date.now()))
@@ -65,12 +64,6 @@ export const load: PageServerLoad = async ({ locals }) => {
 
 	return { user, items, inventoryList, departmentList,
 			 currentdept, currentuser, users, currentrole };
-=======
-	const currentdept = locals.department;
-	const currentuser = locals.user
-
-	return { user, items, inventoryList, departmentList, currentdept, currentuser, users };
->>>>>>> a3ce17506991975e24893b0f00fc3cff0f731719
 };
 
 export const actions: Actions = {
