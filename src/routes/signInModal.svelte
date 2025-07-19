@@ -129,7 +129,7 @@
 <div class="internal">
 
 	<h1 class="title">Inventory Sign-In</h1>
-	{#if form?.error && form?.action === 'signout'}
+	{#if form?.error && form?.action == 'signin'}
 		<p class="error">{form.error}</p>
 	{/if}
 	<form method="POST" action="?/signin" id="form" bind:this={formElement}>

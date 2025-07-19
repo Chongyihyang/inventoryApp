@@ -13,6 +13,7 @@
 		<li><a href="/users">Users</a></li>
 		<li><a href="/items">Items</a></li>
 		<li><a href="/transactions">transactions</a></li>
+		<li><a href="/stocktake">stocktake</a></li>
 		<li>
 			<form method="post" action="/?/logout">
 			<button class="signout">Sign out</button>

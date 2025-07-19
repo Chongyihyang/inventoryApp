@@ -6,8 +6,8 @@ import { fail } from '@sveltejs/kit';
 import { encodeBase32LowerCase } from '@oslojs/encoding';
 
 // Type definitions for better type safety
-type Item = typeof table.itemsTable.$inferSelect;
-type Department = typeof table.departmentTable.$inferSelect;
+// type Item = typeof table.itemsTable.$inferSelect;
+// type Department = typeof table.departmentTable.$inferSelect;
 type ItemInsert = typeof table.itemsTable.$inferInsert;
 type Param = {
     id: string,
@@ -17,6 +17,9 @@ type Param = {
     remarks: string,
     currentholder: number,
     originalholder: number
+}
+interface UpdateData {
+    [id: string]: string
 }
 
 function generateUserId() {
@@ -33,7 +36,7 @@ export async function load({ locals }) {
     
     const items = await getItemsWithDepartments()
     const departments = await getAllDepartments()
-    const currentdept = locals.department
+    const currentdept = Number(locals.department)
     const currentrole = locals.role
 
     return { items, departments, currentdept, currentrole };
@@ -225,11 +228,11 @@ export const actions = {
     edit: async ({ request }) => {
         const data = await request.formData();
         const id = data.get("id")?.toString();
-        const updateData = {
-            itemname: data.get('itemname')?.toString(),
-            SN1: data.get('SN1')?.toString(),
-            SN2: data.get('SN2')?.toString(),
-            remarks: data.get('remarks')?.toString(),
+        const updateData: UpdateData = {
+            itemname: data.get('itemname')?.toString() ?? "",
+            SN1: data.get('SN1')?.toString() ?? "",
+            SN2: data.get('SN2')?.toString() ?? "",
+            remarks: data.get('remarks')?.toString() ?? "",
         };
         
         try {
@@ -243,7 +246,7 @@ export const actions = {
 
             return { success: true };
         } catch (error) {
-            updateData["id"] = data.get("id")?.toString()
+            updateData.id = data.get("id")?.toString() ?? ""
             return { error: error instanceof Error ? error.message : "Failed to update item",
                      action: "edit", 
                      updateData

@@ -9,57 +9,86 @@ import { alias } from 'drizzle-orm/sqlite-core';
 
 const DEBUG = true;
 
-const inventoryList = await db
-.select()
-.from(table.itemsTable)
-
-const users = await db
-.select()
-.from(table.usersTable)
-
-const departmentList = await db
-.select()
-.from(table.departmentTable)
-
-function debugPrint(x: string, y) {
+function debugPrint(x: string, y: unknown) {
 	if (DEBUG) {
-		console.log(x + ": \n---------------------")
-		console.log(y)
-		console.log("--------END---------")
+		console.log(`${x}: \n---------------------`);
+		console.log(y);
+		console.log("--------END---------");
 	}
 }
 
+async function getInventoryList() {
+	return db.select().from(table.itemsTable);
+}
+
+async function getUsers() {
+	return db.select().from(table.usersTable);
+}
+
+async function getDepartmentList() {
+	return db.select().from(table.departmentTable);
+}
+
+async function getItems() {
+	const usersTable1 = alias(table.usersTable, "usersTable1");
+	return db
+		.select({
+			id: table.transactionTable.id,
+			itemname: table.itemsTable.itemname,
+			itemid: table.itemsTable.id,
+			outtime: table.transactionTable.outtime,
+			issuer: table.usersTable.username,
+			issuerid: table.transactionTable.issuer,
+			issuee: usersTable1.username,
+			issueeid: table.transactionTable.issuee
+		})
+		.from(table.transactionTable)
+		.leftJoin(table.itemsTable, eq(table.transactionTable.itemid, table.itemsTable.id))
+		.leftJoin(table.usersTable, eq(table.usersTable.id, table.transactionTable.issuer))
+		.leftJoin(usersTable1, eq(usersTable1.id, table.transactionTable.issuee))
+		.where(isNull(table.transactionTable.inttime));
+}
+
+async function cleanupOldTransactions() {
+	await db
+		.delete(table.transactionTable)
+		.where(lt(table.transactionTable.outtime, Date.now() - 2629800000));
+}
+
+function requireLogin() {
+	const { locals } = getRequestEvent();
+	if (!locals.user) {
+		return redirect(302, '/login');
+	}
+	return locals.user;
+}
 
 export const load: PageServerLoad = async ({ locals }) => {
 	const user = requireLogin();
-	const usersTable1 = alias(table.usersTable, "usersTable1");
-    const items = await db
-	.select({
-		id: table.transactionTable.id,
-		itemname: table.itemsTable.itemname,
-		itemid: table.itemsTable.id,
-		outtime: table.transactionTable.outtime,
-		issuer: table.usersTable.username,
-		issuerid: table.transactionTable.issuer,
-		issuee: usersTable1.username,
-		issueeid: table.transactionTable.issuee
-	})
-	.from(table.transactionTable)
-	.leftJoin(table.itemsTable, eq(table.transactionTable.itemid, table.itemsTable.id))
-	.leftJoin(table.usersTable, eq(table.usersTable.id, table.transactionTable.issuer))
-	.leftJoin(usersTable1, eq(usersTable1.id, table.transactionTable.issuee))
-	.where(isNull(table.transactionTable.inttime));
 
-	await db
-	.delete(table.transactionTable)
-	.where(lt(table.transactionTable.outtime,Date.now()))
+	const [inventoryList, users, departmentList, items] = await Promise.all([
+		getInventoryList(),
+		getUsers(),
+		getDepartmentList(),
+		getItems()
+	]);
+
+	await cleanupOldTransactions();
 
 	const currentdept = locals.department;
-	const currentuser = locals.user
-	const currentrole = locals.role
+	const currentuser = locals.user;
+	const currentrole = locals.role;
 
-	return { user, items, inventoryList, departmentList,
-			 currentdept, currentuser, users, currentrole };
+	return {
+		user,
+		items,
+		inventoryList,
+		departmentList,
+		currentdept,
+		currentuser,
+		users,
+		currentrole
+	};
 };
 
 export const actions: Actions = {
@@ -74,155 +103,145 @@ export const actions: Actions = {
 	},
 
 	signout: async ({ request }) => {
-
+		
 		try {
 			const data = await request.formData();
-			const uniqueMap = new Set();
-			const issuee: string = String(data.get('issuee') as FormDataEntryValue).trim();
-			const issuer: string = String(data.get('issuer') as FormDataEntryValue).trim();
-			const HOTO: string = String(data.get('HOTO') as FormDataEntryValue);
+			const uniqueMap = new Set<string>();
+			const issuee = String(data.get('issuee') ?? '').trim();
+			const issuer = String(data.get('issuer') ?? '').trim();
+			const HOTO = String(data.get('HOTO') ?? '');
 	
-			
-			// check that issuee is valid
-			let isValidIssuee = false
-			users.forEach(x => {
-				if (x.id == issuee) {
-					isValidIssuee = true
-					return
-				} 
-			})
-			
+			const users = await getUsers();
+	
+			const isValidIssuee = users.some(x => x.id == issuee);
+	
 			if (!isValidIssuee) {
 				return fail(422, {
 					error: "Issuee does not exist",
 					action: "signout"
 				});
 			}
-			
-			String(data.get('items') as FormDataEntryValue)
-			.trim()
-			.split(",")
-			.map(x => { if (x != "") uniqueMap.add(x)})
 	
-			const item = Array.from(uniqueMap)
+			String(data.get('items') ?? '')
+				.trim()
+				.split(",")
+				.forEach(x => { if (x !== "") uniqueMap.add(x); });
 	
-			// check that items exists
-			if (item.length == 0) {
-				throw new Error("No items were scanned")
-			}		
+			const items = Array.from(uniqueMap);
 	
-			// check for any HOTO:
-			debugPrint("HOTO", HOTO)
-			if (HOTO != "none") {
-				let SLOCitem: number | null = 0
-				users.forEach(async x => {
-					if (x.id == issuee) {
-						SLOCitem = x.departmentid
-						return
-					}
-				})
-				let params = {};
-				debugPrint("SLOCitem", SLOCitem)
-				if (HOTO == "temp") {
+			if (items.length === 0) {
+				throw new Error("No items were scanned");
+			}
+
+			debugPrint("HOTO", HOTO);
+	
+			if (HOTO !== "none") {
+				let SLOCitem: number | null = null;
+				const user = users.find(x => x.id == issuee);
+				if (user) {
+					SLOCitem = user.departmentid;
+				}
+				let params: Record<string, unknown> = {};
+				debugPrint("SLOCitem", SLOCitem);
+				if (HOTO === "temp") {
 					params = {
 						currentholder: SLOCitem
-					}
-				} else if (HOTO == "perm") {
+					};
+				} else if (HOTO === "perm") {
 					params = {
 						currentholder: SLOCitem,
 						orignalholder: SLOCitem
-					}
+					};
 				}
-				debugPrint("params", params)
-				item.forEach(async itemid => await db
-					.update(table.itemsTable)
-					.set(params)
-					.where(eq(table.itemsTable.id, itemid)))
+				debugPrint("params", params);
+				await Promise.all(
+					items.map(itemid =>
+						db
+							.update(table.itemsTable)
+							.set(params)
+							.where(eq(table.itemsTable.id, itemid))
+					)
+				);
 			} else {
-				console.log("signout in src/routes/+page.server.ts")
-				debugPrint("item signout <in server>", item)
-				debugPrint("issuee", issuee)
-				item.forEach(async itemid => await db.insert(table.transactionTable)
-				.values({
-					itemid,
-					outtime: Date.now(),
-					issuer,
-					issuee,		
-				}))
+				debugPrint("item signout <in server>", items);
+				debugPrint("issuee", issuee);
+				await Promise.all(
+					items.map(async itemid => {
+						await db.transaction(async (tx) => {
+							const x = await tx
+								.insert(table.transactionTable)
+								.values({
+									itemid,
+									outtime: Date.now(),
+									issuer,
+									issuee,
+								})
+								.returning();
+							console.log(x);
+						});
+					})
+				);
 			}
 	
-			return { success: true }
-			
+			return { success: true };
 		} catch (error) {
-            const message = error instanceof Error ? error.message : "Failed to create item";
-            return fail(422, {
-                error: message,
-                action: "add"
-            });			
+			const message = error instanceof Error ? error.message : "Failed to create item";
+			return fail(422, {
+				error: message,
+				action: "add"
+			});
 		}
+
 	},
 
 	signin: async ({ request }) => {
-        // TODO! Chec 
 		const data = await request.formData();
-        const uniqueMap = new Set();
-        const issuee: string = String(data.get('issuee') as FormDataEntryValue).trim();
-		const issuer: string = String(data.get('issuer') as FormDataEntryValue).trim();
+		const uniqueMap = new Set<string>();
+		const issuee = String(data.get('issuee') ?? '').trim();
+		const issuer = String(data.get('issuer') ?? '').trim();
 
+		const users = await getUsers();
 
-		// check that issuee is valid
-		let isValidIssuee = false
-		users.forEach(x => {
-			if (x.id == issuee) {
-				isValidIssuee = true
-				return
-			} 
-		})
-		
+		const isValidIssuee = users.some(x => x.id == issuee);
+
 		if (!isValidIssuee) {
 			return fail(422, {
 				error: "Issuee does not exist",
-                action: "signout"
-            });
+				action: "signin"
+			});
 		}
 
-    	String(data.get('items') as FormDataEntryValue)
-		.trim()
-		.split(",")
-		.map(x => { if (x != "") uniqueMap.add(x)})
+		String(data.get('items') ?? '')
+			.trim()
+			.split(",")
+			.forEach(x => { if (x !== "") uniqueMap.add(x); });
 
-        const item = Array.from(uniqueMap)
+		const items = Array.from(uniqueMap);
 
-		// check that items exists
-		if (item.length == 0) {
+		if (items.length === 0) {
 			return fail(422, {
 				error: "No items were scanned",
-				action: "signout"
+				action: "signin"
 			});
-		}	
+		}
 
-		
-		debugPrint("item signout <in server>", item)
-        item.forEach(async itemid => await db.update(table.transactionTable)
-		.set({
-			inttime: Date.now(),
-		})
-		.where(and(
-			eq(issuer, table.transactionTable.issuer),
-			eq(issuee, table.transactionTable.issuee),
-			eq(itemid, table.transactionTable.itemid),
-			isNull(table.transactionTable.inttime)),
-		))
-        return { success: true }
+		debugPrint("item signout <in server>", items);
+
+		await Promise.all(
+			items.map(itemid =>
+				db.update(table.transactionTable)
+					.set({
+						inttime: Date.now(),
+					})
+					.where(and(
+						eq(issuer, table.transactionTable.issuer),
+						eq(issuee, table.transactionTable.issuee),
+						eq(itemid, table.transactionTable.itemid),
+						isNull(table.transactionTable.inttime)
+					))
+			)
+		);
+
+		return { success: true };
 	}
 };
-
-function requireLogin() {
-	const { locals } = getRequestEvent();
-
-	if (!locals.user) {
-		return redirect(302, '/login');
-	}
-
-	return locals.user;
-}

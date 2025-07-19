@@ -33,16 +33,18 @@
 
     /* button settings */
     button {
-        @apply font-bold rounded-2xl p-3 bg-blue-700 text-gray-100
+        @apply bg-blue-700 text-gray-100 items-center 
+        gap-2 px-4 py-2.5 rounded-2xl font-medium cursor-pointer 
+        transition-all duration-200 border-0 decoration-0 
+        hover:opacity-90 hover:translate-y-[-1px] text-center
+        hover:bg-blue-900 hover:text-gray-50
     }
 
-    button:hover {
-        @apply bg-blue-500 text-gray-100
-    }
 
     /* table settings */
     table {
-        @apply mx-auto my-auto w-[70%] text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400 
+        @apply mx-auto my-auto w-[70%] text-sm text-left 
+        rtl:text-right text-gray-500 dark:text-gray-400 mt-9
     }
 
     thead {
@@ -54,11 +56,11 @@
     }
 
     th {
-        @apply px-6 py-3
+        @apply px-6 py-3 bg-[#364153]
     }
 
     td {
-        @apply px-6 py-4
+        @apply px-6 py-4 text-left
     }
 
     .hover:hover {

@@ -32,9 +32,11 @@
 		departments = $bindable<Department[]>(),
 		roles = $bindable<Roles[]>(),
 		users = $bindable<User[]>(),
+		currentrole
     } = $props()
 
     let dialog = $state<HTMLDialogElement>()
+	let error = $state<HTMLParagraphElement>()
 	let selected = $state(currentSelectedList.roleid)
 	
 	$effect(() => {
@@ -53,8 +55,8 @@
 
 	function closeModal() {
 		editIsOpen = false
-		if (document.getElementById("error") != null) {
-			document.getElementById("error").innerHTML = ""
+		if (error != null) {
+			error.innerHTML = ""
 		}
 	}
 </script>
@@ -68,7 +70,7 @@ onmousedown={(e) => { if (e.target === dialog) closeModal()}}
 	<div class="internal">
 		<h2 class="title">Edit properties for {currentSelectedList.username}</h2>
 		{#if form?.error && form?.action === 'edit'}
-			<p id="error">{form.error}</p>
+			<p bind:this={error}>{form.error}</p>
 		{/if}
 		<form method="POST" action="?/edit" id="form" autocomplete="off">
 			<div class="grid grid-cols-3 gap-y-4">	

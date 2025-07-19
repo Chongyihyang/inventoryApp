@@ -42,7 +42,7 @@
         data: {
             departments: Department[];
             items: Item[];
-            currentdept: string | null;
+            currentdept: number | null;
             currentrole: string | null
         };
         form?: FormData;
@@ -59,7 +59,6 @@
     let editIsOpen = $state(false)
     let importIsOpen = $state(false)
     let barcodeIsOpen = $state(false)
-    let departmentsList:Map<string, string> = new Map()  
     let selecteditems: Item[] = $state([]);
     let selecteddept = $state(currentdept)
     let importResults = $state<Results>({
@@ -80,17 +79,12 @@
         failedItems: [],
         details: []
     })
-    departments.forEach((x: Department) => {
-        departmentsList.set(x.departmentname, x.id)
-    });
 
-    
-    
     
     function changeSelectedItem() {
         selecteditems = []
         items.forEach((row: Item) => {
-            if (String(row.currentholder) == departmentsList.get(selecteddept)) {
+            if (row.currentholder == selecteddept) {
                 selecteditems.push(row)
             }})
     }
@@ -99,10 +93,6 @@
         
     // Handle form state changes
     $effect(() => {
-        // if (importResults) {
-
-        // }
-
         if (!form) return;
         
         if (form.error) {
@@ -208,11 +198,7 @@
             <th colspan="2">
                 <select name="" id="" onchange="{changeSelectedItem}" bind:value={selecteddept}>
                     {#each departments as dept}
-                        {#if dept.departmentname == currentdept}
-                            <option value={dept.departmentname} selected>{dept.departmentname}</option>
-                        {:else}
-                            <option value={dept.departmentname}>{dept.departmentname}</option>
-                        {/if}
+                        <option value={dept.id}>{dept.departmentname}</option>
                     {/each}
                 </select>
             </th>

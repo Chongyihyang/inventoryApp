@@ -24,7 +24,8 @@ const handleAuth: Handle = async ({ event, resolve }) => {
 	const department = await db
 	.select({
 		username: usersTable.username,
-		departmentname: departmentTable.departmentname
+		departmentname: departmentTable.departmentname,
+		departmentid: departmentTable.id
 	})
 	.from(departmentTable)
 	.leftJoin(usersTable, eq(usersTable.departmentid, departmentTable.id))
@@ -40,7 +41,7 @@ const handleAuth: Handle = async ({ event, resolve }) => {
 
 	event.locals.user = user
 	event.locals.session = session
-	event.locals.department = department[0].departmentname
+	event.locals.department = String(department[0].departmentid)
 	event.locals.role = String(role[0].roleid)
 	return resolve(event);
 };

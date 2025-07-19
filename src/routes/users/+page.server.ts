@@ -16,7 +16,7 @@ export async function load({ locals }) {
     
     const users = await getUsersWithDepartments();
     const departments = await getAllDepartments();
-    const currentdept = locals.department;
+    const currentdept = Number(locals.department);
     const currentrole = locals.role
     const roles = await getAllRoles();
 
