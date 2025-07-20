@@ -108,7 +108,7 @@
 
 </script>
 
-<AddItemModal bind:addIsOpen {form} {departments} {roles}/>
+<AddItemModal bind:addIsOpen {form} {departments} {roles} {currentrole}/>
 <DeleteItemModal bind:deleteIsOpen {form} {currentSelectedList} />
 <EditItemModal bind:editIsOpen {currentSelectedList} {form} {roles} {departments} {users} {currentrole}/>
 

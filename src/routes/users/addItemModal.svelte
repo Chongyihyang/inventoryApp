@@ -21,6 +21,7 @@
         form = $bindable<FormData>(),
         departments = $bindable<Department[]>(),
 		roles = $bindable<Roles[]>(),
+		currentrole
     } = $props()
 
 	let selected = $state(0)
@@ -70,7 +71,11 @@
 			<select class="box overflow-y-auto " name="role" id="role" bind:value={selected} required>
 				<option value="0" disabled selected>Select an option</option>
 				{#each roles as role}
-					<option value="{role.id}">{role.rolename}</option>
+					<!-- svelte-ignore block_empty -->
+					{#if (currentrole == "2" && Number(role.id) == 1)}
+					{:else}
+						<option value="{role.id}">{role.rolename}</option>
+					{/if}
 				{/each}
 			</select>
 			{#if selected == 1 || selected == 2}
