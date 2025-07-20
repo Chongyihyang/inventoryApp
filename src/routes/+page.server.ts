@@ -7,7 +7,7 @@ import * as table from '$lib/server/db/schema';
 import { and, eq, isNull, lt } from 'drizzle-orm';
 import { alias } from 'drizzle-orm/sqlite-core';
 
-const DEBUG = true;
+const DEBUG = false
 
 function debugPrint(x: string, y: unknown) {
 	if (DEBUG) {
@@ -39,6 +39,7 @@ async function getItems() {
 			outtime: table.transactionTable.outtime,
 			issuer: table.usersTable.username,
 			issuerid: table.transactionTable.issuer,
+			issuerdept: usersTable1.departmentid,
 			issuee: usersTable1.username,
 			issueeid: table.transactionTable.issuee
 		})
@@ -75,7 +76,7 @@ export const load: PageServerLoad = async ({ locals }) => {
 
 	await cleanupOldTransactions();
 
-	const currentdept = locals.department;
+	const currentdept = Number(locals.department);
 	const currentuser = locals.user;
 	const currentrole = locals.role;
 
@@ -168,7 +169,7 @@ export const actions: Actions = {
 				await Promise.all(
 					items.map(async itemid => {
 						await db.transaction(async (tx) => {
-							const x = await tx
+							await tx
 								.insert(table.transactionTable)
 								.values({
 									itemid,
@@ -176,8 +177,6 @@ export const actions: Actions = {
 									issuer,
 									issuee,
 								})
-								.returning();
-							console.log(x);
 						});
 					})
 				);

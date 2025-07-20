@@ -41,8 +41,7 @@
 	
 	$effect(() => {
 		if (!dialog) return;
-		
-		console.log(editIsOpen)
+	
 		if (editIsOpen) {
 			dialog.showModal();
 			selected = currentSelectedList.roleid

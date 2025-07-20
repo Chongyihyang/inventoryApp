@@ -3,171 +3,159 @@
 
 @layer components {
     body {
-        @apply bg-gray-950 text-gray-200
+        @apply bg-gray-950 text-gray-200;
     }
-    
+
     /* navbar */
     nav {
-        @apply dark:bg-gray-700 pl-3
+        @apply dark:bg-gray-700;
     }
 
     ul {
-        @apply flex
+        @apply dark:bg-gray-700 flex;
     }
 
     li {
-        @apply m-3
+        @apply m-3 dark:bg-gray-700;
+    }
+
+    li>a {
+        @apply align-middle;
     }
 
     a:hover {
-        @apply text-gray-500
+        @apply text-gray-500;
     }
 
     select {
-        @apply py-[3px] dark:bg-gray-800 border-0 rounded-2xl
+        @apply py-[3px] dark:bg-gray-800 border-0 rounded-2xl;
     }
 
     .signout {
-        @apply text-[14px] py-[5px] 
+        @apply text-[14px] py-[5px];
     }
 
     /* button settings */
     button {
-        @apply bg-blue-700 text-gray-100 items-center 
-        gap-2 px-4 py-2.5 rounded-2xl font-medium cursor-pointer 
-        transition-all duration-200 border-0 decoration-0 
-        hover:opacity-90 hover:translate-y-[-1px] text-center
-        hover:bg-blue-900 hover:text-gray-50
+        @apply bg-blue-700 text-gray-100 items-center gap-2 px-4 py-2.5 rounded-2xl font-medium cursor-pointer transition-all duration-200 border-0 decoration-0 hover:opacity-90 hover:translate-y-[-1px] text-center hover:bg-blue-900 hover:text-gray-50;
     }
-
 
     /* table settings */
     table {
-        @apply mx-auto my-auto w-[70%] text-sm text-left 
-        rtl:text-right text-gray-500 dark:text-gray-400 mt-9
+        @apply mx-auto my-auto w-[90%] text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400 mt-9;
     }
 
     thead {
-        @apply text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400
+        @apply text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400;
     }
 
     tbody {
-        @apply bg-white border-b dark:bg-gray-800 dark:border-gray-700 border-gray-200
+        @apply bg-white border-b dark:bg-gray-800 dark:border-gray-700 border-gray-200;
     }
 
     th {
-        @apply px-6 py-3 bg-[#364153]
+        @apply px-6 py-3 bg-[#364153];
     }
 
     td {
-        @apply px-6 py-4 text-left
+        @apply px-6 py-4 text-left;
     }
 
     .hover:hover {
-        @apply bg-gray-500 text-gray-50
+        @apply bg-gray-500 text-gray-50;
     }
 
-    /* dialogue settings */
+    /* dialog settings */
     dialog {
-        @apply w-[60vw] min-w-[40vw] rounded-sm p-0 mx-auto my-auto bg-gray-950 text-gray-200 border-2
+        @apply w-[60vw] min-w-[40vw] rounded-sm p-0 mx-auto my-auto bg-gray-950 text-gray-200 border-2;
     }
-    
-	dialog::backdrop {
-		background: rgba(0, 0, 0, 0.3);
-	}
-	dialog[open] {
-		animation: zoom 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-	}
 
+    dialog::backdrop {
+        background: rgba(0, 0, 0, 0.3);
+    }
 
-	@keyframes zoom {
-		from {
-			transform: scale(0.95);
-		}
-		to {
-			transform: scale(1);
-		}
-	}
-	dialog[open]::backdrop {
-		animation: fade 0.2s ease-out;
-	}
-	@keyframes fade {
-		from {
-			opacity: 0;
-		}
-		to {
-			opacity: 1;
-		}
-	}
+    dialog[open] {
+        animation: zoom 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    @keyframes zoom {
+        from {
+            transform: scale(0.95);
+        }
+
+        to {
+            transform: scale(1);
+        }
+    }
+
+    dialog[open]::backdrop {
+        animation: fade 0.2s ease-out;
+    }
+
+    @keyframes fade {
+        from {
+            opacity: 0;
+        }
+
+        to {
+            opacity: 1;
+        }
+    }
 
     .title {
-        @apply font-bold text-3xl h-10 w-fit mx-auto m-3
+        @apply text-white font-bold text-[20px] border-b-[1px] border-[#eee] pb-[10px] mb-3 w-fit mx-auto h-10 m-3 text-3xl;
     }
 
     .form-group {
-        @apply mb-5
+        @apply px-3 py-1 w-full mb-5;
     }
 
-    dialog > label {
-        @apply block mb-2 font-bold
+    .form-group>label,
+    dialog>label {
+        @apply font-bold text-[16px] block mb-2;
     }
 
     .box {
-        @apply h-10 col-span-2 dark:bg-gray-800 rounded-2xl
+        @apply h-10 col-span-2 dark:bg-gray-800 rounded-2xl;
     }
 
     .submit {
-        @apply font-bold col-span-3  dark:bg-gray-500 rounded-2xl p-3
+        @apply font-bold col-span-3 dark:bg-gray-500 rounded-2xl p-3;
     }
 
     .submit:hover {
-        @apply  dark:bg-gray-700
+        @apply dark:bg-gray-700;
     }
 
     .internal {
-        @apply px-10 py-5 
-    }
-    
-    dialog::-webkit-scrollbar {
-        display: none; /* Hides the scrollbar */
+        @apply px-10 py-5;
     }
 
-    .title {
-        @apply text-white font-bold 
-        text-[20px] border-b-[1px] border-[#eee] 
-        pb-[10px] mb-3 w-fit mx-auto
-    }
-    .form-group {
-        @apply px-3 py-1 w-full 
-    }
-    
-    .form-group > label {
-        @apply font-bold text-[16px]
+    dialog::-webkit-scrollbar {
+        display: none;
     }
 
     .text {
-        @apply w-full rounded-2xl dark:bg-gray-800 mt-2 h-10
+        @apply w-full rounded-2xl dark:bg-gray-800 mt-2 h-10;
     }
 
     .sloc {
-        @apply w-4 rounded-2xl ml-4 mt-1
+        @apply w-4 rounded-2xl ml-4 mt-1;
     }
-    
+
     #itemList {
-        @apply border-2 border-solid rounded-2xl p-2.5 min-h-40 mt-3
+        @apply border-2 border-solid rounded-2xl p-2.5 min-h-40 mt-3;
     }
 
     .button-normal {
-        @apply text-white border-0 px-[10px] 
-        py-[15px] rounded-2xl cursor-pointer text-2xl w-full 
-        mb-3
+        @apply text-white border-0 px-[10px] py-[15px] rounded-2xl cursor-pointer text-2xl w-full mb-3;
     }
 
     .close {
-        @apply bg-red-700 text-white border-0 px-[10px] py-[15px] rounded-2xl text-2xl mr-2 w-full
+        @apply bg-red-700 text-white border-0 px-[10px] py-[15px] rounded-2xl text-2xl mr-2 w-full;
     }
 
     .close:hover {
-        @apply bg-red-500 text-white border-0 px-[10px] py-[15px] rounded-2xl cursor-pointer text-2xl mr-2 w-full
+        @apply bg-red-500 text-white border-0 px-[10px] py-[15px] rounded-2xl cursor-pointer text-2xl mr-2 w-full;
     }
 }

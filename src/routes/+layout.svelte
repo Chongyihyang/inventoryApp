@@ -9,15 +9,16 @@
 {#if data.user}
 <nav>
 	<ul>
-		<li><a href="/">Home</a></li>
+		<li><a href="/" class="font-bold text-[24px]">キ</a></li>
 		<li><a href="/users">Users</a></li>
 		<li><a href="/items">Items</a></li>
-		<li><a href="/transactions">transactions</a></li>
-		<li><a href="/stocktake">stocktake</a></li>
+		<li><a href="/transactions">Transactions</a></li>
+		<li><a href="/stocktake">Stocktake</a></li>
 		<li>
 			<form method="post" action="/?/logout">
-			<button class="signout">Sign out</button>
-		</form></li>
+				<button class="signout">Sign out</button>
+			</form>
+		</li>
 	</ul>
 </nav>
 {/if}

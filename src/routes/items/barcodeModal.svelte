@@ -27,7 +27,6 @@
         words.forEach((word, index) => {
             let text = word.split(" ")[1]
             word = word.split(" ")[0]
-            console.log(word, text)
             const canvas = document.createElement('canvas');
             const trimmedWord = word.trim();
             JsBarcode(canvas, trimmedWord, {
@@ -61,7 +60,6 @@
 	$effect(() => {
 		if (!dialog) return;
 
-		console.log(barcodeIsOpen)
 		if (barcodeIsOpen) {
 			dialog.showModal();
 		} else if (barcodeIsOpen == false){

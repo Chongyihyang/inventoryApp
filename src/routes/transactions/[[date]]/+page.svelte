@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { PageServerData } from './$types';
+	import type { PageServerData } from '../$types';
 	const DEBUG = true
 	type Transactions = {
 		id: number,
@@ -23,6 +23,7 @@
 	let { data }: { data: PageServerData } = $props();
 	let selecteddept = $state(data.currentdept)
 	let selectedtransactions: Transactions[] = $state([])
+	let dateInput: HTMLFormElement
 
 	if (DEBUG) {
 		debugPrint("data.items", data.items)
@@ -55,6 +56,15 @@
                         <option value={dept.id}>{dept.departmentname}</option>
                     {/each}
                 </select>
+				<br><br>
+				<form action="?/changedate" 
+				method="POST"
+				bind:this={dateInput}>
+					<input type="date"
+					onchange="{() => {
+						dateInput.submit()
+					}}" name="date">
+				</form>
 			</th>
 		</tr>
 	</thead>

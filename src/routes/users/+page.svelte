@@ -54,8 +54,6 @@
     let addIsOpen = $state(false)
     let deleteIsOpen = $state(false)
     let editIsOpen = $state(false)
-    
-    
     let selecteddept = $state(currentdept)
     let selectedusers: User[] = $state([]);
     

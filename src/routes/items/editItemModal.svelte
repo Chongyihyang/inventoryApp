@@ -23,10 +23,8 @@
 	let error:HTMLParagraphElement
 
 	$effect(() => {
-		console.log(currentSelectedList, "i")
 		if (!dialog) return;
 
-		console.log(editIsOpen)
 		if (editIsOpen) {
 			dialog.showModal();
 		} else if (editIsOpen == false){

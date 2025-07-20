@@ -69,14 +69,15 @@
 	const { departments, items, currentdept, currentrole } = data;
 
 	// State
-	let scannerBuffer = '';
-	let scannerTimeout: NodeJS.Timeout;
-	const SCANNER_DELAY = 20; // ms
-	const scannedItems = new Map<string, number>();
-	let barcodeInput: HTMLInputElement;
-	let statusMessage: HTMLDivElement;
-	let selecteditems: Item[] = $state([]);
-	let selecteddept = $state(currentdept);
+	let scannerBuffer = ''
+	let scannerTimeout: NodeJS.Timeout
+	const SCANNER_DELAY = 20 // ms
+	const scannedItems = new Map<string, number>()
+	let barcodeInput: HTMLInputElement
+	let statusMessage: HTMLDivElement
+	let selecteditems: Item[] = $state([])
+	let accounted = $state(0);
+	let selecteddept = $state(currentdept)
 	let counted = $state(0)
 
 	// Utility Functions
@@ -103,10 +104,14 @@
 			if (!scannedItems.has(barcode)) {
 				showStatus(`Added`, true);
 				scannedItems.set(barcode, 1);
-				const rowElem = document.getElementById(barcode);
+				const rowElem = document.getElementById(barcode)
+				const rowButton = document.querySelector(`input[type="checkbox"][name="${barcode}"]`)
 				if (rowElem) {
 					rowElem.className = 'hover text-green-400';
 					(rowElem as HTMLElement).focus();
+				}
+				if (rowButton) {
+					rowButton.checked = true
 				}
 				counted += 1
 			} else {
@@ -128,6 +133,7 @@
 		scannerTimeout = setTimeout(handleBarcodeScan, SCANNER_DELAY);
 	}
 
+
 	// Effects
 	$effect(() => {
 		// Reserved for future form state changes
@@ -137,7 +143,8 @@
 	filterSelectedItems();
 </script>
 
-<div class="form-group mx-auto mt-9 w-fit">
+<div class="form-group mx-auto mt-9 w-fit" id="main">
+	<h1>{accounted} / {selecteditems.length}</h1>
 	<label for="barcodeInput" class="flex">
 		Barcode Scanner Input:
 		<div bind:this={statusMessage}></div>
@@ -152,7 +159,7 @@
 	/>
 	<br />
 	<br />
-	<div class="mx-auto h-[50vh] w-full overflow-y-auto">
+	<div class="mx-auto max-h-[50vh] w-full overflow-y-auto mb-3">
 		<table class="m-0 mx-auto w-full">
 			<thead>
 				<tr>
@@ -170,10 +177,29 @@
 						<td><h2>{row.SN1}</h2></td>
 						<td><h2>{row.SN2}</h2></td>
 						<td><h2>{row.remarks}</h2></td>
-						<td class="p-0"><input type="checkbox"></td>
+						<td class="p-0">
+							<input type="checkbox" 
+							name={row.id} onchange="{() => {
+								const rowElem = document.getElementById(row.id)
+								const rowButton = document.querySelector(`input[type="checkbox"][name="${row.id}"]`)
+								if (rowElem && rowButton) {
+									if (!rowButton.checked) {
+										accounted -= 1
+										rowElem.classList.remove("text-green-400");
+										rowElem.className = 'text-white'
+										scannedItems.delete(row.id)
+									} else {
+										accounted += 1
+										rowElem.className = 'text-green-400'
+									}
+								}
+							}}">
+						</td>
 					</tr>
 				{/each}
 			</tbody>
 		</table>
 	</div>
+	<button onclick="{() => window.print()}" class="w-full">Submit</button>
 </div>
+
