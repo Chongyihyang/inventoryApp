@@ -8,15 +8,7 @@
 		originalholder: string | null;
 		currentholder: number | null;
 		remarks?: string;
-	};
-
-	type Results = {
-		totalItems: number;
-		successCount: number;
-		errorCount: number;
-		successfulItems: Array<Object>;
-		failedItems: Array<string>;
-		details: Array<string>;
+		scanned?: boolean
 	};
 
 	type Department = {
@@ -41,15 +33,6 @@
 		issueeid: number;
 	};
 
-	type Transaction = {
-		id: string;
-		itemname: string;
-		SN1: string;
-		SN2: string;
-		remarks: string;
-		currentholder: number;
-		originalholder: number;
-	};
 
 	type Detail = {
 		itemname: string;
@@ -63,15 +46,17 @@
 			items: Item[];
 			currentdept: number | null;
 			currentrole: string | null;
+			user: string
 		};
 		form?: FormData;
 	}>();
 	const { departments, items, currentdept, currentrole } = data;
+	let user = $state(data.user)
 
 	// State
 	let scannerBuffer = ''
 	let scannerTimeout: NodeJS.Timeout
-	const SCANNER_DELAY = 20 // ms
+	const SCANNER_DELAY = 100 // ms
 	const scannedItems = new Map<string, number>()
 	let barcodeInput: HTMLInputElement
 	let statusMessage: HTMLDivElement
@@ -79,10 +64,16 @@
 	let accounted = $state(0);
 	let selecteddept = $state(currentdept)
 	let counted = $state(0)
+	let results = $state("")
 
 	// Utility Functions
 	function filterSelectedItems() {
-		selecteditems = items.filter((row: Item) => row.currentholder === selecteddept);
+		selecteditems = items
+		.filter((row: Item) => row.currentholder === selecteddept)
+
+		selecteditems.forEach((row: Item) => {
+			row.scanned = false
+		});
 	}
 
 	function showStatus(message: string, isSuccess: boolean) {
@@ -136,14 +127,15 @@
 
 	// Effects
 	$effect(() => {
-		// Reserved for future form state changes
+		results = JSON.stringify(selecteditems)
 	});
 
 	// Initial population
 	filterSelectedItems();
 </script>
 
-<div class="form-group mx-auto mt-9 w-fit" id="main">
+<div class="form-group mx-auto w-full" id="main">
+	<a href="/stocktake/history" class="text-decoration-line: underline">Check Stocktake Transactions →</a>
 	<h1>{accounted} / {selecteditems.length}</h1>
 	<label for="barcodeInput" class="flex">
 		Barcode Scanner Input:
@@ -186,11 +178,13 @@
 									if (!rowButton.checked) {
 										accounted -= 1
 										rowElem.classList.remove("text-green-400");
-										rowElem.className = 'text-white'
+										rowElem.className = 'text-gray-400'
 										scannedItems.delete(row.id)
+										row.scanned = false
 									} else {
 										accounted += 1
 										rowElem.className = 'text-green-400'
+										row.scanned = true
 									}
 								}
 							}}">
@@ -200,6 +194,10 @@
 			</tbody>
 		</table>
 	</div>
-	<button onclick="{() => window.print()}" class="w-full">Submit</button>
+	<form action="?/submit" method="POST">
+		<input type="hidden" bind:value={results} name="items">
+		<input type="hidden" name="user" bind:value={user}>
+		<button  class="w-full">Submit</button>
+	</form>
 </div>
 

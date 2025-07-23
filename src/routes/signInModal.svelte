@@ -28,7 +28,7 @@
 	// --- Globals ---
 	let scannerBuffer = ''
 	let scannerTimeout: NodeJS.Timeout
-	const SCANNER_DELAY = 20 // ms
+	const SCANNER_DELAY = 100 // ms
 	const scannedItems = new Map()
 	let barcodeInput: HTMLInputElement
 	let userNameInput: HTMLInputElement

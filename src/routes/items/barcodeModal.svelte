@@ -75,32 +75,34 @@
 	onclose={() => (barcodeIsOpen = false)}
 	onmousedown={(e) => { if (e.target === dialog) closeModal()}}
 >
-    <div class="internal">
-        <h2 class="title">Select items:</h2>
-        <table class="m-0 w-full mb-3">
-            <thead>
-                <tr>
-                    <th>Id</th>
-                    <th>Name</th>
-                    <th></th>
-                </tr>
-            </thead>
-            <tbody>
-                {#each selecteditems as row}
-                <tr class="hover">
-                    <td><h2>{row.id}</h2></td>
-                    <td><h2>{row.itemname}</h2></td>
-                    <td class="p-0">
-                        <input type="checkbox" 
-                        value="{row.id} {row.itemname}"
-                        name="{row.id} {row.itemname}">
-                    </td>
-                </tr>
-                {/each}
-            </tbody>
-        </table>
-        <button class="mb-3 w-full submit" onclick="{printBarCode}">Print</button>
-        <button class="mb-3 w-full" onclick="{closeModal}">Close</button>
+<div class="mx-auto max-h-[30vh] w-full overflow-y-auto mb-3">
+        <div class="internal">
+            <h2 class="title">Select items:</h2>
+            <table class="m-0 w-full mb-3">
+                <thead>
+                    <tr>
+                        <th>Id</th>
+                        <th>Name</th>
+                        <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {#each selecteditems as row}
+                    <tr class="hover">
+                        <td><h2>{row.id}</h2></td>
+                        <td><h2>{row.itemname}</h2></td>
+                        <td class="p-0">
+                            <input type="checkbox" 
+                            value="{row.id} {row.itemname}"
+                            name="{row.id} {row.itemname}">
+                        </td>
+                    </tr>
+                    {/each}
+                </tbody>
+            </table>
+            <button class="mb-3 w-full submit" onclick="{printBarCode}">Print</button>
+            <button class="mb-3 w-full" onclick="{closeModal}">Close</button>
+        </div>
     </div>
 </dialog>
 

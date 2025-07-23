@@ -1,6 +1,7 @@
 <script lang="ts">
+	import { department } from '$lib/shared.svelte';
 	import type { PageServerData } from '../$types';
-	const DEBUG = true
+	const DEBUG = false
 	type Transactions = {
 		id: number,
 		itemname: string | null,
@@ -14,15 +15,15 @@
 		issueeid: string | null
 	}
 
-	function debugPrint(x: string, y) {
+
+	function debugPrint(x: string, y: unknown) {
 		console.log(x + ": \n---------------------")
 		console.log(y)
 		console.log("--------END---------")
 	}
 
 	let { data }: { data: PageServerData } = $props();
-	let selecteddept = $state(data.currentdept)
-	let selectedtransactions: Transactions[] = $state([])
+	let selectedtransactions: Transactions[] = $derived(changeSelectedTransactions(data.items, department.current.value))
 	let dateInput: HTMLFormElement
 
 	if (DEBUG) {
@@ -31,58 +32,56 @@
 	}
     const options = { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' }
 	
-    function changeSelectedItem() {
-        selectedtransactions = []
-        data.items.forEach((row: Transactions) => {
-            if (row.issuerdept == selecteddept) {
-                selectedtransactions.push(row)
-        }})
+    function changeSelectedTransactions(transactions: Transactions[], selecteddept_: number) {
+        let selectedtransactions_: Transactions[] = []
+        transactions.forEach((row: Transactions) => {
+            if (row.issuerdept == selecteddept_) {
+                selectedtransactions_.push(row)
+            }})
+        return selectedtransactions_
     }
-	changeSelectedItem()
+
 
 </script>
-<h1 class="title">Transactions</h1>
-<table class="mt-10">
-	<thead>
-		<tr>
-			<th>Name</th>
-			<th>Issuer</th>
-			<th>Issuee</th>
-            <th>Out time</th>
-            <th>In time</th>
-			<th>
-                <select name="" id="" onchange="{changeSelectedItem}" bind:value={selecteddept}>
-                    {#each data.departmentList as dept}
-                        <option value={dept.id}>{dept.departmentname}</option>
-                    {/each}
-                </select>
-				<br><br>
-				<form action="?/changedate" 
-				method="POST"
-				bind:this={dateInput}>
-					<input type="date"
-					onchange="{() => {
-						dateInput.submit()
-					}}" name="date">
-				</form>
-			</th>
-		</tr>
-	</thead>
-    <tbody>
-        {#each selectedtransactions as row}
-        <tr>
-            <td><h2>{row.itemname}</h2></td>
-			<td><h2>{row.issuer}</h2></td>
-            <td><h2>{row.issuee}</h2></td>
-            <td><h2>{new Date(row.outtime).toLocaleString('en-sg', options)}</h2></td>
-			{#if row.inttime == null}
-				<td></td>
-			{:else}
-	            <td><h2>{new Date(row.inttime).toLocaleString('en-sg', options)}</h2></td>
-			{/if}
-			<td></td>
-        </tr>
-        {/each}
-    </tbody>
-</table>
+<form action="?/changedate" 
+method="POST"
+class="mx-auto w-fit flex gap-10 mt-3"
+bind:this={dateInput}>
+	<h1 class="title">Transactions</h1>
+	<input type="date"
+	onchange="{() => {
+		dateInput.submit()
+	}}" name="date"
+	class="m-3">
+</form>
+<div class="mx-auto max-h-[50vh] w-full overflow-y-auto mb-3">
+	<table class="mt-10">
+		<thead>
+			<tr>
+				<th>Name</th>
+				<th>Issuer</th>
+				<th>Issuee</th>
+				<th>Out time</th>
+				<th>In time</th>
+
+			</tr>
+		</thead>
+		<tbody>
+			{#each selectedtransactions as row}
+			<tr>
+				<td><h2>{row.itemname}</h2></td>
+				<td><h2>{row.issuer}</h2></td>
+				<td><h2>{row.issuee}</h2></td>
+				<td><h2>{new Date(String(row.outtime?? "")).toLocaleString('en-sg', options)}</h2></td>
+				{#if row.inttime == null}
+					<td></td>
+				{:else}
+					<td><h2>{new Date(String(row.inttime?? "")).toLocaleString('en-sg', options)}</h2></td>
+				{/if}
+			</tr>
+			{/each}
+		</tbody>
+	</table>
+</div>
+
 

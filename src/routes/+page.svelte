@@ -1,11 +1,12 @@
 <script lang="ts">
+	import { department } from '$lib/shared.svelte';
 	import type { PageServerData } from './$types';
 	import SignInModal from './signInModal.svelte';
 	import SignOutModal from './signOutModal.svelte';
 	const DEBUG = false
 
 
-	function debugPrint(x: string, y) {
+	function debugPrint(x: string, y: unknown) {
 		console.log(x + ": \n---------------------")
 		console.log(y)
 		console.log("--------END---------")
@@ -15,13 +16,8 @@
 		form?: FormData; 
 		data: PageServerData 
 	} = $props()
-	const {
-		items,
-		departmentList,
-		currentdept,
-	} = data
-	let selecteddept = $state(currentdept)
-    let selectedusers = $state([])
+
+    let items = $derived(changeSelectedItem2(data.items, department.current.value))
 
 	if (DEBUG) {
 		debugPrint("data.items", data.items)
@@ -29,13 +25,15 @@
 		debugPrint("data.departmentList", data.departmentList)
 	}
 
-	function changeSelectedItem() {
-        selectedusers = []
-        items.forEach(row => {
-            if (row.issuerdept == selecteddept) {
-                selectedusers.push(row)
+	function changeSelectedItem2(items_, selecteddept_: number) {
+        let selectedusers_ = []
+        items_.forEach(row => {
+            if (row.issuerdept == selecteddept_) {
+                selectedusers_.push(row)
         }})
-    }
+		return selectedusers_
+	}
+
 
 	$effect(() => {
         if (!form) return;
@@ -79,23 +77,20 @@
 		signInModalOpen = true
 	}}">Sign Classfieds In </button>
 </div>
+
+<div class="mx-auto max-h-[50vh] w-full overflow-y-auto mb-3">
 <table>
 	<thead>
 		<tr>
 			<th>Name</th>
 			<th>Issuer</th>
 			<th>Issuee</th>
-			<th>
-                <select name="" id="" onchange="{changeSelectedItem}" bind:value={selecteddept}>
-                    {#each departmentList as dept}
-                        <option value={dept.id}>{dept.departmentname}</option>
-                    {/each}
-                </select>				
+			<th>		
 			</th>
 		</tr>
 	</thead>
     <tbody>
-        {#each data.items as row}
+        {#each items as row}
         <tr>
             <td><h2>{row.itemname}</h2></td>
 			<td><h2>{row.issuer}</h2></td>
@@ -105,3 +100,4 @@
         {/each}
     </tbody>
 </table>
+</div>

@@ -4,6 +4,7 @@ import { eq } from 'drizzle-orm';
 import { requireLogin } from '$lib';
 import { fail } from '@sveltejs/kit';
 import { encodeBase32LowerCase } from '@oslojs/encoding';
+import { department } from "$lib/shared.svelte"
 
 // Type definitions for better type safety
 // type Item = typeof table.itemsTable.$inferSelect;
@@ -36,7 +37,7 @@ export async function load({ locals }) {
     
     const items = await getItemsWithDepartments()
     const departments = await getAllDepartments()
-    const currentdept = Number(locals.department)
+    const currentdept = Number(department.current.value)
     const currentrole = locals.role
 
     return { items, departments, currentdept, currentrole };
@@ -213,14 +214,11 @@ export const actions = {
             }
             if (params.length != 0) {
                 await db.transaction(async (tx) => {
-                    console.log("in transaction")
                     const x = await tx.insert(table.itemsTable).values(params).returning();
-                    console.log(x)
                 });
             }
             return { success: true, results };
         } catch (error) {
-            console.log(error)
             return fail(500, { error: error instanceof Error ? error.message : "Failed to create item" });
         }
     },

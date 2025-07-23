@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { department } from '$lib/shared.svelte';
 	import AddItemModal from './addItemModal.svelte'
 	import DeleteItemModal from './deleteItemModal.svelte'
 	import EditItemModal from './editItemModal.svelte'
@@ -55,17 +56,17 @@
     let deleteIsOpen = $state(false)
     let editIsOpen = $state(false)
     let selecteddept = $state(currentdept)
-    let selectedusers: User[] = $state([]);
+    let selectedusers: User[] = $derived(changeSelectedItem2(users, department.current.value));
     
-    function changeSelectedItem() {
-        selectedusers = []
-        users.forEach((row: User) => {
-            if (row.departmentid == selecteddept) {
-                selectedusers.push(row)
+    function changeSelectedItem2(users_: User[], selecteddept_: number) {
+        let selectedusers_: User[] = []
+        users_.forEach((row: User) => {
+            if (row.departmentid == selecteddept_) {
+                selectedusers_.push(row)
         }})
+        return selectedusers_
     }
 
-    changeSelectedItem()
     // Handle form state changes
     $effect(() => {
         if (!form) return;
@@ -105,7 +106,6 @@
         deleteIsOpen = true;
     }
 
-
 </script>
 
 <AddItemModal bind:addIsOpen {form} {departments} {roles} {currentrole}/>
@@ -119,37 +119,33 @@
 >+ Add New User</button>
 
 
-
-<table>
-    <thead>
-        <tr>
-            <th>Name</th>
-            <th>Role</th>
-            <th colspan="2">
-                <select name="" id="" onchange="{changeSelectedItem}" bind:value={selecteddept}>
-                    {#each departments as dept}
-                        <option value={dept.id}>{dept.departmentname}</option>
-                    {/each}
-                </select>
-            </th>
-        </tr>
-    </thead>
-    <tbody>
-        {#each selectedusers as row}
-        <tr class="hover">
-            <td><h2 class="font-medium text-gray-900 whitespace-nowrap dark:text-white">{row.username}</h2></td>
-            <td><h2>{row.rolename}</h2></td>
-            <td class="p-0">
-                {#if (currentrole == "1") || (currentrole == "2" && currentdept == selecteddept &&  row.roleid >= 2)}
-                    <button onmousedown="{() => {openEditModal(row)}}">✏️</button>
-                {/if}
-            </td>
-            <td class="p-0">
-                {#if (currentrole == "1") || (currentrole == "2" && currentdept == selecteddept && row.roleid >= 2)}
-                    <button  onmousedown="{() => {openDeleteModal(row)}}">❌</button>
-                {/if}
-            </td>
-        </tr>
-        {/each}
-    </tbody>
-</table>
+<div class="mx-auto max-h-[50vh] w-full overflow-y-auto mb-3">
+    <table>
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>Role</th>
+                <th colspan="2">
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            {#each selectedusers as row}
+            <tr class="hover">
+                <td><h2 class="font-medium text-gray-900 whitespace-nowrap dark:text-white">{row.username}</h2></td>
+                <td><h2>{row.rolename}</h2></td>
+                <td class="p-0">
+                    {#if (currentrole == "1") || (currentrole == "2" && currentdept == selecteddept &&  row.roleid >= 2)}
+                        <button onmousedown="{() => {openEditModal(row)}}">✏️</button>
+                    {/if}
+                </td>
+                <td class="p-0">
+                    {#if (currentrole == "1") || (currentrole == "2" && currentdept == selecteddept && row.roleid >= 2)}
+                        <button  onmousedown="{() => {openDeleteModal(row)}}">❌</button>
+                    {/if}
+                </td>
+            </tr>
+            {/each}
+        </tbody>
+    </table>
+</div>

@@ -114,7 +114,6 @@ export const actions = {
             }
             
             if (!validatePassword(passwordHash) && roleid != "3") {
-                console.log("Invalid password", passwordHash);
                 return fail(400, { message: 'Password does not meet complexity requirements' });
             }
 
@@ -132,7 +131,6 @@ export const actions = {
                 updateData["passwordHash"] = null
             }
 
-            console.log(updateData, id)
             await db
                 .update(table.usersTable)
                 .set(updateData)

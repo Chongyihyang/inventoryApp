@@ -34,8 +34,7 @@ function convert(date: string) {
 	const [Y, M, D] = date.split("-")
 	const d = new Date();
 	const offset = d.getTimezoneOffset();
-	console.log(offset)
-	return Number(Date.UTC(Number(Y), Number(M) - 1, Number(D))) - offset * 60 * 1000
+	return Number(Date.UTC(Number(Y), Number(M) - 1, Number(D) + 1)) + offset * 60 * 1000
 }
 
 
@@ -44,7 +43,6 @@ export const load: PageServerLoad = async ({ locals, params }) => {
 	const usersTable1 = alias(table.usersTable, "usersTable1")
 	const setDate = convert(dateTest(params.date) ? params.date : getYYYYMMDD())
 	const [lower, upper] = [setDate - 24 * 60 * 60 * 1000, setDate]
-	console.log(upper, lower)
     const items = await db
 	.select({
 		id: table.transactionTable.id,
@@ -66,6 +64,7 @@ export const load: PageServerLoad = async ({ locals, params }) => {
 	gt(table.transactionTable.outtime, lower)))
 	.orderBy(desc(table.transactionTable.outtime))
 
+
 	const departmentList = await db
 	.select()
 	.from(table.departmentTable)
@@ -82,3 +81,7 @@ export const actions: Action = {
 		redirect(302, `/transactions/${date}`)
 	}
 }
+
+// 1753113600000
+// 1753196298626
+// 1753200000000

@@ -4,6 +4,7 @@
 	import DeleteItemModal from './deleteItemModal.svelte'
 	import EditItemModal from './editItemModal.svelte'
 	import ImportItemModal from './importItemModal.svelte';
+    import { department } from "$lib/shared.svelte"
     
     // Types
     type Item = {
@@ -59,8 +60,8 @@
     let editIsOpen = $state(false)
     let importIsOpen = $state(false)
     let barcodeIsOpen = $state(false)
-    let selecteditems: Item[] = $state([]);
-    let selecteddept = $state(currentdept)
+    let selecteddept = $derived(department.current.value)
+    let selecteditems: Item[] = $derived(changeSelectedItem2(items, selecteddept));
     let importResults = $state<Results>({
         totalItems: 0,
         successCount: 0,
@@ -80,19 +81,19 @@
         details: []
     })
 
-    
-    function changeSelectedItem() {
-        selecteditems = []
-        items.forEach((row: Item) => {
-            if (row.currentholder == selecteddept) {
-                selecteditems.push(row)
+    function changeSelectedItem2(items_: Item[], selecteddept_: number) {
+        let selecteditems_: Item[] = []
+        items_.forEach((row: Item) => {
+            if (row.currentholder == selecteddept_) {
+                selecteditems_.push(row)
             }})
+        return selecteditems_
     }
-        
-    changeSelectedItem()
+    
         
     // Handle form state changes
     $effect(() => {
+        
         if (!form) return;
         
         if (form.error) {
@@ -188,6 +189,7 @@
   </form>
 </div>
 
+<div class="mx-auto max-h-[50vh] w-full overflow-y-auto mb-3">
 <table>
     <thead>
         <tr>
@@ -196,11 +198,6 @@
             <th>SN2</th>
             <th>Original Holder</th>
             <th colspan="2">
-                <select name="" id="" onchange="{changeSelectedItem}" bind:value={selecteddept}>
-                    {#each departments as dept}
-                        <option value={dept.id}>{dept.departmentname}</option>
-                    {/each}
-                </select>
             </th>
         </tr>
     </thead>
@@ -225,3 +222,4 @@
         {/each}
     </tbody>
 </table>
+</div>

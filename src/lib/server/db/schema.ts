@@ -27,24 +27,24 @@ export const usersTable = sqliteTable("user", {
 export type User = typeof usersTable.$inferSelect;
 
 export const itemsTable = sqliteTable("item", {
-  id: text().primaryKey(),
-  itemname: text().notNull(),
-  SN1: text(),
-  SN2: text(),
-  remarks: text(),
-  currentholder: int().references(() => departmentTable.id),
-  originalholder: int().references(() => departmentTable.id),  
+	id: text().primaryKey(),
+	itemname: text().notNull(),
+	SN1: text(),
+	SN2: text(),
+	remarks: text(),
+	currentholder: int().references(() => departmentTable.id),
+	originalholder: int().references(() => departmentTable.id),  
 });
 
 export type Item = typeof itemsTable.$inferSelect;
 
 export const transactionTable = sqliteTable("transactions", {
-  id: int().primaryKey({ autoIncrement: true }),
-  itemid: text().references(() => itemsTable.id),
-  outtime: int(),
-  inttime: int(),
-  issuer: text().references(() => usersTable.id),
-  issuee: text().references(() => usersTable.id),
+	id: int().primaryKey({ autoIncrement: true }),
+	itemid: text().references(() => itemsTable.id),
+	outtime: int(),
+	inttime: int(),
+	issuer: text().references(() => usersTable.id),
+	issuee: text().references(() => usersTable.id),
 })
 
 export type Transactions = typeof transactionTable.$inferSelect;
@@ -57,5 +57,13 @@ export const sessionTable = sqliteTable('session', {
 	expiresAt: int('expires_at', { mode: 'timestamp' }).notNull()
 });
 
-export type Session = typeof sessionTable.$inferSelect;
+export type Session = typeof sessionTable.$inferSelect
 
+export const stocktakeTable = sqliteTable("stocktake", {
+	id: int().primaryKey({ autoIncrement: true}),
+	checker: text().references(() => usersTable.id),
+	time: int(),
+	items: text(),
+})
+
+export type Stocktake = typeof stocktakeTable.$inferSelect

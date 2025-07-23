@@ -7,14 +7,14 @@ import { requireLogin } from '$lib';
 
 
 export async function load({ locals }) {
-    requireLogin()
+    const user = requireLogin().id
     
     const items = await getItemsWithDepartments()
     const departments = await getAllDepartments()
     const currentdept = Number(locals.department)
     const currentrole = locals.role
 
-    return { items, departments, currentdept, currentrole };
+    return { items, departments, currentdept, currentrole, user };
 }
 
 // Database query functions
@@ -26,14 +26,14 @@ async function getItemsWithDepartments() {
             SN1: table.itemsTable.SN1,
             SN2: table.itemsTable.SN2,
             remarks: table.itemsTable.remarks,
-            originalholder: table.departmentTable.departmentname,
+            originalholder: table.itemsTable.originalholder,
             currentholder: table.itemsTable.currentholder,
         })
         .from(table.itemsTable)
         .leftJoin(
             table.departmentTable, 
             eq(table.departmentTable.id, table.itemsTable.originalholder)
-        );
+        )
 }
 
 async function getAllDepartments() {
@@ -43,5 +43,16 @@ async function getAllDepartments() {
 
 // Action handlers
 export const actions = {
-
+    submit: async ({ request }) => {
+        const formData = await request.formData();
+        const items = formData.get("items")
+        const checker = formData.get("user")?.toString() ?? ""
+        await db
+        .insert(table.stocktakeTable)
+        .values({
+            checker,
+            items,
+            time: Date.now()
+        })
+    }
 };
