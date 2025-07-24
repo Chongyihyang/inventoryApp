@@ -43,7 +43,7 @@
     /* table settings */
 
     table {
-        @apply mx-auto my-auto w-[90%] text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400 mt-9;
+        @apply mx-auto my-auto w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400;
     }
 
     thead {
@@ -129,7 +129,7 @@
     }
 
     .internal {
-        @apply px-10 py-5;
+        @apply px-10 py-5 mx-auto max-h-[75vh] w-full overflow-y-auto;
     }
 
     dialog::-webkit-scrollbar {

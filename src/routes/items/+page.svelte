@@ -189,7 +189,7 @@
   </form>
 </div>
 
-<div class="mx-auto max-h-[50vh] w-full overflow-y-auto mb-3">
+<div class="mx-auto max-h-[50vh] w-[90%] overflow-y-auto mb-3">
 <table>
     <thead>
         <tr>
