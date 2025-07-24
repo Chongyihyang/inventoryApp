@@ -75,10 +75,10 @@
 	onclose={() => (barcodeIsOpen = false)}
 	onmousedown={(e) => { if (e.target === dialog) closeModal()}}
 >
-<div class="mx-auto max-h-[30vh] w-full overflow-y-auto mb-3">
-        <div class="internal">
-            <h2 class="title">Select items:</h2>
-            <table class="m-0 w-full mb-3">
+<div class="internal">
+    <h2 class="title">Select items:</h2>
+        <div class="mx-auto max-h-[30vh] w-full overflow-y-auto mb-3">
+            <table>
                 <thead>
                     <tr>
                         <th>Id</th>
@@ -100,9 +100,9 @@
                     {/each}
                 </tbody>
             </table>
-            <button class="mb-3 w-full submit" onclick="{printBarCode}">Print</button>
-            <button class="mb-3 w-full" onclick="{closeModal}">Close</button>
         </div>
+        <button class="mb-3 w-full submit" onclick="{printBarCode}">Print</button>
+        <button class="mb-3 w-full" onclick="{closeModal}">Close</button>
     </div>
 </dialog>
 

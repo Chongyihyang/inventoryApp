@@ -30,9 +30,9 @@
 
 <Viewmodal bind:viewIsOpen {items}/>
 
-<div class="form-group mx-auto mt-9 w-full" id="main">
-	<div class="mx-auto max-h-[50vh] w-full overflow-y-auto mb-3">
-		<table class="m-0 mx-auto w-full">
+<div class="internal" id="main">
+	<div class="mx-auto max-h-[50vh] w-[90%] overflow-y-auto mb-3">
+		<table class="w-full">
 			<thead>
 				<tr>
 					<th>Accounted by:</th>
