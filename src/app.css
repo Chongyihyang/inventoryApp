@@ -37,7 +37,7 @@
 
     /* button settings */
     button {
-        @apply bg-blue-700 text-gray-100 items-center gap-2 px-4 py-2.5 m-1 rounded-2xl font-medium cursor-pointer transition-all duration-200 border-0 decoration-0 hover:opacity-90 hover:translate-y-[-1px] text-center hover:bg-blue-900 hover:text-gray-50;
+        @apply bg-blue-700 text-gray-100 items-center gap-2 px-4 py-2.5 m-1 rounded-2xl font-medium cursor-pointer transition-all duration-200 border-0 decoration-0 hover:opacity-90 hover:translate-y-[-1px] text-center hover:bg-blue-900 hover:text-gray-50 max-sm:px-2 ;
     }
 
     /* table settings */
@@ -55,11 +55,11 @@
     }
 
     th {
-        @apply px-6 py-4 bg-[#364153];
+        @apply px-6 py-4 bg-[#364153] max-sm:px-2;
     }
 
     td {
-        @apply px-6 py-4 text-left;
+        @apply px-6 py-4 text-left max-sm:px-2;
     }
 
     .hover:hover {
@@ -68,7 +68,7 @@
 
     /* dialog settings */
     dialog {
-        @apply w-[60vw] min-w-[40vw] rounded-sm p-0 mx-auto my-auto bg-gray-950 text-gray-200 border-2;
+        @apply w-[60vw] min-w-[40vw] rounded-sm p-0 mx-auto my-auto bg-gray-950 text-gray-200 border-2 max-sm:w-full;
     }
 
     dialog::backdrop {
@@ -129,7 +129,7 @@
     }
 
     .internal {
-        @apply px-10 py-5 mx-auto max-h-[80vh] w-full overflow-y-auto;
+        @apply px-10 py-5 mx-auto max-h-[80vh] w-full overflow-y-auto max-sm:px-4;
     }
 
     dialog::-webkit-scrollbar {

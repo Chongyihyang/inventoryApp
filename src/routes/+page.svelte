@@ -64,40 +64,40 @@
 <SignOutModal bind:signOutModalOpen {data} {form}/>
 <SignInModal bind:signInModalOpen {data} {form}/>
 
-<div class="mx-auto w-fit">
+
+<div class="mx-auto max-h-[50vh] w-[90%] mt-3">
 	<button
-		class="m-3"
 		onmousedown="{() => {
 		signOutModalOpen = true
-	}}">Sign Classifieds Out / HOTO</button>
+	}}" class="mb-3 max-sm:w-full"
+	>Sign Classifieds Out / HOTO</button>
 
 	<button 
-		class="m-3"
 		onmousedown="{() => {
 		signInModalOpen = true
-	}}">Sign Classfieds In </button>
-</div>
-
-<div class="mx-auto max-h-[50vh] w-[90%] overflow-y-auto mb-3">
-<table>
-	<thead>
-		<tr>
-			<th>Name</th>
-			<th>Issuer</th>
-			<th>Issuee</th>
-			<th>		
-			</th>
-		</tr>
-	</thead>
-    <tbody>
-        {#each items as row}
-        <tr>
-            <td><h2>{row.itemname}</h2></td>
-			<td><h2>{row.issuer}</h2></td>
-            <td><h2>{row.issuee}</h2></td>
-			<td></td>
-        </tr>
-        {/each}
-    </tbody>
-</table>
+	}}" class="mb-3 max-sm:w-full"
+	>Sign Classfieds In </button>
+	<div class="overflow-y-auto mb-3 max-sm:w-full">
+	<table>
+		<thead>
+			<tr>
+				<th>Name</th>
+				<th>Issuer</th>
+				<th>Issuee</th>
+				<th>		
+				</th>
+			</tr>
+		</thead>
+		<tbody>
+			{#each items as row}
+			<tr>
+				<td><h2>{row.itemname}</h2></td>
+				<td><h2>{row.issuer}</h2></td>
+				<td><h2>{row.issuee}</h2></td>
+				<td></td>
+			</tr>
+			{/each}
+		</tbody>
+	</table>
+	</div>
 </div>

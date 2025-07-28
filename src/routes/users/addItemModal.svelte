@@ -1,4 +1,6 @@
 <script lang="ts">
+	import Password from "$lib/password.svelte";
+
 	// done refactoring add logic
 	// init types
     type Department = {
@@ -26,6 +28,7 @@
 
 	let selected = $state(0)
     let dialog = $state<HTMLDialogElement>()
+	let password = $state("")
 	// Effect to handle modal open/close
 	$effect(() => {
 		if (!dialog) return
@@ -79,14 +82,7 @@
 				{/each}
 			</select>
 			{#if selected == 1 || selected == 2}
-			<div class="col-span-3">
-				<h2>Requirements for password: </h2>
-				<p class="text-[10px]">1. Password is between 8 and 30 characters long</p>
-				<p class="text-[10px]">2. Consists of at least 1 upper and lowercase character</p>
-				<p class="text-[10px]">3. Contains at least 1 symbol and 1 number</p>
-			</div>
-			<h2 class="mr-2 my-auto" id="passwordhash">Password: </h2>
-			<input  class="box" type="password" name="passwordhash" required> 
+			<Password {password}/> 
 			<h2 class="mr-2 my-auto" id="passwordhash">Password Retype: </h2>
 			<input  class="box" type="password" name="passwordretype" required> 
 			{/if}

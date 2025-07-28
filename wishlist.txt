@@ -9,9 +9,17 @@ barcode feature for items <Done>
 transactions per sqn for the day <Done>
 stocktake feature <Done>
 User-based privilege for users and items <Done>
-2fa authentication with email
-check that SN1 and 2 are unique??
 click on scrollbar shldnt close <Done>
+check that SN1 and 2 are unique <Done>
+improve mobile UI <Done>
+
+2fa authentication
+HOTO forms 
+inter page loading
+archiving items/ users
+include logs for audit (sign out/ in and adding/ deleting items)
+test for bugs  
+
 
 ADMIN should only be able to access their own items:
 1.  CRUD only their items

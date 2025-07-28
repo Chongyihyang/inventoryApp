@@ -44,7 +44,7 @@
 	<h2 class="title">Deleting item</h2>
     <h2 class="mx-auto w-fit">Are you sure you want to delete item: {currentSelectedList.username}?</h2>
 	{#if form?.error}
-		<p class="error">{form.error}</p>
+		<p class="mx-auto w-fit">{form.error}</p>
 	{/if}
 	<div class="internal">
 		<form method="POST" action="?/delete">

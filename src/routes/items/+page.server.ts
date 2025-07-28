@@ -214,7 +214,7 @@ export const actions = {
             }
             if (params.length != 0) {
                 await db.transaction(async (tx) => {
-                    const x = await tx.insert(table.itemsTable).values(params).returning();
+                    await tx.insert(table.itemsTable).values(params).returning();
                 });
             }
             return { success: true, results };
@@ -232,6 +232,18 @@ export const actions = {
             SN2: data.get('SN2')?.toString() ?? "",
             remarks: data.get('remarks')?.toString() ?? "",
         };
+
+        if ((await getItemsWithDepartments()).filter(x => 
+            x.SN1 == updateData.SN1)
+            .length != 0) {
+                throw new Error("SN1 is not unique")
+        }
+
+        if ((await getItemsWithDepartments()).filter(x => 
+            x.SN2 == updateData.SN2)
+            .length != 0) {
+                throw new Error("SN2 is not unique")
+        }
         
         try {
             validateItemName(updateData.itemname);

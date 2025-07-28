@@ -22,6 +22,13 @@
       "when": 1753147205428,
       "tag": "0002_wandering_kid_colt",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "6",
+      "when": 1753622090630,
+      "tag": "0003_breezy_maginty",
+      "breakpoints": true
     }
   ]
 }

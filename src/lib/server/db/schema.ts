@@ -67,3 +67,8 @@ export const stocktakeTable = sqliteTable("stocktake", {
 })
 
 export type Stocktake = typeof stocktakeTable.$inferSelect
+
+export const logsTable = sqliteTable("logs", {
+	time: int(),
+	item: text()
+})

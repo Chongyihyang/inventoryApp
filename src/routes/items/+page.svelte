@@ -146,80 +146,83 @@
 <ImportItemModal bind:importIsOpen {form} {importResults}/>
 <BarcodeModal bind:barcodeIsOpen {selecteditems}/>
 
-<div class="flex w-fit ml-[30%]">
-    <button class="m-3" onmousedown="{() => {
-        barcodeIsOpen = true
-    }}">Print Barcodes</button>
-
-    <button onmousedown="{() => {
-    addIsOpen = !addIsOpen
-    }}" class="m-3"
-    >+ Add New Item</button>
-        
-    <form 
-    method="POST" 
-    action="?/upload" 
-    enctype="multipart/form-data"
-    bind:this={fileInput}
-    onsubmit={() => isUploading = true}>
-    <button type="button" class="m-3">
-        <input
-          type="file"
-          name="file"
-          onchange={() => {
-            // Auto-submit when file changes
-            if (isUploading) return;
-            fileInput.submit()
-            isUploading = false
-          }}
-          class="hidden"
-          id="file-upload"
-          required
-          disabled={isUploading}
-        />
-        <label for="file-upload" class="upload-button">
-          {#if isUploading}
-            Uploading...
-          {:else}
-          + Import New Items
-          {/if}
-        </label>
-    </button>
+<div class="mx-auto max-h-[50vh] w-[90%] mt-3">
+    <div class="flex max-sm:block">
+        <button onmousedown="{() => {
+            barcodeIsOpen = true
+        }}" class="mb-3 max-sm:w-full" 
+        >Print Barcodes</button>
     
-  </form>
-</div>
-
-<div class="mx-auto max-h-[50vh] w-[90%] overflow-y-auto mb-3">
-<table>
-    <thead>
-        <tr>
-            <th>Name</th>
-            <th>SN1</th>
-            <th>SN2</th>
-            <th>Original Holder</th>
-            <th colspan="2">
-            </th>
-        </tr>
-    </thead>
-    <tbody>
-        {#each selecteditems as row}
-        <tr class="hover">
-            <td><h2 class="font-medium text-gray-900 whitespace-nowrap dark:text-white">{row.itemname}</h2></td>
-            <td><h2>{row.SN1}</h2></td>
-            <td><h2>{row.SN2}</h2></td>
-            <td><h2>{row.originalholder}</h2></td>
-            <td class="p-0">
-                {#if (currentrole == "1") || (currentrole == "2" && currentdept == selecteddept)}
-                    <button onmousedown="{() => {openEditModal(row)}}">✏️</button>
-                {/if}
-            </td>
-            <td class="p-0">
-                {#if (currentrole == "1") || (currentrole == "2" && currentdept == selecteddept)}
-                    <button  onmousedown="{() => {openDeleteModal(row)}}">❌</button>
-                {/if}
-            </td>
-        </tr>
-        {/each}
-    </tbody>
-</table>
+        <button onmousedown="{() => {
+        addIsOpen = !addIsOpen
+        }}" class="mb-3 max-sm:w-full"
+        >+ Add New Item</button>
+            
+        <form 
+        method="POST" 
+        action="?/upload" 
+        enctype="multipart/form-data"
+        bind:this={fileInput}
+        onsubmit={() => isUploading = true}>
+        <button type="button" class="mb-3 max-sm:w-full">
+            <input
+              type="file"
+              name="file"
+              onchange={() => {
+                // Auto-submit when file changes
+                if (isUploading) return;
+                fileInput.submit()
+                isUploading = false
+              }}
+              class="hidden"
+              id="file-upload"
+              required
+              disabled={isUploading}
+            />
+            <label for="file-upload" class="upload-button">
+              {#if isUploading}
+                Uploading...
+              {:else}
+              + Import New Items
+              {/if}
+            </label>
+        </button>
+        
+      </form>
+    </div>
+    
+    <div class="overflow-y-auto mb-3 max-sm:w-full">
+    <table>
+        <thead>
+            <tr>
+                <th>Name</th>
+                <th>SN1</th>
+                <th>SN2</th>
+                <th>Original Holder</th>
+                <th colspan="2">
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            {#each selecteditems as row}
+            <tr class="hover">
+                <td><h2 class="font-medium text-gray-900 whitespace-nowrap dark:text-white">{row.itemname}</h2></td>
+                <td><h2>{row.SN1}</h2></td>
+                <td><h2>{row.SN2}</h2></td>
+                <td><h2>{row.originalholder}</h2></td>
+                <td class="p-0">
+                    {#if (currentrole == "1") || (currentrole == "2" && currentdept == selecteddept)}
+                        <button onmousedown="{() => {openEditModal(row)}}">✏️</button>
+                    {/if}
+                </td>
+                <td class="p-0">
+                    {#if (currentrole == "1") || (currentrole == "2" && currentdept == selecteddept)}
+                        <button  onmousedown="{() => {openDeleteModal(row)}}">❌</button>
+                    {/if}
+                </td>
+            </tr>
+            {/each}
+        </tbody>
+    </table>
+    </div>
 </div>

@@ -112,40 +112,42 @@
 <DeleteItemModal bind:deleteIsOpen {form} {currentSelectedList} />
 <EditItemModal bind:editIsOpen {currentSelectedList} {form} {roles} {departments} {users} {currentrole}/>
 
-<button onmousedown="{() => {
+
+<div class="mx-auto max-h-[50vh] w-[90%] mt-3">
+    <button onmousedown="{() => {
         addIsOpen = !addIsOpen
     }}"
-    class="m-3 ml-[70%]"
->+ Add New User</button>
+    class="mb-3 max-sm:w-full"
+    >+ Add New User</button>
 
-
-<div class="mx-auto max-h-[50vh] w-[90%] overflow-y-auto mb-3">
-    <table>
-        <thead>
-            <tr>
-                <th>Name</th>
-                <th>Role</th>
-                <th colspan="2">
-                </th>
-            </tr>
-        </thead>
-        <tbody>
-            {#each selectedusers as row}
-            <tr class="hover">
-                <td><h2 class="font-medium text-gray-900 whitespace-nowrap dark:text-white">{row.username}</h2></td>
-                <td><h2>{row.rolename}</h2></td>
-                <td class="p-0">
-                    {#if (currentrole == "1") || (currentrole == "2" && currentdept == selecteddept &&  row.roleid >= 2)}
-                        <button onmousedown="{() => {openEditModal(row)}}">✏️</button>
-                    {/if}
-                </td>
-                <td class="p-0">
-                    {#if (currentrole == "1") || (currentrole == "2" && currentdept == selecteddept && row.roleid >= 2)}
-                        <button  onmousedown="{() => {openDeleteModal(row)}}">❌</button>
-                    {/if}
-                </td>
-            </tr>
-            {/each}
-        </tbody>
-    </table>
+    <div class="overflow-y-auto mb-3 max-sm:w-full">
+        <table>
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Role</th>
+                    <th colspan="2">
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                {#each selectedusers as row}
+                <tr class="hover">
+                    <td><h2 class="font-medium text-gray-900 whitespace-nowrap dark:text-white">{row.username}</h2></td>
+                    <td><h2>{row.rolename}</h2></td>
+                    <td class="p-0">
+                        {#if (currentrole == "1") || (currentrole == "2" && currentdept == selecteddept &&  row.roleid >= 2)}
+                            <button onmousedown="{() => {openEditModal(row)}}">✏️</button>
+                        {/if}
+                    </td>
+                    <td class="p-0">
+                        {#if (currentrole == "1") || (currentrole == "2" && currentdept == selecteddept && row.roleid >= 2)}
+                            <button  onmousedown="{() => {openDeleteModal(row)}}">❌</button>
+                        {/if}
+                    </td>
+                </tr>
+                {/each}
+            </tbody>
+        </table>
+    </div>
 </div>

@@ -6,7 +6,7 @@
 		id: number,
 		itemname: string | null,
 		itemid: string | null,
-		outtime: number | null,
+		outtime: number,
 		inttime: number | null,
 		issuer: string | null,
 		issuerid: string | null,
@@ -72,11 +72,11 @@ bind:this={dateInput}>
 				<td><h2>{row.itemname}</h2></td>
 				<td><h2>{row.issuer}</h2></td>
 				<td><h2>{row.issuee}</h2></td>
-				<td><h2>{new Date(String(row.outtime?? "")).toLocaleString('en-sg', options)}</h2></td>
+				<td><h2>{new Date(row.outtime).toLocaleString('en-sg', options)}</h2></td>
 				{#if row.inttime == null}
 					<td></td>
 				{:else}
-					<td><h2>{new Date(String(row.inttime?? "")).toLocaleString('en-sg', options)}</h2></td>
+					<td><h2>{new Date(row.inttime).toLocaleString('en-sg', options)}</h2></td>
 				{/if}
 			</tr>
 			{/each}

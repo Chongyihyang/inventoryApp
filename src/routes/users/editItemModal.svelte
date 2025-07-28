@@ -1,6 +1,5 @@
 <script lang="ts">
-	import type {  usersTable } from "$lib/server/db/schema";
-
+	import Password from "$lib/password.svelte";
 
 	// init types
 	type User = {
@@ -38,6 +37,7 @@
     let dialog = $state<HTMLDialogElement>()
 	let error = $state<HTMLParagraphElement>()
 	let selected = $state(currentSelectedList.roleid)
+	let password = $state("")
 	
 	$effect(() => {
 		if (!dialog) return;
@@ -93,8 +93,7 @@ onmousedown={(e) => { if (e.target === dialog) closeModal()}}
 					{/each}
 				</select> 
 				{#if selected == '1' || selected == "2"}
-					<h2 class="mr-2 my-auto" id="passwordhash">Edit password: </h2>
-					<input  class="box" type="password" name="passwordhash"> 
+					<Password {password}/>
 					<h2 class="mr-2 my-auto" id="passwordhash">Password Retype: </h2>
 					<input  class="box" type="password" name="passwordretype" required> 
 				{/if}

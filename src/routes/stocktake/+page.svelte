@@ -134,7 +134,7 @@
 	filterSelectedItems();
 </script>
 
-<div class="form-group mx-auto w-full" id="main">
+<div class="form-group mx-auto max-h-[50vh] w-[90%] mt-3" id="main">
 	<a href="/stocktake/history" class="text-decoration-line: underline">Check Stocktake Transactions →</a>
 	<h1>{accounted} / {selecteditems.length}</h1>
 	<label for="barcodeInput" class="flex">
@@ -169,7 +169,7 @@
 						<td><h2>{row.SN1}</h2></td>
 						<td><h2>{row.SN2}</h2></td>
 						<td><h2>{row.remarks}</h2></td>
-						<td class="p-0">
+						<td>
 							<input type="checkbox" 
 							name={row.id} onchange="{() => {
 								const rowElem = document.getElementById(row.id)

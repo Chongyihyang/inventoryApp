@@ -18,7 +18,7 @@
 </script>
 
 
-<select onchange="{changeSelectedItem}" bind:value={selecteddept}>
+<select onchange="{changeSelectedItem}" bind:value={selecteddept} class="border-2">
     {#each departmentList as department}
         <option value={department.id}>{department.departmentname}</option>
     {/each}
