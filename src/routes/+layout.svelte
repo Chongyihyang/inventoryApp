@@ -1,16 +1,17 @@
 <script lang="ts">
+	import { page } from '$app/state'
 	import Department from '$lib/department.svelte';
 	import '../app.css';
 
 	let { data, children } = $props();
-	let { user, dept, departmentList } = data
+	let { user, dept, departmentList, role } = data
 	
 </script>
 
 
 {#if data.user}
 <script src="https://cdn.jsdelivr.net/npm/@tailwindplus/elements@1" type="module"></script>
-<nav class="bg-gray-800">
+<nav class="bg-gray-800" data-sveltekit-preload-data>
 	<div class="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
 	  <div class="relative flex h-16 items-center justify-between">
 		<div class="absolute inset-y-0 left-0 flex items-center sm:hidden">
@@ -28,15 +29,18 @@
 		</div>
 		<div class="flex flex-1 items-center justify-center sm:items-stretch sm:justify-start">
 		  <div class="flex shrink-0 items-center">
-			<a href="/" class="text-[20px] font-extrabold max-sm:hidden">キ</a>
+			<a href="/" class="rounded-md px-2 py-1 text-[20px] font-extrabold max-sm:hidden aria-current:bg-gray-700" aria-current={page.url.pathname === '/'} data-sveltekit-prefetch>キ</a>
 		</div>
 		<div class="hidden sm:ml-6 sm:block">
 			<div class="flex space-x-4">
 				<!-- Current: "bg-gray-900 text-white", Default: "text-gray-300 hover:bg-gray-700 hover:text-white" -->
-			  <a href="/users" class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white">Users</a>
-			  <a href="/items" class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white">Items</a>
-			  <a href="/transactions" class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white">Transactions</a>
-			  <a href="/stocktake" class="rounded-md px-3 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white">Stocktake</a>
+			  <a href="/users" class="rounded-md px-2 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white aria-current:bg-gray-700" aria-current={page.url.pathname.includes('/users')} data-sveltekit-prefetch>Users</a>
+			  <a href="/items" class="rounded-md px-2 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white aria-current:bg-gray-700" aria-current={page.url.pathname.includes('/items')} data-sveltekit-prefetch>Items</a>
+			  <a href="/transactions" class="rounded-md px-2 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white aria-current:bg-gray-700" aria-current={page.url.pathname.includes('/transactions')} data-sveltekit-prefetch>Transactions</a>
+			  <a href="/stocktake" class="rounded-md px-2 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white aria-current:bg-gray-700" aria-current={page.url.pathname.includes('/stocktake')} data-sveltekit-prefetch>Stocktake</a>
+			  {#if Number(role) == 1}
+			  	<a href="/logs" class="rounded-md px-2 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white aria-current:bg-gray-700" aria-current={page.url.pathname.includes('/logs')} data-sveltekit-prefetch>Logs</a>
+			  {/if}
 			  <Department {dept} {departmentList}/>
 			</div>
 		  </div>
@@ -59,6 +63,9 @@
 		<a href="/items" class="block rounded-md px-3 py-2 text-base font-medium text-gray-300 hover:bg-gray-700 hover:text-white">Items</a>
 		<a href="/transactions" class="block rounded-md px-3 py-2 text-base font-medium text-gray-300 hover:bg-gray-700 hover:text-white">Transactions</a>
 		<a href="/stocktake" class="block rounded-md px-3 py-2 text-base font-medium text-gray-300 hover:bg-gray-700 hover:text-white">Stocktake</a>
+		{#if Number(role) == 1}
+			<a href="/logs" class="block rounded-md px-3 py-2 text-base font-medium text-gray-300 hover:bg-gray-700 hover:text-white">Logs</a>
+		{/if}
 		<Department {dept} {departmentList}/>
 	  </div>
 	</el-disclosure>

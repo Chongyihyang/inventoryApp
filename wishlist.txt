@@ -12,12 +12,11 @@ User-based privilege for users and items <Done>
 click on scrollbar shldnt close <Done>
 check that SN1 and 2 are unique <Done>
 improve mobile UI <Done>
+inter page loading <Done>
 
 2fa authentication
 HOTO forms 
-inter page loading
-archiving items/ users
-include logs for audit (sign out/ in and adding/ deleting items)
+include logs for audit (adding/ deleting items)
 test for bugs  
 
 

@@ -68,7 +68,7 @@ bind:this={dateInput}>
 		</thead>
 		<tbody>
 			{#each selectedtransactions as row}
-			<tr>
+			<tr class="hover">
 				<td><h2>{row.itemname}</h2></td>
 				<td><h2>{row.issuer}</h2></td>
 				<td><h2>{row.issuee}</h2></td>

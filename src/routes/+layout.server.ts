@@ -1,6 +1,5 @@
 import { db } from "$lib/server/db/index.js"
 import * as table from '$lib/server/db/schema'
-import { department } from "$lib/shared.svelte.js";
 
 export async function load({ locals }) {
 	
@@ -12,5 +11,6 @@ export async function load({ locals }) {
 		user: locals.user,
 		dept: locals.department,
 		departmentList: await getDepartmentList(),
+		role: locals.role
 	};
 }

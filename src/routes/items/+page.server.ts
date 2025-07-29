@@ -3,8 +3,8 @@ import * as table from '$lib/server/db/schema';
 import { eq } from 'drizzle-orm';
 import { requireLogin } from '$lib';
 import { fail } from '@sveltejs/kit';
-import { encodeBase32LowerCase } from '@oslojs/encoding';
 import { department } from "$lib/shared.svelte"
+import { generateUserId } from '$lib/utils.js';
 
 // Type definitions for better type safety
 // type Item = typeof table.itemsTable.$inferSelect;
@@ -22,14 +22,6 @@ type Param = {
 interface UpdateData {
     [id: string]: string
 }
-
-function generateUserId() {
-	// ID with 120 bits of entropy, or about the same as UUID v4.
-	const bytes = crypto.getRandomValues(new Uint8Array(15));
-	const id = encodeBase32LowerCase(bytes);
-	return id;
-}
-
 
 
 export async function load({ locals }) {
@@ -216,6 +208,10 @@ export const actions = {
                 await db.transaction(async (tx) => {
                     await tx.insert(table.itemsTable).values(params).returning();
                 });
+                await db.insert(table.logsTable).values({
+                    time: Date.now(),
+                    item: JSON.stringify(params)
+                })
             }
             return { success: true, results };
         } catch (error) {
@@ -233,17 +229,17 @@ export const actions = {
             remarks: data.get('remarks')?.toString() ?? "",
         };
 
-        if ((await getItemsWithDepartments()).filter(x => 
-            x.SN1 == updateData.SN1)
-            .length != 0) {
-                throw new Error("SN1 is not unique")
-        }
+        // if ((await getItemsWithDepartments()).filter(x => 
+        //     x.SN1 == updateData.SN1)
+        //     .length != 0) {
+        //         throw new Error("SN1 is not unique")
+        // }
 
-        if ((await getItemsWithDepartments()).filter(x => 
-            x.SN2 == updateData.SN2)
-            .length != 0) {
-                throw new Error("SN2 is not unique")
-        }
+        // if ((await getItemsWithDepartments()).filter(x => 
+        //     x.SN2 == updateData.SN2)
+        //     .length != 0) {
+        //         throw new Error("SN2 is not unique")
+        // }
         
         try {
             validateItemName(updateData.itemname);
@@ -253,7 +249,10 @@ export const actions = {
                 .update(table.itemsTable)
                 .set(updateData)
                 .where(eq(table.itemsTable.id, id));
-
+            await db.insert(table.logsTable).values({
+                time: Date.now(),
+                item: `EDITED: ${JSON.stringify(updateData)}`
+            })
             return { success: true };
         } catch (error) {
             updateData.id = data.get("id")?.toString() ?? ""
@@ -310,6 +309,10 @@ export const actions = {
             };
 
             await db.insert(table.itemsTable).values(item);
+			await db.insert(table.logsTable).values({
+				time: Date.now(),
+				item: `ADDED: ${JSON.stringify(item)}`
+			})
             return { success: true };
         } catch (error) {
             const message = error instanceof Error ? error.message : "Failed to create item";
@@ -336,7 +339,10 @@ export const actions = {
 
             await db.delete(table.itemsTable)
                 .where(eq(table.itemsTable.id, id));
-
+            await db.insert(table.logsTable).values({
+                time: Date.now(),
+                item: `DELETED: ${JSON.stringify(id)}`
+            })
             return { success: true };
         } catch (error) {
             const message = error instanceof Error ? error.message : "Failed to delete item";
