@@ -69,11 +69,10 @@ export const actions = {
         const username = formData.get('username')?.toString()?.trim() ?? '';
         let passwordHash = formData.get('passwordhash')?.toString()?.trim();
         const passwordRetype = formData.get('passwordretype')?.toString()?.trim()
-        let updateData = {username}
-        if (passwordHash != "") {
-            updateData["passwordHash"] = passwordHash
-        }
-        
+        const userid = formData.get('id_')?.toString()?.trim() ?? ''
+        const username_ = formData.get('username_')?.toString()?.trim() ?? ''
+        const updateData = {username}
+
         
         const roleid = formData.get('role');
         if (roleid != undefined) {
@@ -92,8 +91,16 @@ export const actions = {
                 throw new Error("Passwords do not match")
             }
             
-            if (!validatePassword(passwordHash) && roleid != "3") {
-                return fail(400, { message: 'Password does not meet complexity requirements' });
+            await db.insert(table.logsTable).values({
+                time: Date.now(),
+                item: `${userid} / ${username_} EDITED USER: ${JSON.stringify((await getUsersWithDepartments()).filter(x => x.id == id))} => ${JSON.stringify(updateData)}`
+            })
+
+            if (passwordHash != "") {
+                updateData["passwordHash"] = passwordHash
+                if (!validatePassword(passwordHash) && roleid != "3") {
+                    return fail(400, { message: 'Password does not meet complexity requirements' });
+                }
             }
 
 
@@ -131,6 +138,8 @@ export const actions = {
             const username = formData.get('username')?.toString()?.trim() ?? ''
             let passwordHash = formData.get('passwordhash')?.toString()?.trim()
             const passwordRetype = formData.get('passwordretype')?.toString()?.trim()
+            const userid = formData.get('id_')?.toString()?.trim() ?? ''
+            const username_ = formData.get('username_')?.toString()?.trim() ?? ''
 
             // double entry check
             if (passwordHash != passwordRetype) {
@@ -186,7 +195,11 @@ export const actions = {
             }
             
 
-            await db.insert(table.usersTable).values(user);
+            await db.insert(table.usersTable).values(user)
+            await db.insert(table.logsTable).values({
+                time: Date.now(),
+                item: `${userid} / ${username_} CREATED USER: ${username}`
+            })
             return { success: true };
         } catch (error) {
             const message = error instanceof Error ? error.message : "Failed to create item";
@@ -201,9 +214,11 @@ export const actions = {
         const data = await request.formData();
         
         try {
-            const id = data.get('id')?.toString()?.trim();
-            const username = data.get('username')?.toString()?.trim();
-            const confirmation = data.get('confirmation')?.toString()?.trim();
+            const id = data.get('id')?.toString()?.trim()
+            const username = data.get('username')?.toString()?.trim()
+            const confirmation = data.get('confirmation')?.toString()?.trim()
+            const userid = data.get('id_')?.toString()?.trim() ?? ''
+            const username_ = data.get('username_')?.toString()?.trim() ?? ''
 
             if (!id || !username || !confirmation) {
                 throw new Error("Missing required fields");
@@ -212,8 +227,11 @@ export const actions = {
             validateDeleteConfirmation(username, confirmation);
 
             await db.delete(table.usersTable)
-                .where(eq(table.usersTable.id, id));
-
+            .where(eq(table.usersTable.id, id));
+            await db.insert(table.logsTable).values({
+                time: Date.now(),
+                item: `${userid} / ${username_} DELETED USER: ${id} / ${username}`
+            })
             return { success: true };
         } catch (error) {
             const message = error instanceof Error ? error.message : "Failed to delete item";

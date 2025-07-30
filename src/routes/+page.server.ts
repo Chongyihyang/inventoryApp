@@ -31,6 +31,7 @@ async function getDepartmentList() {
 
 async function getItems() {
 	const usersTable1 = alias(table.usersTable, "usersTable1");
+	const usersTable2 = alias(table.usersTable, "usersTable2");
 	return db
 		.select({
 			id: table.transactionTable.id,
@@ -40,13 +41,14 @@ async function getItems() {
 			issuer: table.usersTable.username,
 			issuerid: table.transactionTable.issuer,
 			issuerdept: usersTable1.departmentid,
-			issuee: usersTable1.username,
+			issuee: usersTable2.username,
 			issueeid: table.transactionTable.issuee
 		})
 		.from(table.transactionTable)
 		.leftJoin(table.itemsTable, eq(table.transactionTable.itemid, table.itemsTable.id))
 		.leftJoin(table.usersTable, eq(table.usersTable.id, table.transactionTable.issuer))
-		.leftJoin(usersTable1, eq(usersTable1.id, table.transactionTable.issuee))
+		.leftJoin(usersTable1, eq(usersTable1.id, table.transactionTable.issuer))
+		.leftJoin(usersTable2, eq(usersTable2.id, table.transactionTable.issuee))
 		.where(isNull(table.transactionTable.inttime));
 }
 
@@ -79,6 +81,7 @@ export const load: PageServerLoad = async ({ locals }) => {
 	const currentdept = Number(locals.department);
 	const currentuser = locals.user;
 	const currentrole = locals.role;
+	console.log(items)
 
 	return {
 		user,
@@ -99,7 +102,10 @@ export const actions: Actions = {
 		}
 		await auth.invalidateSession(event.locals.session.id);
 		auth.deleteSessionTokenCookie(event);
-
+		await db.insert(table.logsTable).values({
+			time: Date.now(),
+			item: `${event.locals.user?.username} LOGGED OUT`
+		})
 		return redirect(302, '/login');
 	},
 

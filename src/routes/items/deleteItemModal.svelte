@@ -14,7 +14,8 @@
 	let { 
 		deleteIsOpen = $bindable<boolean>(), 
 		currentSelectedList = $bindable<Item>(), 
-		form = $bindable<FormData>() 
+		form = $bindable<FormData>(),
+		user = $bindable()
 	} = $props()
 
 	let dialog = $state<HTMLDialogElement>()
@@ -48,7 +49,11 @@
 	{/if}
 	<div class="internal">
 		<form method="POST" action="?/delete">
+			<input type="hidden" name="id_" value={user.id}>
+			<input type="hidden" name="username" value={user.username}>
 			<input type="hidden" name="id" value="{currentSelectedList["id"]}">
+			<input type="hidden" name="SN1" value="{currentSelectedList["SN1"]}">
+			<input type="hidden" name="SN2" value="{currentSelectedList["SN2"]}">
 			<input type="hidden" name="itemname" value="{currentSelectedList["itemname"]}">
 			<div class="w-fit mx-auto">
 				<input class="box" type="text" name="confirmation" placeholder="Type in the item's name to delete" required>

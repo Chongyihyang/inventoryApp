@@ -23,7 +23,7 @@
             format: 'a4'
         });
         let x = 10, y = 10;
-        const barcodeHeight = 20, barcodeWidth = 80, borderPadding = 1;
+        const barcodeHeight = 20, barcodeWidth = 60, borderPadding = 1;
         words.forEach((word, index) => {
             let text = word.split(" ")[1]
             word = word.split(" ")[0]

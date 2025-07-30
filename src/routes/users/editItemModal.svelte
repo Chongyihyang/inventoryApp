@@ -31,7 +31,8 @@
 		departments = $bindable<Department[]>(),
 		roles = $bindable<Roles[]>(),
 		users = $bindable<User[]>(),
-		currentrole
+		currentrole,
+		user
     } = $props()
 
     let dialog = $state<HTMLDialogElement>()
@@ -73,6 +74,8 @@ onmousedown={(e) => { if (e.target === dialog) closeModal()}}
 		{/if}
 		<form method="POST" action="?/edit" id="form" autocomplete="off">
 			<div class="grid grid-cols-3 gap-y-4">	
+				<input type="hidden" name="id_" value={user.id}>
+				<input type="hidden" name="username_" value={user.username}>
 				<input  class="box"	type="hidden" name="id" value="{currentSelectedList.id}">
 				<h2 class="my-auto grid" id="username">Username: </h2>
 				<input  class="box"	type="text" name="username" value="{currentSelectedList.username}" required>
@@ -95,7 +98,7 @@ onmousedown={(e) => { if (e.target === dialog) closeModal()}}
 				{#if selected == '1' || selected == "2"}
 					<Password {password}/>
 					<h2 class="mr-2 my-auto" id="passwordhash">Password Retype: </h2>
-					<input  class="box" type="password" name="passwordretype" required> 
+					<input  class="box" type="password" name="passwordretype" > 
 				{/if}
 				<input type="submit" class="submit" name="" id="">
 				<button type="button" onmousedown={closeModal} class="col-span-3">close modal</button>

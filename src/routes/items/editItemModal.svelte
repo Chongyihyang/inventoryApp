@@ -15,7 +15,8 @@
 	let { 
 		editIsOpen = $bindable<boolean>(),
 		form = $bindable<FormData>(),
-		currentSelectedList = $bindable<Item[]>()
+		currentSelectedList = $bindable<Item[]>(),
+			user = $bindable()
     } = $props()
 	
     let dialog = $state<HTMLDialogElement>()
@@ -54,6 +55,8 @@ onmousedown={(e) => { if (e.target === dialog) closeModal()}}
 			<p id="error" bind:this={error} >{form.error}</p>
 		{/if}
 		<form method="POST" action="?/edit" id="form_edit">
+			<input type="hidden" name="id_" value={user.id}>
+			<input type="hidden" name="username" value={user.username}>
 			<div class="grid grid-cols-3 gap-y-4">
 				<input type="hidden" name="id" value="{currentSelectedList.id}">
 				<h2 class="my-auto grid" >Edit item name: </h2>

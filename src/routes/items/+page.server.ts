@@ -4,7 +4,6 @@ import { eq } from 'drizzle-orm';
 import { requireLogin } from '$lib';
 import { fail } from '@sveltejs/kit';
 import { department } from "$lib/shared.svelte"
-import { generateUserId } from '$lib/utils.js';
 
 // Type definitions for better type safety
 // type Item = typeof table.itemsTable.$inferSelect;
@@ -25,14 +24,14 @@ interface UpdateData {
 
 
 export async function load({ locals }) {
-    requireLogin()
+    const user = requireLogin()
     
     const items = await getItemsWithDepartments()
     const departments = await getAllDepartments()
     const currentdept = Number(department.current.value)
     const currentrole = locals.role
 
-    return { items, departments, currentdept, currentrole };
+    return { user, items, departments, currentdept, currentrole };
 }
 
 // Database query functions
@@ -80,6 +79,8 @@ export const actions = {
     upload: async ({ request, locals }) => {
         const formData = await request.formData();
         const file = formData.get('file') as File;
+        const userid = formData.get('id_')?.toString()?.trim() ?? '';
+        const username = formData.get('username')?.toString()?.trim() ?? '';
 
 
         if (!file) {
@@ -186,7 +187,6 @@ export const actions = {
                 };
                 if (isValid) {
                     const toFunc: Param = {
-                        id: generateUserId(),
                         itemname: itemid,
                         SN1,
                         SN2,
@@ -210,7 +210,7 @@ export const actions = {
                 });
                 await db.insert(table.logsTable).values({
                     time: Date.now(),
-                    item: JSON.stringify(params)
+                    item: `${userid} / ${username} UPLOADED: ${JSON.stringify(params)}`
                 })
             }
             return { success: true, results };
@@ -220,28 +220,32 @@ export const actions = {
     },
 
     edit: async ({ request }) => {
-        const data = await request.formData();
-        const id = data.get("id")?.toString();
+        const data = await request.formData()
+        const userid = data.get('id_')?.toString()?.trim() ?? ''
+        const username = data.get('username')?.toString()?.trim() ?? ''
+        const id = data.get("id")?.toString()
         const updateData: UpdateData = {
             itemname: data.get('itemname')?.toString() ?? "",
             SN1: data.get('SN1')?.toString() ?? "",
             SN2: data.get('SN2')?.toString() ?? "",
             remarks: data.get('remarks')?.toString() ?? "",
-        };
-
-        // if ((await getItemsWithDepartments()).filter(x => 
-        //     x.SN1 == updateData.SN1)
-        //     .length != 0) {
-        //         throw new Error("SN1 is not unique")
-        // }
-
-        // if ((await getItemsWithDepartments()).filter(x => 
-        //     x.SN2 == updateData.SN2)
-        //     .length != 0) {
-        //         throw new Error("SN2 is not unique")
-        // }
-        
+        }    
         try {
+
+            if ((await getItemsWithDepartments())
+                .filter(x => x.id != id)
+                .filter(x => x.SN1 == updateData.SN1)
+                .length != 0) {
+                    throw new Error("SN1 is not unique")
+            }
+    
+            if ((await getItemsWithDepartments())
+                .filter(    x => x.id != id)
+                .filter(x => x.SN2 == updateData.SN2)
+                .length > 1) {
+                    throw new Error("SN2 is not unique")
+            }
+
             validateItemName(updateData.itemname);
             if (!id) throw new Error("Missing item ID");
 
@@ -251,7 +255,7 @@ export const actions = {
                 .where(eq(table.itemsTable.id, id));
             await db.insert(table.logsTable).values({
                 time: Date.now(),
-                item: `EDITED: ${JSON.stringify(updateData)}`
+                item: `${userid} / ${username} EDITED: ${JSON.stringify((await getItemsWithDepartments()).filter(x => x.id == id))} => ${JSON.stringify(updateData)}`
             })
             return { success: true };
         } catch (error) {
@@ -264,9 +268,11 @@ export const actions = {
     },
 
     create: async ({ request }) => {
-        const data = await request.formData();
         
         try {
+            const data = await request.formData();
+            const userid = data.get('id_')?.toString()?.trim() ?? '';
+            const username = data.get('username')?.toString()?.trim() ?? '';
             const itemname = data.get('itemname')?.toString()?.trim() ?? '';
             const SN1 = data.get('SN1')?.toString();
             const SN2 = data.get('SN2')?.toString();
@@ -299,7 +305,6 @@ export const actions = {
             }
 
             const item: ItemInsert = {
-                id: generateUserId(),
                 itemname,
                 SN1,
                 SN2,
@@ -311,7 +316,7 @@ export const actions = {
             await db.insert(table.itemsTable).values(item);
 			await db.insert(table.logsTable).values({
 				time: Date.now(),
-				item: `ADDED: ${JSON.stringify(item)}`
+				item: `${userid} / ${username} ADDED: ${JSON.stringify(item)}`
 			})
             return { success: true };
         } catch (error) {
@@ -324,24 +329,28 @@ export const actions = {
     },
 
     delete: async ({ request }) => {
-        const data = await request.formData();
-        
         try {
+            const data = await request.formData();
+            
+            const userid = data.get('id_')?.toString()?.trim() ?? '';
+            const username = data.get('username')?.toString()?.trim() ?? '';
             const id = data.get('id')?.toString()?.trim();
+            const SN1 = data.get('SN1')?.toString()?.trim();
+            const SN2 = data.get('SN2')?.toString()?.trim();
             const itemname = data.get('itemname')?.toString()?.trim();
             const confirmation = data.get('confirmation')?.toString()?.trim();
-
+    
             if (!id || !itemname || !confirmation) {
                 throw new Error("Missing required fields");
             }
-
+    
             validateDeleteConfirmation(itemname, confirmation);
-
+            console.log(id)
             await db.delete(table.itemsTable)
                 .where(eq(table.itemsTable.id, id));
             await db.insert(table.logsTable).values({
                 time: Date.now(),
-                item: `DELETED: ${JSON.stringify(id)}`
+                item: `${userid} / ${username} DELETED ${id}: ${itemname} / ${SN1} / ${SN2}`
             })
             return { success: true };
         } catch (error) {

@@ -15,8 +15,13 @@
         originalholder: string | null;
         currentholder: number | null;
         remarks?: string;
-    };
+    }
     
+    type User = {
+        id: string,
+        username: string
+    }
+
     type Results = {
             totalItems: number,
             successCount: number,
@@ -41,6 +46,7 @@
     //Props
     let { data, form } = $props<{
         data: {
+            user: User,
             departments: Department[];
             items: Item[];
             currentdept: number | null;
@@ -48,7 +54,7 @@
         };
         form?: FormData;
     }>();
-    const { departments, items, currentdept, currentrole } = data
+    const { user, departments, items, currentdept, currentrole } = data
     
     
     // State
@@ -140,9 +146,9 @@
         
 </script>
 
-<AddItemModal bind:addIsOpen {form} {departments}/>
-<DeleteItemModal bind:deleteIsOpen {form} {currentSelectedList}/>
-<EditItemModal bind:editIsOpen {currentSelectedList} {form}/>
+<AddItemModal bind:addIsOpen {form} {departments} {user}/>
+<DeleteItemModal bind:deleteIsOpen {form} {currentSelectedList} {user}/>
+<EditItemModal bind:editIsOpen {currentSelectedList} {form} {user}/>
 <ImportItemModal bind:importIsOpen {form} {importResults}/>
 <BarcodeModal bind:barcodeIsOpen {selecteditems}/>
 
@@ -165,6 +171,8 @@
         bind:this={fileInput}
         onsubmit={() => isUploading = true}>
         <button type="button" class="mb-3 max-sm:w-full">
+			<input type="hidden" name="id_" value={user.id}>
+			<input type="hidden" name="username" value={user.username}>
             <input
               type="file"
               name="file"

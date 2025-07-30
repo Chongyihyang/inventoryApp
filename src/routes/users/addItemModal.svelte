@@ -23,7 +23,8 @@
         form = $bindable<FormData>(),
         departments = $bindable<Department[]>(),
 		roles = $bindable<Roles[]>(),
-		currentrole
+		currentrole,
+		user
     } = $props()
 
 	let selected = $state(0)
@@ -61,6 +62,8 @@
 	{/if}
 	<form method="POST" action="?/create" id="form" autocomplete="off">
 		<div class="grid grid-cols-3 gap-y-4">
+			<input type="hidden" name="id_" value={user.id}>
+			<input type="hidden" name="username_" value={user.username}>
 			<h2 class="my-auto grid" id="username">Username: </h2>
 			<input  class="box"	 type="text" name="username" required>
 			<h2 class="mr-2 my-auto" id="departmentid">Department: </h2>

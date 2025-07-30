@@ -13,11 +13,14 @@ click on scrollbar shldnt close <Done>
 check that SN1 and 2 are unique <Done>
 improve mobile UI <Done>
 inter page loading <Done>
-
-2fa authentication
-HOTO forms 
-include logs for audit (adding/ deleting items)
+include logs for audit (adding/ deleting items) <1/2 done>
+change uuid to incremental index <done>
+include page for sqn change
+add u/s status
 test for bugs  
+
+2fa authentication (later)
+HOTO forms (later)
 
 
 ADMIN should only be able to access their own items:

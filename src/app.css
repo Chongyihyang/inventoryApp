@@ -8,7 +8,23 @@
 
     /* navbar */
     nav {
-        @apply dark:bg-gray-700 pl-3;
+        @apply dark:bg-gray-800;
+    }
+
+    .dropdown{
+        @apply float-left overflow-hidden
+    }
+
+    .dropdown-content {
+        @apply hidden absolute bg-gray-800 min-w-[160px]
+    }
+
+    .dropdown-content a {
+        @apply float-none px-3 py-4 decoration-0 block left-0
+    }
+
+    .dropdown:hover .dropdown-content {
+        @apply block
     }
 
     ul {
@@ -37,7 +53,7 @@
 
     /* button settings */
     button {
-        @apply bg-blue-700 text-gray-100 items-center gap-2 px-4 py-2.5 m-1 rounded-2xl font-medium cursor-pointer transition-all duration-200 border-0 decoration-0 hover:opacity-90 hover:translate-y-[-1px] text-center hover:bg-blue-900 hover:text-gray-50 max-sm:px-2 ;
+        @apply bg-blue-700 text-gray-100 items-center gap-2 px-4 py-2.5 m-1 rounded-2xl font-medium cursor-pointer transition-all duration-200 border-0 decoration-0  text-center hover:bg-blue-900 hover:text-gray-50 max-sm:px-2 ;
     }
 
     /* table settings */

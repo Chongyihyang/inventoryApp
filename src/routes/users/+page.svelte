@@ -38,11 +38,12 @@
             currentdept: string | null;
             currentrole: string | null;
             roles: Roles[];
+            user: unknown
         };
         form?: FormData;
     }>();
     let departmentsList:Map<string, string> = new Map()  
-    const { users, departments, currentdept, roles, currentrole } = data
+    const { user, users, departments, currentdept, roles, currentrole } = data
     
 
     departments.forEach((x: Department) => {
@@ -108,9 +109,9 @@
 
 </script>
 
-<AddItemModal bind:addIsOpen {form} {departments} {roles} {currentrole}/>
-<DeleteItemModal bind:deleteIsOpen {form} {currentSelectedList} />
-<EditItemModal bind:editIsOpen {currentSelectedList} {form} {roles} {departments} {users} {currentrole}/>
+<AddItemModal bind:addIsOpen {form} {departments} {roles} {currentrole} {user}/>
+<DeleteItemModal bind:deleteIsOpen {form} {currentSelectedList} {user}/>
+<EditItemModal bind:editIsOpen {currentSelectedList} {form} {roles} {departments} {users} {currentrole} {user}/>
 
 
 <div class="mx-auto max-h-[50vh] w-[90%] mt-3">

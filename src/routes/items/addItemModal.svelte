@@ -14,7 +14,8 @@
     let { 
         addIsOpen = $bindable<boolean>(),
         form = $bindable<FormData>(),
-        departments = $bindable<Department[]>()
+        departments = $bindable<Department[]>(),
+		user = $bindable()
     } = $props()
 
     let dialog = $state<HTMLDialogElement>()
@@ -50,6 +51,8 @@
 	{/if}
 	<form method="POST" action="?/create" id="form">
 		<div class="grid grid-cols-3 gap-y-4">
+			<input type="hidden" name="id_" value={user.id}>
+			<input type="hidden" name="username" value={user.username}>
 			<h2 class="my-auto grid" id="itemname">New item name: </h2>
 			<input  class="box"	 type="text" name="itemname" autocomplete="off" required>
 			<h2 class="mr-2 my-auto" id="SN1">SN1: </h2>

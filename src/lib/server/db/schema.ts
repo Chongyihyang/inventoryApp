@@ -72,3 +72,5 @@ export const logsTable = sqliteTable("logs", {
 	time: int(),
 	item: text()
 })
+
+export type Logs = typeof logsTable.$inferSelect
