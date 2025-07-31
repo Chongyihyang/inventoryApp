@@ -1,11 +1,11 @@
 import * as auth from '$lib/server/auth';
 import { fail, redirect } from '@sveltejs/kit';
-import { getRequestEvent } from '$app/server';
 import type { Actions, PageServerLoad } from './$types';
 import { db } from '$lib/server/db';
 import * as table from '$lib/server/db/schema';
 import { and, eq, isNull, lt } from 'drizzle-orm';
 import { alias } from 'drizzle-orm/sqlite-core';
+import { requireLogin } from '$lib';
 
 const DEBUG = false
 
@@ -58,13 +58,6 @@ async function cleanupOldTransactions() {
 		.where(lt(table.transactionTable.outtime, Date.now() - 2629800000));
 }
 
-function requireLogin() {
-	const { locals } = getRequestEvent();
-	if (!locals.user) {
-		return redirect(302, '/login');
-	}
-	return locals.user;
-}
 
 export const load: PageServerLoad = async ({ locals }) => {
 	const user = requireLogin();

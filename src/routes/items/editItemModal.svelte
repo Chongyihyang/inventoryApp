@@ -1,4 +1,6 @@
 <script lang="ts">
+	import type { Categories } from "$lib/server/db/schema"
+	import type { User } from "$lib/utils"
 
 	// init types
 	type Item = {
@@ -16,9 +18,9 @@
 		editIsOpen = $bindable<boolean>(),
 		form = $bindable<FormData>(),
 		currentSelectedList = $bindable<Item[]>(),
-			user = $bindable()
+		user = $bindable<User>(),
+		categories = $bindable<Categories>(),
     } = $props()
-	
     let dialog = $state<HTMLDialogElement>()
 	// svelte-ignore non_reactive_update
 	let error:HTMLParagraphElement
@@ -68,6 +70,19 @@ onmousedown={(e) => { if (e.target === dialog) closeModal()}}
 				<h2 class="mr-2 my-auto" id="SN2">SN2: </h2>
 				<input  class="box" type="text" name="SN2"
 				value="{currentSelectedList.SN2}" autocomplete="off"> 
+				<h2 class="mr-2 my-auto" id="category">Label Category: </h2>
+				<select class="box overflow-y-auto " name="category" id="category" value={currentSelectedList.category}>
+					<option value="" disabled selected>Select an option</option>
+					{#each categories as category}
+						<option value="{category.id}">{category.categoryname}</option>
+					{/each}
+				</select>
+				<h2 class="mr-2 my-auto" id="us">Is Item Unusable: </h2>
+				{#if currentSelectedList.us == 0}
+					<input type="checkbox" name="us" value=1 class="col-span-2" id="us">
+				{:else if currentSelectedList.us == 1}
+					<input type="checkbox" name="us" value=1 class="col-span-2" id="us" checked>
+				{/if}
 				<h2 class="mr-2" id="remarks">remarks: </h2>
 				<textarea class="box h-20 overflow-y-auto" 
 				name="remarks" id="remarks">{currentSelectedList.remarks}</textarea>

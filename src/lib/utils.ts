@@ -1,4 +1,43 @@
-import { encodeBase32LowerCase } from '@oslojs/encoding';
+import { encodeBase32LowerCase } from '@oslojs/encoding'
+import { db } from './server/db'
+import { eq } from 'drizzle-orm';
+import * as table from '$lib/server/db/schema'
+
+
+export type User = {
+	id: string,
+	username: string
+}
+
+export async function getCategories() {
+    return db
+        .select()
+        .from(table.categoriestable)
+}
+
+export async function getItemsWithDepartments() {
+    return db
+        .select({
+            id: table.itemsTable.id,
+            itemname: table.itemsTable.itemname,
+            SN1: table.itemsTable.SN1,
+            SN2: table.itemsTable.SN2,
+            remarks: table.itemsTable.remarks,
+            originalholder: table.departmentTable.departmentname,
+            currentholder: table.itemsTable.currentholder,
+            category: table.itemsTable.category,
+            us: table.itemsTable.us			
+		})
+        .from(table.itemsTable)
+        .leftJoin(
+            table.departmentTable, 
+            eq(table.departmentTable.id, table.itemsTable.originalholder)
+        );
+}
+
+export async function getAllDepartments() {
+    return db.select().from(table.departmentTable).orderBy(table.departmentTable.departmentname);
+}
 
 
 export function generateUserId() {

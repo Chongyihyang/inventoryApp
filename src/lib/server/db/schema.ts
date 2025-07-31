@@ -27,13 +27,15 @@ export const usersTable = sqliteTable("user", {
 export type User = typeof usersTable.$inferSelect;
 
 export const itemsTable = sqliteTable("item", {
-	id: text().primaryKey(),
+	id: int().primaryKey({ autoIncrement: true}),
 	itemname: text().notNull(),
 	SN1: text(),
 	SN2: text(),
 	remarks: text(),
 	currentholder: int().references(() => departmentTable.id),
 	originalholder: int().references(() => departmentTable.id),  
+	category: int().references(() => categoriestable.id),
+	us: int()
 });
 
 export type Item = typeof itemsTable.$inferSelect;
@@ -54,7 +56,7 @@ export const sessionTable = sqliteTable('session', {
 	userId: text('user_id')
 		.notNull()
 		.references(() => usersTable.id),
-	expiresAt: int('expires_at', { mode: 'timestamp' }).notNull()
+	expiresAt: int('expires_at', { mode: 'timestamp' }).notNull().$onUpdateFn(() => new Date()).$type<Date>()
 });
 
 export type Session = typeof sessionTable.$inferSelect
@@ -74,3 +76,10 @@ export const logsTable = sqliteTable("logs", {
 })
 
 export type Logs = typeof logsTable.$inferSelect
+
+export const categoriestable = sqliteTable("categories", {
+	id: int().primaryKey({ autoIncrement: true}),
+	categoryname: text().unique().notNull()
+})
+
+export type Categories = typeof categoriestable.$inferSelect

@@ -27,7 +27,6 @@
 
 	function changeSelectedItem2(items_, selecteddept_: number) {
         let selectedusers_ = []
-		console.log(items_)
         items_.forEach(row => {
             if (row.issuerdept == selecteddept_) {
                 selectedusers_.push(row)

@@ -37,7 +37,7 @@ bind:this={dateInput}>
 	}}" name="date"
 	class="m-3">
 </form>
-<div class="mx-auto max-h-[50vh] w-[90%] overflow-y-auto mb-3">
+<div class="mx-auto max-h-[70vh] w-[90%] overflow-y-auto mb-3">
 	<table>
 		<thead>
 			<tr>

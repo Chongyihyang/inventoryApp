@@ -114,14 +114,14 @@
 <EditItemModal bind:editIsOpen {currentSelectedList} {form} {roles} {departments} {users} {currentrole} {user}/>
 
 
-<div class="mx-auto max-h-[50vh] w-[90%] mt-3">
+<div class="mx-auto max-h-[80vh] w-[90%] mt-3">
     <button onmousedown="{() => {
         addIsOpen = !addIsOpen
     }}"
     class="mb-3 max-sm:w-full"
     >+ Add New User</button>
 
-    <div class="overflow-y-auto mb-3 max-sm:w-full">
+    <div class="overflow-y-auto max-h-[70vh] mb-3 max-sm:w-full">
         <table>
             <thead>
                 <tr>

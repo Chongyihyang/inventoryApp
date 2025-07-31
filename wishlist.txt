@@ -13,10 +13,10 @@ click on scrollbar shldnt close <Done>
 check that SN1 and 2 are unique <Done>
 improve mobile UI <Done>
 inter page loading <Done>
-include logs for audit (adding/ deleting items) <1/2 done>
+include logs for audit (adding/ deleting items) <Done>
 change uuid to incremental index <done>
 include page for sqn change
-add u/s status
+add u/s status <Done>
 test for bugs  
 
 2fa authentication (later)
@@ -28,3 +28,7 @@ ADMIN should only be able to access their own items:
 2.  CRUD only their users
 
 They cannot HOTO
+
+gameplan to implement the u/s status
+1. implement categories page with adding/ deleting categories <Done>
+2. implement the U/s option / category option in the add/ edit/ import section <Done>

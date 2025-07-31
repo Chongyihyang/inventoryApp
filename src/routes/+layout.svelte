@@ -5,7 +5,7 @@
 
 	let { data, children } = $props();
 	let { user, dept, departmentList, role } = data
-	let ignore = ["/stocktake", "logs"]
+	let ignore = ["stocktake", "logs"]
 </script>
 
 
@@ -40,6 +40,7 @@
 					<div class="dropdown-content">
 						<a href="/users" class="rounded-md px-2 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white aria-current:bg-gray-700" aria-current={page.url.pathname.includes('/users')} data-sveltekit-prefetch>Users</a>
 						<a href="/items" class="rounded-md px-2 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white aria-current:bg-gray-700" aria-current={page.url.pathname.includes('/items')} data-sveltekit-prefetch>Items</a>
+						<a href="/category" class="rounded-md px-2 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white aria-current:bg-gray-700" aria-current={page.url.pathname.includes('/category')} data-sveltekit-prefetch>Category</a>
 					</div>
 				</div>
 				<div class="dropdown">
@@ -77,6 +78,7 @@
 		<a href="/"  class="block rounded-md px-3 py-2 text-base font-medium text-gray-300 hover:bg-gray-700 hover:text-white aria-current:underline" aria-current={page.url.pathname === '/'}>Home</a>
 		<a href="/users"  class="block rounded-md px-3 py-2 text-base font-medium text-gray-300 hover:bg-gray-700 hover:text-white aria-current:underline" aria-current={page.url.pathname.includes("/users")}>Users</a>
 		<a href="/items" class="block rounded-md px-3 py-2 text-base font-medium text-gray-300 hover:bg-gray-700 hover:text-white aria-current:underline" aria-current={page.url.pathname.includes("/items")}>Items</a>
+		<a href="/category" class="block rounded-md px-3 py-2 text-base font-medium text-gray-300 hover:bg-gray-700 hover:text-white aria-current:underline" aria-current={page.url.pathname.includes('/category')} data-sveltekit-prefetch>Category</a>
 		<a href="/transactions" class="block rounded-md px-3 py-2 text-base font-medium text-gray-300 hover:bg-gray-700 hover:text-white aria-current:underline" aria-current={page.url.pathname.includes("/transactions")}>Transactions</a>
 		<a href="/stocktake" class="block rounded-md px-3 py-2 text-base font-medium text-gray-300 hover:bg-gray-700 hover:text-white aria-current:underline" aria-current={page.url.pathname.includes("/stocktake")}>Stocktake</a>
 		{#if Number(role) == 1}

@@ -5,22 +5,10 @@
 	import EditItemModal from './editItemModal.svelte'
 	import ImportItemModal from './importItemModal.svelte';
     import { department } from "$lib/shared.svelte"
+    import type { Categories, Item } from '$lib/server/db/schema'
+    import type { User } from '$lib/utils';
     
     // Types
-    type Item = {
-        id: string;
-        itemname: string;
-        SN1: string | null;
-        SN2: string | null;
-        originalholder: string | null;
-        currentholder: number | null;
-        remarks?: string;
-    }
-    
-    type User = {
-        id: string,
-        username: string
-    }
 
     type Results = {
             totalItems: number,
@@ -47,14 +35,15 @@
     let { data, form } = $props<{
         data: {
             user: User,
-            departments: Department[];
-            items: Item[];
-            currentdept: number | null;
-            currentrole: string | null
-        };
-        form?: FormData;
+            departments: Department[],
+            items: Item[],
+            currentdept: number | null,
+            currentrole: string | null,
+            categories: Categories[],
+        },
+        form?: FormData,
     }>();
-    const { user, departments, items, currentdept, currentrole } = data
+    const { user, departments, items, currentdept, currentrole, categories } = data
     
     
     // State
@@ -99,7 +88,7 @@
         
     // Handle form state changes
     $effect(() => {
-        
+
         if (!form) return;
         
         if (form.error) {
@@ -146,13 +135,13 @@
         
 </script>
 
-<AddItemModal bind:addIsOpen {form} {departments} {user}/>
+<AddItemModal bind:addIsOpen {form} {departments} {user} {categories}/>
 <DeleteItemModal bind:deleteIsOpen {form} {currentSelectedList} {user}/>
-<EditItemModal bind:editIsOpen {currentSelectedList} {form} {user}/>
+<EditItemModal bind:editIsOpen {currentSelectedList} {form} {user} {categories}/>
 <ImportItemModal bind:importIsOpen {form} {importResults}/>
 <BarcodeModal bind:barcodeIsOpen {selecteditems}/>
 
-<div class="mx-auto max-h-[50vh] w-[90%] mt-3">
+<div class="mx-auto max-h-[80vh] w-[90%] mt-3">
     <div class="flex max-sm:block">
         <button onmousedown="{() => {
             barcodeIsOpen = true
@@ -199,7 +188,7 @@
       </form>
     </div>
     
-    <div class="overflow-y-auto mb-3 max-sm:w-full">
+    <div class="overflow-y-auto max-h-[70vh] mb-3 max-sm:w-full">
     <table>
         <thead>
             <tr>

@@ -6,6 +6,7 @@ import { db } from '$lib/server/db';
 import * as table from '$lib/server/db/schema';
 import type { Actions, PageServerLoad } from './$types';
 import { validatePassword, validateUsername } from '$lib/utils';
+import type { Session } from '$lib/server/db/schema';
 
 export const load: PageServerLoad = async (event) => {
 	if (event.locals.user) {
@@ -15,7 +16,16 @@ export const load: PageServerLoad = async (event) => {
 };
 
 export const actions: Actions = {
+
 	login: async (event) => {
+		// need to delete sessions automatically
+		const seesions = await db.select().from(table.sessionTable)
+		seesions.forEach(async (session: Session) => {
+			if (session.expiresAt.getDate() <= Date.now()) {
+				await db.delete(table.sessionTable).where(eq(table.sessionTable.id, session.id))
+			}
+		});
+
 		const formData = await event.request.formData();
 		const username = formData.get('username');
 		const password = formData.get('password');
@@ -35,7 +45,6 @@ export const actions: Actions = {
 		if (!existingUser) {
 			return fail(400, { message: 'Incorrect username' });
 		}
-
 
 		if (existingUser.passwordHash == null || existingUser.passwordHash == "") {
 			return fail(400, { message: 'Unable to log in user' })

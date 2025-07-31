@@ -1,4 +1,6 @@
 <script lang="ts">
+	import type { Categories } from "$lib/server/db/schema";
+	import type { User } from "$lib/utils";
 	// done refactoring add logic
 	// init types
     type Department = {
@@ -15,7 +17,8 @@
         addIsOpen = $bindable<boolean>(),
         form = $bindable<FormData>(),
         departments = $bindable<Department[]>(),
-		user = $bindable()
+		user = $bindable<User>(),
+		categories = $bindable<Categories>(),
     } = $props()
 
     let dialog = $state<HTMLDialogElement>()
@@ -73,6 +76,15 @@
 					<option value="{department.id}">{department.departmentname}</option>
 				{/each}
 			</select>
+			<h2 class="mr-2 my-auto" id="category">Label Category: </h2>
+			<select class="box overflow-y-auto " name="category" id="category">
+				<option value="" disabled selected>Select an option</option>
+				{#each categories as category}
+					<option value="{category.id}">{category.categoryname}</option>
+				{/each}
+			</select>
+			<h2 class="mr-2 my-auto" id="us">Is Item Unusable: </h2>
+			<input type="checkbox" name="us" value=1 class="col-span-2" id="us">
 			<h2 class="mr-2" id="remarks">remarks: </h2>
 			<textarea class="box overflow-y-auto h-30" name="remarks" id="remarks"></textarea>
 			<input type="submit" class="submit" name="" id="">
