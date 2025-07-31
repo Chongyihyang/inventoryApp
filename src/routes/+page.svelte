@@ -60,7 +60,7 @@
     let signOutModalOpen = $state(false)
     let signInModalOpen = $state(false)
 </script>
-
+   
 <SignOutModal bind:signOutModalOpen {data} {form}/>
 <SignInModal bind:signInModalOpen {data} {form}/>
 
