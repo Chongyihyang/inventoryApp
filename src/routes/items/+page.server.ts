@@ -15,6 +15,14 @@ interface UpdateData {
     [id: string]: string | number,
 }
 
+type Results = {
+    totalItems: number,
+    successCount: number,
+    errorCount: number,
+    successfulItems: object[],
+    failedItems: object[],
+    details: object[]    
+}
 
 export async function load({ locals }) {
     const user = requireLogin()
@@ -63,7 +71,7 @@ export const actions = {
         const content = await file.text()
         const rows = content.split(/\r?\n/).filter(row => row.trim() !== '');
         const params: ItemInsert[] = []
-        const results = {
+        const results: Results = {
             totalItems: 0,
             successCount: 0,
             errorCount: 0,
@@ -77,11 +85,17 @@ export const actions = {
             const row = rows[i];
             const rowNumber = i + 1;
             const columns = row.split(',');
+            
             if (i === 0) continue; // Skip header
             results.totalItems++;
             let isValid = true;
             const messages = [];
-    
+            if (columns.length != 7) {
+                isValid = false
+                messages.push("Row does not have 7 columns")
+                continue
+            } 
+            
             // check itemId
             const itemid = columns[0] ? columns[0].trim() : '';
             if (!itemid) {
@@ -214,7 +228,7 @@ export const actions = {
             SN1: data.get('SN1')?.toString() ?? "",
             SN2: data.get('SN2')?.toString() ?? "",
             remarks: data.get('remarks')?.toString() ?? "",
-            category: data.get('category')?.toString() ?? "",
+            category: Number(data.get('category')?.toString() ?? ""),
             us: Number(data.get('us')?.toString() ?? "0"),
         }    
         
@@ -228,7 +242,7 @@ export const actions = {
             }
     
             if ((await getItemsWithDepartments())
-                .filter(    x => x.id != id)
+                .filter(x => x.id != id)
                 .filter(x => x.SN2 == updateData.SN2)
                 .length > 1) {
                     throw new Error("SN2 is not unique")
@@ -266,7 +280,7 @@ export const actions = {
             const SN2 = data.get('SN2')?.toString();
             const remarks = data.get('remarks')?.toString();
             const currentholder = data.get('currentholder')?.toString();
-            const category = data.get('category')?.toString() ?? "";
+            const category = Number(data.get('category')?.toString() ?? "");
             const us = Number(data.get('us')?.toString() ?? "0");
             if (currentholder == null) {
                 throw new Error("currentholder cannot be null")
@@ -300,7 +314,9 @@ export const actions = {
                 SN2,
                 currentholder: Number(currentholder),
                 originalholder: Number(originalholder),
-                remarks
+                remarks,
+                category,
+                us
             };
 
             await db.insert(table.itemsTable).values(item);

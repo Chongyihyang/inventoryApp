@@ -1,5 +1,5 @@
 <script lang="ts">
-
+	import { browser } from '$app/environment'
 		// Type declaration
 		type item = {
 		id: string,
@@ -28,27 +28,30 @@
 	// --- Globals ---
 	let scannerBuffer = ''
 	let scannerTimeout: NodeJS.Timeout
-	const SCANNER_DELAY = 100 // ms
+	const SCANNER_DELAY = 90 // ms
 	const scannedItems = new Map()
-	let barcodeInput: HTMLInputElement
 	let userNameInput: HTMLInputElement
-	let statusMessage: HTMLDivElement
+	let 	statusMessage: HTMLDivElement
 	let formElement: HTMLFormElement
 	let dialog: HTMLDialogElement // HTMLDialogElement
 	let { signInModalOpen = $bindable(), data, form } = $props()
 	let selectedDept: string = $state("")
 	let itemList: Array<string> = $state([])
-	let itemDatabase: Record<string, Detail> = {}
 	let rows: item[] = $state(data.items)
 	let inventoryList: Transaction[] = $state(data.inventoryList)
+	let itemDatabase: Record<string, Detail> = $derived(init_(inventoryList, rows))
+		
+	function init_(inventoryList: Transaction[], rows: item[]) {
+		const db: Record<string, Detail> = {}
+		inventoryList.map((x) => {
+			db[x.id] =  {"itemname": x.itemname, "issuee": null}
+		})
+		rows.map((x) => {
+			db[x.itemid] = {"itemname": x.itemname, "issuee": x.issuee}
+		})
+		return db
+	}
 
-
-	inventoryList.map((x) => {
-		itemDatabase[x.id] =  {"itemname": x.itemname, "issuee": null}
-	})
-	rows.map((x) => {
-		itemDatabase[x.itemid] = {"itemname": x.itemname, "issuee": x.issuee}
-	})
 	
 	$effect(() => {
 		if (signInModalOpen) {
@@ -64,6 +67,7 @@
 		scannedItems.clear()
 		dialog.close()
 		signInModalOpen = false
+		statusMessage.style.display = 'none'
 	}
 
 
@@ -86,7 +90,10 @@
         } else {
             showStatus(`Invalid barcode: ${barcode}`, false);
         }
-        barcodeInput.focus();
+		const barcodeInput = document.getElementById("barcodeInput")
+		if (browser && barcodeInput != null) {
+			barcodeInput.focus()
+		}
     }
 
 
@@ -102,29 +109,36 @@
 		}
     }
 
-	function receiveScan(e: Event) {
-		if (e.target === null) return
+	function receiveBarcode(e: Event) {
 		if (!(e.target as HTMLInputElement).value) return
-		scannerBuffer += (e.target as HTMLInputElement).value;
-		(e.target as HTMLInputElement).value = ''
-		handleBarcodeScan()
-		clearTimeout(scannerTimeout)
-		scannerTimeout = setTimeout(handleBarcodeScan, SCANNER_DELAY)
+					
+					// Add to buffer and clear input
+					scannerBuffer += (e.target as HTMLInputElement).value;
+					(e.target as HTMLInputElement).value = ''
+
+					
+					// Reset timeout
+					clearTimeout(scannerTimeout)
+					
+					// Set timeout to detect end of scan
+					scannerTimeout = setTimeout(handleBarcodeScan, SCANNER_DELAY)
 	}
 
+
 	const reset = () => {
-		scannedItems.clear()
 		itemList = []
 		userNameInput.value = ""
 		showStatus('Cleared all items', true)
-		barcodeInput.focus()
 	}
 </script>
 
 <dialog
 	bind:this={dialog}
 	onclose={() => (signInModalOpen = false)}
-	onmousedown={(e) => { if (e.target === dialog) closeModal()}}
+	onmousedown={(e) => { if (e.target === dialog) {
+		itemList = []
+		closeModal()
+	}}}
 >
 <div class="internal">
 
@@ -153,9 +167,9 @@
 		
 		<div class="form-group">
 			<label for="barcodeInput">Barcode Scanner Input:</label>
-			<input type="text" bind:this={barcodeInput} placeholder="Scan items here" 
-			autocomplete="off" class="text"
-			oninput="{(e) => receiveScan(e)}">
+			<input type="text" placeholder="Scan items here" 
+			autocomplete="off" class="text" id="barcodeInput"
+			oninput="{(e) => {receiveBarcode(e)}}">
 		</div>
 		
 		<div class="form-group">
@@ -189,8 +203,15 @@
 		
 		
 		<button id="submitBtn" class="button-normal">Submit Sign-in</button>
-		<button type="button" id="clearBtn" onmousedown="{reset}" class="button-normal">Clear All Items</button>
-		<button onmousedown={closeModal} type="button" class="close">close modal</button>
+		<button type="button" id="clearBtn" onmousedown="{() => {
+			setTimeout(reset, 10)
+			scannedItems.clear()
+		}
+		}" class="button-normal">Clear All Items</button>
+		<button onmousedown={() => {
+			itemList = []
+			closeModal()
+			}} type="button" class="close">close modal</button>
 	</form>
 </div>
 </dialog>

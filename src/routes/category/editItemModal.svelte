@@ -12,7 +12,7 @@
 		currentSelectedList = $bindable(),
 		user = $bindable()
     } = $props()
-	// hello
+
     let dialog = $state<HTMLDialogElement>()
 	// svelte-ignore non_reactive_update
 	let error:HTMLParagraphElement

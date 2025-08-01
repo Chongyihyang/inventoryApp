@@ -27,11 +27,11 @@
 
 
 	// Globals
-	let scannerBuffer = ''
+
+	let scannerBuffer = $state('')
 	let scannerTimeout: NodeJS.Timeout
-	const SCANNER_DELAY = 100 // ms
+	const SCANNER_DELAY = 50 // ms
 	const scannedItems = new Map()
-	let barcodeInput: HTMLInputElement
 	let userNameInput: HTMLInputElement
 	let statusMessage: HTMLDivElement
 	let formElement: HTMLFormElement
@@ -39,23 +39,26 @@
 	let { signOutModalOpen = $bindable(), data, form } = $props()
 	let selectedDept: string = $state("")
 	let itemList: Array<string> = $state([])
-	let itemDatabase: Record<string, Detail> = {}
 	let rows: item[] = $state(data.items)
 	let inventoryList: Transaction[] = $state(data.inventoryList)
-
-
-	inventoryList.map((x) => {
-		itemDatabase[x.id] =  {"itemname": x.itemname, "issuee": null}
-	})
-	rows.map((x) => {
-		itemDatabase[x.itemid] = {"itemname": x.itemname, "issuee": x.issuee}
-	})
+	let itemDatabase: Record<string, Detail> = $derived(init_(inventoryList, rows))
+		
+	function init_(inventoryList: Transaction[], rows: item[]) {
+		const db: Record<string, Detail> = {}
+		inventoryList.map((x) => {
+			db[x.id] =  {"itemname": x.itemname, "issuee": null}
+		})
+		rows.map((x) => {
+			db[x.itemid] = {"itemname": x.itemname, "issuee": x.issuee}
+		})
+		return db
+	}
 	
 	
 	$effect(() => {
 		if (signOutModalOpen) {
-			dialog.showModal()
 			itemList = []
+			dialog.showModal()
 			statusMessage.style.display = 'none'
 		}
 	})
@@ -88,9 +91,11 @@
         } else {
             showStatus(`Invalid barcode: ${barcode}`, false)
         }
-        barcodeInput.focus()
+		const barcodeInput = document.getElementById("barcodeInput")
+		if (barcodeInput != null) {
+			barcodeInput.focus()
+		}
     }
-
 
 
     function showStatus(message: string, isSuccess: boolean) {
@@ -105,22 +110,26 @@
 		}
     }
 
-	function receiveScan(e: Event) {
-		if (e.target === null) return
+
+	function receiveBarcode(e: Event) {
 		if (!(e.target as HTMLInputElement).value) return
-		scannerBuffer += (e.target as HTMLInputElement).value;
-		(e.target as HTMLInputElement).value = ''
-		handleBarcodeScan()
-		clearTimeout(scannerTimeout)
-		scannerTimeout = setTimeout(handleBarcodeScan, SCANNER_DELAY)
+					
+					// Add to buffer and clear input
+					scannerBuffer += (e.target as HTMLInputElement).value;
+					(e.target as HTMLInputElement).value = ''
+
+					
+					// Reset timeout
+					clearTimeout(scannerTimeout)
+					
+					// Set timeout to detect end of scan
+					scannerTimeout = setTimeout(handleBarcodeScan, SCANNER_DELAY)
 	}
 
 	const reset = () => {
-		scannedItems.clear()
 		itemList = []
 		userNameInput.value = ""
 		showStatus('Cleared all items', true)
-		barcodeInput.focus()
 	}
 
 </script>
@@ -128,8 +137,10 @@
 <dialog
 	bind:this={dialog}
 	onclose={() => (signOutModalOpen = false)}
-	onmousedown={(e) => { if (e.target === dialog) closeModal()}}
->
+	onmousedown={(e) => { if (e.target === dialog) {
+		itemList = []
+		closeModal()
+}}}>
 
 <div class="internal">
 
@@ -151,25 +162,16 @@
 					<option value="{user.id}">
 						{user.username}
 					</option>
-				{/each}
+				{/each}	
 			</datalist>
 			<input type="hidden" bind:value={selectedDept}>
 		</div>
 		
 		<div class="form-group">
 			<label for="barcodeInput">Barcode Scanner Input:</label>
-			<input type="text" bind:this={barcodeInput} placeholder="Scan items here" 
-			autocomplete="off" class="text"
-			oninput="{(e) => receiveScan(e)}">
-		</div>
-
-		<div class="form-group w-full">
-			<label for="HOTO">HOTO Option:</label>
-			<select class="text overflow-y-auto w-full" name="HOTO" id="HOTO">
-				<option value="none" selected>No HOTO</option>
-				<option value="temp">Temporary HOTO</option>
-				<option value="perm">Permanent HOTO</option>
-			</select>
+			<input type="text" placeholder="Scan items here" 
+			autocomplete="off" class="text" id="barcodeInput"
+			oninput={(e) => {receiveBarcode(e)}}>
 		</div>
 		
 		<div class="form-group">
@@ -184,26 +186,42 @@
 					{#if itemList.length == 0}
 						No items scanned yet
 					{:else}
-					{#each itemList as item}	
-						<!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
-						<div class="empty text-left px-3 py-2 leading-5 text-gray-500 flex justify-between">
-							<div class="text-white">{itemDatabase[item].itemname}</div>
-							<!-- svelte-ignore a11y_click_events_have_key_events -->
-							<!-- svelte-ignore a11y_no_static_element_interactions -->
-							<div class="justify-right cursor-pointer text-red-800" onmousedown="{() => {
-								itemList = itemList.filter(x => x != item)
-								scannedItems.delete(item)
-							}}">✕</div>						
-						</div>					
-					{/each}
+						{#each itemList as item}	
+							<!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
+							<div class="empty text-left px-3 py-2 leading-5 text-gray-500 flex justify-between">
+								<div class="text-white">{itemDatabase[item].itemname}</div>
+								<!-- svelte-ignore a11y_click_events_have_key_events -->
+								<!-- svelte-ignore a11y_no_static_element_interactions -->
+								<div class="justify-right cursor-pointer text-red-800" onmousedown="{() => {
+									itemList = itemList.filter(x => x != item)
+									scannedItems.delete(item)
+								}}">✕</div>						
+							</div>					
+						{/each}
 					{/if}
 				</div>
 			</div>
 		</div>
 		
+		<div class="form-group w-full">
+			<label for="HOTO">HOTO Option:</label>
+			<select class="text overflow-y-auto w-full" name="HOTO" id="HOTO">
+				<option value="none" selected>No HOTO</option>
+				<option value="temp">Temporary HOTO</option>
+				<option value="perm">Permanent HOTO</option>
+			</select>
+		</div>
+		
 		<button id="submitBtn" class="button-normal">Submit Sign-Out</button>
-		<button type="button" id="clearBtn" onmousedown="{reset}" class="button-normal">Clear All Items</button>
-		<button onmousedown={closeModal} type="button" class="close">close modal</button>
+		<button type="button" id="clearBtn" onmousedown="{() => {
+			setTimeout(reset, 10)
+			scannedItems.clear()
+		}
+		}" class="button-normal">Clear All Items</button>
+		<button onmousedown={() => {
+			itemList = []
+			closeModal()
+		}} type="button" class="close">close modal</button>
 	</form>
 </div>
 </dialog>

@@ -71,16 +71,16 @@ export const actions = {
         const passwordRetype = formData.get('passwordretype')?.toString()?.trim()
         const userid = formData.get('id_')?.toString()?.trim() ?? ''
         const username_ = formData.get('username_')?.toString()?.trim() ?? ''
-        const updateData = {username}
+        const updateData: {[id: string]: string | null | number} = {username}
 
         
-        const roleid = formData.get('role');
+        const roleid = formData.get('role')?.toString()?.trim();
         if (roleid != undefined) {
-            updateData["roleid"] = roleid
+            updateData["roleid"] = Number(roleid)
         }
-        const departmentid = formData.get('departmentid');
+        const departmentid = formData.get('departmentid')?.toString()?.trim();
         if (departmentid != undefined) {
-            updateData["departmentid"] = departmentid
+            updateData["departmentid"] = Number(departmentid)
         }
         
         try {
@@ -96,7 +96,7 @@ export const actions = {
                 item: `${userid} / ${username_} EDITED USER: ${JSON.stringify((await getUsersWithDepartments()).filter(x => x.id == id))} => ${JSON.stringify(updateData)}`
             })
 
-            if (passwordHash != "") {
+            if (passwordHash != "" && passwordHash != undefined) {
                 updateData["passwordHash"] = passwordHash
                 if (!validatePassword(passwordHash) && roleid != "3") {
                     return fail(400, { message: 'Password does not meet complexity requirements' });
@@ -105,7 +105,7 @@ export const actions = {
 
 
             if (roleid == "1" || roleid == "2") {
-                passwordHash = await hash(passwordHash, {
+                passwordHash = await hash(passwordHash ?? "", {
                     // recommended minimum parameters
                     memoryCost: 19456,
                     timeCost: 2,
@@ -125,6 +125,7 @@ export const actions = {
             return { success: true };
         } catch (error) {
             updateData["id"] = id
+            console.log(updateData)
             return { error: error instanceof Error ? error.message : "Failed to update item",
                      action: "edit", 
                      updateData
