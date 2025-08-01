@@ -108,7 +108,7 @@ export const actions = {
     
             const SN1 = columns[1] ? columns[1].trim() : '';
             if ((await getItemsWithDepartments()).filter(x => 
-                x.SN1 == SN1)
+                x.SN1 == SN1 && SN1 != "")
                 .length != 0) {
                     isValid = false;
                     messages.push("SN1 is not unique");
@@ -116,7 +116,7 @@ export const actions = {
     
             //check SN2
             const SN2 = columns[2] ? columns[2].trim() : '';
-             if (!/^[0-9]*$/.test(SN2)) {
+             if (!/^[0-9]*$/.test(SN2) && SN2 != "") {
                 isValid = false;
                 messages.push("SN2 contains characters other than numerals");
             } else if ((await getItemsWithDepartments()).filter(x => 
