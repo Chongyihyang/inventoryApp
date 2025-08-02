@@ -118,7 +118,7 @@ export const actions = {
                 messages.push("SN2 contains characters other than numerals");
             } else if ((await getItemsWithDepartments()).filter(x => 
                 x.SN2 == SN2)
-                .length != 0) {
+                .length != 0 && SN2 != "") {
                     isValid = false;
                     messages.push("SN2 is not unique");
             }
@@ -199,16 +199,16 @@ export const actions = {
             }
             results.details.push(itemResult);
         }
-        if (params.length != 0) {
-            await db.transaction(async (tx) => {
-                await tx.insert(table.itemsTable).values(params).returning();
-            });
-            await db.insert(table.logsTable).values({
-                time: Date.now(),
-                item: `${userid} / ${username} UPLOADED: ${JSON.stringify(params)}`
-            })
-        }
         try {
+            // if (params.length != 0) {
+            //     await db.transaction(async (tx) => {
+            //         await tx.insert(table.itemsTable).values(params).returning();
+            //     });
+            //     await db.insert(table.logsTable).values({
+            //         time: Date.now(),
+            //         item: `${userid} / ${username} UPLOADED: ${JSON.stringify(params)}`
+            //     })
+            // }
             return { success: true, results };
         } catch (error) {
             return fail(500, { error: error instanceof Error ? error.message : "Failed to create item" });
