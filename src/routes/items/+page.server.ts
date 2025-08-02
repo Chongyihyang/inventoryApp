@@ -101,10 +101,7 @@ export const actions = {
             if (!itemid) {
                 isValid = false;
                 messages.push("Missing item ID");
-            } else if (!alphanumericRegex.test(itemid)) {
-                isValid = false;
-                messages.push("Item ID contains invalid characters");
-            }
+            } 
     
             const SN1 = columns[1] ? columns[1].trim() : '';
             if ((await getItemsWithDepartments()).filter(x => 

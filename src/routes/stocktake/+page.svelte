@@ -22,22 +22,6 @@
 		success?: boolean;
 	};
 
-	type item = {
-		id: string;
-		itemname: string;
-		itemid: string;
-		outtime: number;
-		issuer: string;
-		issuerid: number;
-		issuee: string;
-		issueeid: number;
-	};
-
-
-	type Detail = {
-		itemname: string;
-		issuee: string | null;
-	};
 
 	// Props
 	let { data, form } = $props<{
@@ -50,7 +34,7 @@
 		};
 		form?: FormData;
 	}>();
-	const { departments, items, currentdept, currentrole } = data;
+	const { items, currentdept } = data;
 	let user = $state(data.user)
 
 	// State
@@ -58,7 +42,6 @@
 	let scannerTimeout: NodeJS.Timeout
 	const SCANNER_DELAY = 100 // ms
 	const scannedItems = new Map<string, number>()
-	let barcodeInput: HTMLInputElement
 	let statusMessage: HTMLDivElement
 	let selecteditems: Item[] = $state([])
 	let accounted = $state(0);
@@ -111,18 +94,26 @@
 		} else {
 			showStatus(`Invalid barcode: ${barcode}`, false);
 		}
-		barcodeInput.focus();
+		const barcodeInput = document.getElementById("barcodeInput")
+		if (barcodeInput != null) {
+			barcodeInput.focus()
+		}
 	}
 
-	function receiveScan(e: Event) {
-		const target = e.target as HTMLInputElement | null;
-		if (!target || !target.value) return;
-		scannerBuffer += target.value;
-		target.value = '';
-		handleBarcodeScan();
-		clearTimeout(scannerTimeout);
-		scannerTimeout = setTimeout(handleBarcodeScan, SCANNER_DELAY);
+	function receiveBarcode(e: Event) {
+		if (!(e.target as HTMLInputElement).value) return					
+			// Add to buffer and clear input
+			scannerBuffer += (e.target as HTMLInputElement).value;
+			(e.target as HTMLInputElement).value = ''
+
+			
+			// Reset timeout
+			clearTimeout(scannerTimeout)
+			
+			// Set timeout to detect end of scan
+			scannerTimeout = setTimeout(handleBarcodeScan, SCANNER_DELAY)
 	}
+
 
 
 	// Effects
@@ -137,18 +128,14 @@
 <div class="form-group mx-auto max-h-[50vh] w-[90%] mt-3" id="main">
 	<a href="/stocktake/history" class="text-decoration-line: underline">Check Stocktake Transactions →</a>
 	<h1>{accounted} / {selecteditems.length}</h1>
-	<label for="barcodeInput" class="flex">
-		Barcode Scanner Input:
+	<div class="flex">
+		<label for="barcodeInput">Barcode Scanner Input:</label>
 		<div bind:this={statusMessage}></div>
-	</label>
-	<input
-		type="text"
-		bind:this={barcodeInput}
-		placeholder="Scan items here"
-		autocomplete="off"
-		class="text"
-		oninput={(e) => receiveScan(e)}
-	/>
+	</div>
+	<input type="text" placeholder="Scan items here" 
+	autocomplete="off" class="text" id="barcodeInput"
+	oninput={(e) => {receiveBarcode(e)}}>
+
 	<br />
 	<br />
 	<div class="mx-auto max-h-[50vh] w-full overflow-y-auto mb-3">
