@@ -125,7 +125,6 @@ export const actions = {
             return { success: true };
         } catch (error) {
             updateData["id"] = id
-            console.log(updateData)
             return { error: error instanceof Error ? error.message : "Failed to update item",
                      action: "edit", 
                      updateData

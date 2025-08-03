@@ -74,7 +74,6 @@ export const load: PageServerLoad = async ({ locals }) => {
 	const currentdept = Number(locals.department);
 	const currentuser = locals.user;
 	const currentrole = locals.role;
-	console.log(items)
 
 	return {
 		user,
