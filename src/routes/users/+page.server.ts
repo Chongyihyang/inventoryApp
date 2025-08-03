@@ -48,9 +48,9 @@ async function getAllDepartments() {
     return db.select().from(table.departmentTable).orderBy(table.departmentTable.departmentname);
 }
 
-async function getAllRoles() {
-    return db.select().from(table.rolesTable).orderBy(table.rolesTable.id);
-}
+// async function getAllRoles() {
+//     return db.select().from(table.rolesTable).orderBy(table.rolesTable.id);
+// }
 
 
 function validateDeleteConfirmation(username: string, confirmation: string) {

@@ -80,6 +80,13 @@ export const actions = {
             failedItems: [],
             details: []
         };
+
+        const [allItems, allDepartments, allCategories] = await Promise.all([
+            getItemsWithDepartments(),
+            getAllDepartments(),
+            getCategories()
+        ]);
+        
         const alphanumericRegex = /^[a-zA-Z0-9]+$/;
         const itemIdsList = [];
         for (let i = 0; i < rows.length; i++) {
@@ -106,7 +113,7 @@ export const actions = {
             } 
     
             const SN1 = columns[1] ? columns[1].trim() : '';
-            if ((await getItemsWithDepartments()).filter(x => 
+            if (allItems.filter(x => 
                 x.SN1 == SN1 && SN1 != "")
                 .length != 0) {
                     isValid = false;
@@ -118,7 +125,7 @@ export const actions = {
              if (!/^[0-9]*$/.test(SN2) && SN2 != "") {
                 isValid = false;
                 messages.push("SN2 contains characters other than numerals");
-            } else if ((await getItemsWithDepartments()).filter(x => 
+            } else if (allItems.filter(x => 
                 x.SN2 == SN2)
                 .length != 0 && SN2 != "") {
                     isValid = false;
@@ -130,7 +137,7 @@ export const actions = {
              if (!alphanumericRegex.test(currentholdertmp)) {
                 isValid = false;
                 messages.push("currentholder contains characters other than numerals");
-            } else if ((await getAllDepartments()).filter(x => 
+            } else if (allDepartments.filter(x => 
                 x.departmentname == currentholdertmp)
                 .length != 1) {
                 isValid = false
@@ -139,7 +146,7 @@ export const actions = {
                 isValid = false
                 messages.push("current holder is not user's sqn")
             } else {
-                currentholder = (await getAllDepartments()).filter(x => 
+                currentholder = allDepartments.filter(x => 
                     x.departmentname == currentholdertmp)[0].id
             }
     
@@ -148,13 +155,13 @@ export const actions = {
              if (!alphanumericRegex.test(originalholdertmp)) {
                 isValid = false;
                 messages.push("originalholder contains characters other than numerals");
-            } else if ((await getAllDepartments()).filter(x => 
+            } else if (allDepartments.filter(x => 
                 x.departmentname == originalholdertmp)
                 .length != 1) {
                 isValid = false
                 messages.push("Cannot find department for original holder")
             } else {
-                originalholder = (await getAllDepartments()).filter(x => 
+                originalholder = allDepartments.filter(x => 
                     x.departmentname == originalholdertmp)[0].id
             }
     
@@ -162,11 +169,11 @@ export const actions = {
 
             let category = 0
             const categoryString = columns[6] ? columns[6].trim() : '';
-            if ((await getCategories()).filter(x => x.categoryname == categoryString).length != 1 && categoryString != "") {
+            if (allCategories.filter(x => x.categoryname == categoryString).length != 1 && categoryString != "") {
                 isValid = false;
                 messages.push("category name is not in the categorylist");
             } else {
-                category = (await getCategories()).filter(x => x.categoryname == categoryString)[0].id
+                category = allCategories.filter(x => x.categoryname == categoryString)[0].id
             }
     
             const itemResult = {
