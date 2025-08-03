@@ -87,6 +87,12 @@ export const actions = {
             getCategories()
         ]);
         
+        const departmentMap = new Map(allDepartments.map(d => [d.departmentname, d.id]));
+        const categoryMap = new Map(allCategories.map(c => [c.categoryname, c.id]));
+        console.log(departmentMap, categoryMap)
+        const sn1Set = new Set(allItems.map(i => {if (i.SN1 != "") {return i.SN1}}).filter(Boolean));
+        const sn2Set = new Set(allItems.map(i => {if (i.SN2 != "") {return i.SN2}}).filter(Boolean));
+
         const alphanumericRegex = /^[a-zA-Z0-9]+$/;
         const itemIdsList = [];
         for (let i = 0; i < rows.length; i++) {
@@ -113,41 +119,41 @@ export const actions = {
             } 
     
             const SN1 = columns[1] ? columns[1].trim() : '';
-            if (allItems.filter(x => 
-                x.SN1 == SN1 && SN1 != "")
-                .length != 0) {
-                    isValid = false;
-                    messages.push("SN1 is not unique");
+            if (sn1Set.has(SN1)) {
+                isValid = false;
+                messages.push("SN1 is not unique");
+            } else {
+                sn1Set.add(SN1)
             }
     
             //check SN2
             const SN2 = columns[2] ? columns[2].trim() : '';
-             if (!/^[0-9]*$/.test(SN2) && SN2 != "") {
+             if (!/^[0-9]*$/.test(SN2)  ) {
                 isValid = false;
                 messages.push("SN2 contains characters other than numerals");
-            } else if (allItems.filter(x => 
-                x.SN2 == SN2)
-                .length != 0 && SN2 != "") {
-                    isValid = false;
-                    messages.push("SN2 is not unique");
+            } else if (sn2Set.has(SN2) && SN2 != "") {
+                isValid = false;
+                messages.push("SN2 is not unique");
+            } else {
+                sn2Set.add(SN2)
             }
     
             const currentholdertmp = columns[3] ? columns[3].trim() : '';
+            if (i == 3) {
+                console.log(currentholdertmp, typeof currentholdertmp, departmentMap.has(currentholdertmp))
+            }
             let currentholder = 0
              if (!alphanumericRegex.test(currentholdertmp)) {
                 isValid = false;
                 messages.push("currentholder contains characters other than numerals");
-            } else if (allDepartments.filter(x => 
-                x.departmentname == currentholdertmp)
-                .length != 1) {
+            } else if (!departmentMap.has(currentholdertmp)) {
                 isValid = false
                 messages.push("Cannot find department for current holder")
             } else if (locals.role == "2" && locals.department != currentholdertmp){
                 isValid = false
                 messages.push("current holder is not user's sqn")
             } else {
-                currentholder = allDepartments.filter(x => 
-                    x.departmentname == currentholdertmp)[0].id
+                currentholder = departmentMap.get(currentholdertmp) ?? 0
             }
     
             const originalholdertmp = columns[4] ? columns[4].trim() : '';
@@ -155,27 +161,26 @@ export const actions = {
              if (!alphanumericRegex.test(originalholdertmp)) {
                 isValid = false;
                 messages.push("originalholder contains characters other than numerals");
-            } else if (allDepartments.filter(x => 
-                x.departmentname == originalholdertmp)
-                .length != 1) {
+            } else if (!departmentMap.has(originalholdertmp)) {
                 isValid = false
                 messages.push("Cannot find department for original holder")
             } else {
-                originalholder = allDepartments.filter(x => 
-                    x.departmentname == originalholdertmp)[0].id
+                originalholder = departmentMap.get(originalholdertmp) ?? 0
             }
     
             const remarks = columns[5] ? columns[5].trim() : '';
 
             let category = 0
             const categoryString = columns[6] ? columns[6].trim() : '';
-            if (allCategories.filter(x => x.categoryname == categoryString).length != 1 && categoryString != "") {
+            if (!categoryMap.has(categoryString) && categoryString != "") {
                 isValid = false;
                 messages.push("category name is not in the categorylist");
             } else {
-                category = allCategories.filter(x => x.categoryname == categoryString)[0].id
+                category = categoryMap.get(categoryString) ?? 0
             }
-    
+            if (i == 3) {
+                console.log(originalholdertmp, typeof originalholdertmp, departmentMap.has(originalholdertmp))
+            }
             const itemResult = {
                 row: rowNumber,
                 itemid,
