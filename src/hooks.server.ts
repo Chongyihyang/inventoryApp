@@ -18,31 +18,34 @@ const handleAuth: Handle = async ({ event, resolve }) => {
 	if (session) {
 		auth.setSessionTokenCookie(event, sessionToken, session.expiresAt);
 	} else {
-		auth.deleteSessionTokenCookie(event);
+		auth.deleteSessionTokenCookie(event)
 	}
 
-	const department = await db
-	.select({
-		username: usersTable.username,
-		departmentname: departmentTable.departmentname,
-		departmentid: departmentTable.id
-	})
-	.from(departmentTable)
-	.leftJoin(usersTable, eq(usersTable.departmentid, departmentTable.id))
-	.where(eq(usersTable.username, user?.username))
+	if (user) {
+		const department = await db
+		.select({
+			username: usersTable.username,
+			departmentname: departmentTable.departmentname,
+			departmentid: departmentTable.id
+		})
+		.from(departmentTable)
+		.leftJoin(usersTable, eq(usersTable.departmentid, departmentTable.id))
+		.where(eq(usersTable.username, user?.username))
+	
+		const role = await db
+		.select({
+			roleid: rolesTable.id
+		})
+		.from(rolesTable)
+		.leftJoin(usersTable, eq(usersTable.roleid, rolesTable.id))
+		.where(eq(usersTable.username, user?.username))
+		
+		event.locals.user = user
+		event.locals.session = session
+		event.locals.department = String(department[0].departmentid)
+		event.locals.role = String(role[0].roleid)
+	}
 
-	const role = await db
-	.select({
-		roleid: rolesTable.id
-	})
-	.from(rolesTable)
-	.leftJoin(usersTable, eq(usersTable.roleid, rolesTable.id))
-	.where(eq(usersTable.username, user?.username))
-
-	event.locals.user = user
-	event.locals.session = session
-	event.locals.department = String(department[0].departmentid)
-	event.locals.role = String(role[0].roleid)
 	return resolve(event);
 };
 

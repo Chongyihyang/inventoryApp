@@ -1,8 +1,24 @@
 <script lang="ts">
+    import { browser } from "$app/environment";
     let { selecteditems, 
           barcodeIsOpen = $bindable()
     } = $props()
     let dialog = $state<HTMLDialogElement>()
+    
+    function checkAll() {
+        if (browser) {
+            const mainCheck = document.getElementById("checkall")
+            if (mainCheck != null && mainCheck.checked) {
+                document.querySelectorAll(`input[type="checkbox"]`).forEach(x => {
+                    x.checked = true
+                })
+            } else if (mainCheck != null && !mainCheck.checked) {
+                document.querySelectorAll(`input[type="checkbox"]`).forEach(x => {
+                    x.checked = false
+                })                
+            }
+        }
+    }
 
     function closeModal() {
         barcodeIsOpen = false
@@ -23,7 +39,7 @@
             format: 'a4'
         });
         let x = 10, y = 10;
-        const barcodeHeight = 20, barcodeWidth = 60, borderPadding = 1;
+        const barcodeHeight = 15, barcodeWidth = 40, borderPadding = 1;
         words.forEach((word, index) => {
             let text = word.split(" ")[1]
             word = word.split(" ")[0]
@@ -77,13 +93,13 @@
 >
 <div class="internal">
     <h2 class="title">Select items:</h2>
-        <div class="mx-auto max-h-[30vh] w-full overflow-y-auto mb-3">
+        <div class="mx-auto max-h-[40vh] w-full overflow-y-auto mb-3">
             <table>
                 <thead>
                     <tr>
                         <th>Id</th>
                         <th>Name</th>
-                        <th></th>
+                        <th><input type="checkbox" id="checkall" oninput={checkAll}></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -91,7 +107,7 @@
                     <tr class="hover">
                         <td><h2>{row.id}</h2></td>
                         <td><h2>{row.itemname}</h2></td>
-                        <td class="p-0">
+                        <td>
                             <input type="checkbox" 
                             value="{row.id} {row.itemname}"
                             name="{row.id} {row.itemname}">

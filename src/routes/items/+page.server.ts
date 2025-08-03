@@ -200,15 +200,15 @@ export const actions = {
             results.details.push(itemResult);
         }
         try {
-            // if (params.length != 0) {
-            //     await db.transaction(async (tx) => {
-            //         await tx.insert(table.itemsTable).values(params).returning();
-            //     });
-            //     await db.insert(table.logsTable).values({
-            //         time: Date.now(),
-            //         item: `${userid} / ${username} UPLOADED: ${JSON.stringify(params)}`
-            //     })
-            // }
+            if (params.length != 0) {
+                await db.transaction(async (tx) => {
+                    await tx.insert(table.itemsTable).values(params).returning();
+                });
+                await db.insert(table.logsTable).values({
+                    time: Date.now(),
+                    item: `${userid} / ${username} UPLOADED: ${JSON.stringify(params)}`
+                })
+            }
             return { success: true, results };
         } catch (error) {
             return fail(500, { error: error instanceof Error ? error.message : "Failed to create item" });
@@ -216,7 +216,7 @@ export const actions = {
     },
 
     edit: async ({ request }) => {
-        const data = await request.formData()
+        const data = await request.formData()   
         const userid = data.get('id_')?.toString()?.trim() ?? ''
         const username = data.get('username')?.toString()?.trim() ?? ''
         const id = Number(data.get("id")?.toString())

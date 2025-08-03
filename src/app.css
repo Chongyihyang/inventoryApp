@@ -145,7 +145,7 @@
     }
 
     .internal {
-        @apply px-10 py-5 mx-auto max-h-[80vh] w-full overflow-y-auto max-sm:px-4;
+        @apply px-10 py-5 mx-auto max-h-[90vh] w-full overflow-y-auto max-sm:px-4;
     }
 
     dialog::-webkit-scrollbar {
