@@ -44,7 +44,6 @@
     }>();
     let departmentsList:Map<string, string> = new Map()  
     const { user, users, departments, currentdept, roles, currentrole } = data
-    
 
     departments.forEach((x: Department) => {
         departmentsList.set(x.departmentname, x.id)

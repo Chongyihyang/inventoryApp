@@ -16,7 +16,7 @@ export async function load({ locals }) {
         users: await getUsersWithDepartments(), 
         departments: await getAllDepartments(), 
         currentdept: Number(locals.department), 
-        roles: locals.role, 
+        roles: await getAllRoles(), 
         currentrole: locals.role, 
     };
 }
@@ -48,9 +48,9 @@ async function getAllDepartments() {
     return db.select().from(table.departmentTable).orderBy(table.departmentTable.departmentname);
 }
 
-// async function getAllRoles() {
-//     return db.select().from(table.rolesTable).orderBy(table.rolesTable.id);
-// }
+async function getAllRoles() {
+    return db.select().from(table.rolesTable).orderBy(table.rolesTable.id);
+}
 
 
 function validateDeleteConfirmation(username: string, confirmation: string) {
