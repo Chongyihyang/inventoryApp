@@ -82,6 +82,7 @@ export const actions = {
         const alphanumericRegex = /^[a-zA-Z0-9]+$/;
         const itemIdsList = [];
         for (let i = 0; i < rows.length; i++) {
+            console.time("start")
             const row = rows[i];
             const rowNumber = i + 1;
             const columns = row.split(',');
@@ -199,16 +200,17 @@ export const actions = {
             }
             results.details.push(itemResult);
         }
+        console.timeEnd("start")
         try {
-            if (params.length != 0) {
-                await db.transaction(async (tx) => {
-                    await tx.insert(table.itemsTable).values(params).returning();
-                });
-                await db.insert(table.logsTable).values({
-                    time: Date.now(),
-                    item: `${userid} / ${username} UPLOADED: ${JSON.stringify(params)}`
-                })
-            }
+            // if (params.length != 0) {
+            //     await db.transaction(async (tx) => {
+            //         await tx.insert(table.itemsTable).values(params).returning();
+            //     });
+            //     await db.insert(table.logsTable).values({
+            //         time: Date.now(),
+            //         item: `${userid} / ${username} UPLOADED: ${JSON.stringify(params)}`
+            //     })
+            // }
             return { success: true, results };
         } catch (error) {
             return fail(500, { error: error instanceof Error ? error.message : "Failed to create item" });
