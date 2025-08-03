@@ -46,7 +46,10 @@ const handleAuth: Handle = async ({ event, resolve }) => {
 		event.locals.role = String(role[0].roleid)
 	}
 
-	return resolve(event);
+	console.time("start")
+	const response = await resolve(event)
+	console.timeEnd("start")
+	return response;
 };
 
 export const handle: Handle = handleAuth;

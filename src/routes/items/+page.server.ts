@@ -25,14 +25,15 @@ type Results = {
 }
 
 export async function load({ locals }) {
-    const user = requireLogin()
-    const categories = await getCategories()
-    const items = await getItemsWithDepartments()
-    const departments = await getAllDepartments()
-    const currentdept = Number(department.current.value)
-    const currentrole = locals.role
 
-    return { user, items, departments, currentdept, currentrole, categories };
+    return { 
+        user: requireLogin(), 
+        currentdept: Number(department.current.value), 
+        currentrole: locals.role, 
+        items: await getItemsWithDepartments(), 
+        departments: await getAllDepartments(), 
+        categories: await getCategories(),
+    };
 }
 
 
@@ -82,7 +83,7 @@ export const actions = {
         const alphanumericRegex = /^[a-zA-Z0-9]+$/;
         const itemIdsList = [];
         for (let i = 0; i < rows.length; i++) {
-            console.time("start")
+            console.time(`start${i}`)
             const row = rows[i];
             const rowNumber = i + 1;
             const columns = row.split(',');
@@ -198,22 +199,22 @@ export const actions = {
                 results.errorCount++;
                 results.failedItems.push(itemResult);
             }
-            results.details.push(itemResult);
+            results.details.push(itemResult)
+            console.timeEnd(`start${i}`)
         }
-        console.timeEnd("start")
         try {
-            // if (params.length != 0) {
-            //     await db.transaction(async (tx) => {
-            //         await tx.insert(table.itemsTable).values(params).returning();
-            //     });
-            //     await db.insert(table.logsTable).values({
-            //         time: Date.now(),
-            //         item: `${userid} / ${username} UPLOADED: ${JSON.stringify(params)}`
-            //     })
-            // }
+            if (params.length != 0) {
+                await db.transaction(async (tx) => {
+                    await tx.insert(table.itemsTable).values(params)
+                });
+                await db.insert(table.logsTable).values({
+                    time: Date.now(),
+                    item: `${userid} / ${username} UPLOADED: ${JSON.stringify(params)}`
+                })
+            }
             return { success: true, results };
         } catch (error) {
-            return fail(500, { error: error instanceof Error ? error.message : "Failed to create item" });
+            return fail(500, { error: error instanceof Error ? error.message : "Failed to create item" })
         }
     },
 

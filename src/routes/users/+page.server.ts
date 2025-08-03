@@ -10,15 +10,15 @@ import { generateUserId, validatePassword, validateUsername } from '$lib/utils';
 type UserInsert = typeof table.usersTable.$inferInsert;
 
 export async function load({ locals }) {
-    const user = requireLogin();
-    
-    const users = await getUsersWithDepartments();
-    const departments = await getAllDepartments();
-    const currentdept = Number(locals.department);
-    const currentrole = locals.role
-    const roles = await getAllRoles();
 
-    return { user, users, departments, currentdept, roles, currentrole };
+    return { 
+        user: requireLogin(), 
+        users: await getUsersWithDepartments(), 
+        departments: await getAllDepartments(), 
+        currentdept: Number(locals.department), 
+        roles: locals.role, 
+        currentrole: locals.role, 
+    };
 }
 
 
