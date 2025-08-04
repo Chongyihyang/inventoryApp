@@ -89,7 +89,7 @@
                 showStatus(`Item already scanned: ${itemDatabase[barcode]}`, false)
             }
         } else {
-            showStatus(`Invalid barcode: ${barcode}`, false)
+            showStatus(`Invalid barcode: ${barcode.substring(0, 13)}`, false)
         }
 		const barcodeInput = document.getElementById("barcodeInput")
 		if (barcodeInput != null) {

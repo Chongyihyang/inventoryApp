@@ -12,7 +12,13 @@ import { getAllDepartments, getCategories, getItemsWithDepartments } from '$lib/
 type ItemInsert = typeof table.itemsTable.$inferInsert;
 
 interface UpdateData {
-    [id: string]: string | number,
+    [x: string]: unknown,
+    itemname: string,
+    SN1: string,
+    SN2: string,
+    remarks: string,
+    category: number,
+    us: number,
 }
 
 type Results = {
@@ -55,6 +61,22 @@ function validateDeleteConfirmation(itemname: string, confirmation: string) {
 
 }
 
+async function getDB() {
+    const [allItems, allDepartments, allCategories] = await Promise.all([
+        getItemsWithDepartments(),
+        getAllDepartments(),
+        getCategories()
+    ]);
+    
+    const departmentMap = new Map(allDepartments.map(d => [d.departmentname, d.id]));
+    const categoryMap = new Map(allCategories.map(c => [c.categoryname, c.id]));
+    const sn1Set = new Set(allItems.map(i => {if (i.SN1 != "") {return i.SN1}}).filter(Boolean));
+    const sn2Set = new Set(allItems.map(i => {if (i.SN2 != "") {return i.SN2}}).filter(Boolean));   
+    return {departmentMap, categoryMap, sn1Set, sn2Set}
+}
+
+
+
 // Action handlers
 export const actions = {
 
@@ -81,17 +103,7 @@ export const actions = {
             details: []
         };
 
-        const [allItems, allDepartments, allCategories] = await Promise.all([
-            getItemsWithDepartments(),
-            getAllDepartments(),
-            getCategories()
-        ]);
-        
-        const departmentMap = new Map(allDepartments.map(d => [d.departmentname, d.id]));
-        const categoryMap = new Map(allCategories.map(c => [c.categoryname, c.id]));
-        console.log(departmentMap, categoryMap)
-        const sn1Set = new Set(allItems.map(i => {if (i.SN1 != "") {return i.SN1}}).filter(Boolean));
-        const sn2Set = new Set(allItems.map(i => {if (i.SN2 != "") {return i.SN2}}).filter(Boolean));
+        const {departmentMap, categoryMap, sn1Set, sn2Set} = await getDB()
 
         const alphanumericRegex = /^[a-zA-Z0-9]+$/;
         const itemIdsList = [];
@@ -120,9 +132,10 @@ export const actions = {
     
             const SN1 = columns[1] ? columns[1].trim() : '';
             if (sn1Set.has(SN1)) {
+                console.log(`SN1: "${SN1}"`)
                 isValid = false;
                 messages.push("SN1 is not unique");
-            } else {
+            } else if (SN1 != "") {
                 sn1Set.add(SN1)
             }
     
@@ -134,7 +147,7 @@ export const actions = {
             } else if (sn2Set.has(SN2) && SN2 != "") {
                 isValid = false;
                 messages.push("SN2 is not unique");
-            } else {
+            } else if (SN2 != "") {
                 sn2Set.add(SN2)
             }
     
@@ -178,9 +191,7 @@ export const actions = {
             } else {
                 category = categoryMap.get(categoryString) ?? 0
             }
-            if (i == 3) {
-                console.log(originalholdertmp, typeof originalholdertmp, departmentMap.has(originalholdertmp))
-            }
+
             const itemResult = {
                 row: rowNumber,
                 itemid,
@@ -242,22 +253,26 @@ export const actions = {
             remarks: data.get('remarks')?.toString() ?? "",
             category: Number(data.get('category')?.toString() ?? ""),
             us: Number(data.get('us')?.toString() ?? "0"),
-        }    
-        
+        }   
+
+        const {sn1Set, sn2Set} = await getDB()   
+
         try {
 
-            if ((await getItemsWithDepartments())
-                .filter(x => x.id != id)
-                .filter(x => x.SN1 == updateData.SN1)
-                .length != 0) {
-                    throw new Error("SN1 is not unique")
+
+            if (sn1Set.has(updateData.SN1)) {
+                throw new Error("SN1 is not unique")
+            } else {
+                sn1Set.add(updateData.SN1)
             }
     
-            if ((await getItemsWithDepartments())
-                .filter(x => x.id != id)
-                .filter(x => x.SN2 == updateData.SN2)
-                .length > 1) {
-                    throw new Error("SN2 is not unique")
+
+            if (!/^[0-9]*$/.test(updateData.SN2)) {
+                throw new Error("SN2 contains characters other than numerals")
+            } else if (sn2Set.has(updateData.SN2) && updateData.SN2 != "") {
+                throw new Error("SN2 is not unique")
+            } else {
+                sn2Set.add(updateData.SN2)
             }
 
             validateItemName(String(updateData.itemname));
@@ -364,7 +379,7 @@ export const actions = {
     
             validateDeleteConfirmation(itemname, confirmation);
             await db.delete(table.itemsTable)
-                .where(eq(table.itemsTable.id, id));
+                .where(eq(table.itemsTable.id, Number(id)));
             await db.insert(table.logsTable).values({
                 time: Date.now(),
                 item: `${userid} / ${username} DELETED ${id}: ${itemname} / ${SN1} / ${SN2}`

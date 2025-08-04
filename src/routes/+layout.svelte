@@ -4,7 +4,9 @@
 
 	let { data, children } = $props();
 	let { user, dept, departmentList, role } = data
-	let ignore = ["stocktake", "logs"]
+	let ignore = ["stocktake", "logs", "departments"]
+	let settingsList = ["users","items","category","departments"]
+	let transactionsList = ["inout","stocktake" ]
 
     import { department } from "$lib/shared.svelte"
     let selecteddept = $state(Number(dept))
@@ -12,6 +14,10 @@
     function changeSelectedItem() {
         department.current.value = selecteddept
     }
+
+	function capitalise(val: string) {
+    	return String(val).charAt(0).toUpperCase() + String(val).slice(1);
+	}
 
     changeSelectedItem()
 </script>
@@ -46,9 +52,9 @@
 						Settings
 					</div>
 					<div class="dropdown-content">
-						<a href="/users" class=" px-2 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white aria-current:bg-gray-700" aria-current={page.url.pathname.includes('/users')} data-sveltekit-prefetch>Users</a>
-						<a href="/items" class="px-2 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white aria-current:bg-gray-700" aria-current={page.url.pathname.includes('/items')} data-sveltekit-prefetch>Items</a>
-						<a href="/category" class="px-2 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white aria-current:bg-gray-700" aria-current={page.url.pathname.includes('/category')} data-sveltekit-prefetch>Category</a>
+						{#each settingsList as item}
+							<a href="/{item}" class=" px-2 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white aria-current:bg-gray-700" aria-current={page.url.pathname.includes(`/${item}`)} data-sveltekit-prefetch>{capitalise(item)}</a>
+						{/each}
 					</div>
 				</div>
 				<div class="dropdown">
@@ -56,8 +62,9 @@
 						Transactions
 					</div>
 					<div class="dropdown-content">
-						<a href="/transactions" class=" px-2 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white aria-current:bg-gray-700" aria-current={page.url.pathname.includes('/transactions')} data-sveltekit-prefetch>In Out</a>
-						<a href="/stocktake" class=" px-2 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white aria-current:bg-gray-700" aria-current={page.url.pathname.includes('/stocktake')} data-sveltekit-prefetch>Stocktake</a>
+						{#each transactionsList as item}
+							<a href="/{item}" class=" px-2 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white aria-current:bg-gray-700" aria-current={page.url.pathname.includes(`/${item}`)} data-sveltekit-prefetch>{capitalise(item)}</a>
+						{/each}
 						{#if Number(role) == 1}
 							<a href="/logs" class="px-2 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 hover:text-white aria-current:bg-gray-700" aria-current={page.url.pathname.includes('/logs')} data-sveltekit-prefetch>Logs</a>
 						{/if}
@@ -85,13 +92,13 @@
   
 	<el-disclosure id="mobile-menu" hidden class="block sm:hidden">
 	  <div class="space-y-1 px-2 pt-2 pb-3">
-		<!-- Current: "bg-gray-900 text-white", Default: "text-gray-300 hover:bg-gray-700 hover:text-white" -->
-		<a href="/"  class="block rounded-md px-3 py-2 text-base font-medium text-gray-300 hover:bg-gray-700 hover:text-white aria-current:underline" aria-current={page.url.pathname === '/'}>Home</a>
-		<a href="/users"  class="block rounded-md px-3 py-2 text-base font-medium text-gray-300 hover:bg-gray-700 hover:text-white aria-current:underline" aria-current={page.url.pathname.includes("/users")}>Users</a>
-		<a href="/items" class="block rounded-md px-3 py-2 text-base font-medium text-gray-300 hover:bg-gray-700 hover:text-white aria-current:underline" aria-current={page.url.pathname.includes("/items")}>Items</a>
-		<a href="/category" class="block rounded-md px-3 py-2 text-base font-medium text-gray-300 hover:bg-gray-700 hover:text-white aria-current:underline" aria-current={page.url.pathname.includes('/category')} data-sveltekit-prefetch>Category</a>
-		<a href="/transactions" class="block rounded-md px-3 py-2 text-base font-medium text-gray-300 hover:bg-gray-700 hover:text-white aria-current:underline" aria-current={page.url.pathname.includes("/transactions")}>Transactions</a>
-		<a href="/stocktake" class="block rounded-md px-3 py-2 text-base font-medium text-gray-300 hover:bg-gray-700 hover:text-white aria-current:underline" aria-current={page.url.pathname.includes("/stocktake")}>Stocktake</a>
+		<a href="/" class=" block rounded-md px-3 py-2 text-base font-medium text-gray-300 hover:bg-gray-700 hover:text-white aria-current:underline" aria-current={page.url.pathname.includes(`/`)} data-sveltekit-prefetch>Home</a>
+		{#each settingsList as item}
+			<a href="/{item}" class=" block rounded-md px-3 py-2 text-base font-medium text-gray-300 hover:bg-gray-700 hover:text-white aria-current:underline" aria-current={page.url.pathname.includes(`/${item}`)} data-sveltekit-prefetch>{capitalise(item)}</a>
+		{/each}		 
+		{#each transactionsList as item}
+			<a href="/{item}" class=" block rounded-md px-3 py-2 text-base font-medium text-gray-300 hover:bg-gray-700 hover:text-white aria-current:underline" aria-current={page.url.pathname.includes(`/${item}`)} data-sveltekit-prefetch>{capitalise(item)}</a>
+		{/each}
 		{#if Number(role) == 1}
 			<a href="/logs" class="block rounded-md px-3 py-2 text-base font-medium text-gray-300 hover:bg-gray-700 hover:text-white aria-current:underline" aria-current={page.url.pathname.includes("/logs")}>Logs</a>
 		{/if}

@@ -32,7 +32,7 @@ onclose={() => (viewIsOpen = false)}
 onmousedown={(e) => { if (e.target === dialog) closeModal()}}>
 
     <h1 class="title">Items scanned</h1>
-    <div class="mx-auto max-h-[50vh] w-[90%] overflow-y-auto mb-3">
+    <div class="mx-auto max-h-[60vh] w-[90%] overflow-y-auto mb-3">
         <table>
             <thead>
                 <tr>

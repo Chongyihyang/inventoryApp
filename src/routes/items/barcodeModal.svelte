@@ -25,7 +25,7 @@
     }
 
     function printBarCode() {
-        const checkedCheckboxes = Array.from(document.querySelectorAll('input[type="checkbox"]:checked'));
+        const checkedCheckboxes = Array.from(document.querySelectorAll('input[type="checkbox"][class="tocheck"]:checked'));
         const checkedValues = checkedCheckboxes.map(checkbox => checkbox.value);
         if (checkedValues.length > 0) generatePDF(checkedValues);
     }
@@ -40,12 +40,10 @@
         });
         let x = 10, y = 10;
         const barcodeHeight = 15, barcodeWidth = 40, borderPadding = 1;
-        words.forEach((word, index) => {
-            let text = word.split(" ")[1]
-            word = word.split(" ")[0]
+        words.forEach((word: string) => {
+            let text = word.split(";;")[1]
             const canvas = document.createElement('canvas');
-            const trimmedWord = word.trim();
-            JsBarcode(canvas, trimmedWord, {
+            JsBarcode(canvas, word.split(";;")[0].trim(), {
                 format: "CODE39",
                 height: barcodeHeight,
                 width: 1,
@@ -109,8 +107,9 @@
                         <td><h2>{row.itemname}</h2></td>
                         <td>
                             <input type="checkbox" 
-                            value="{row.id} {row.itemname}"
-                            name="{row.id} {row.itemname}">
+                            value="{row.id};;{row.itemname}"
+                            name="{row.id} {row.itemname}"
+                            class="tocheck">
                         </td>
                     </tr>
                     {/each}

@@ -124,7 +124,7 @@
     }
 
     .form-group {
-        @apply px-3 py-1 w-full mb-5;
+        @apply px-3 py-1 w-full mb-2;
     }
 
     .form-group>label,
@@ -161,18 +161,18 @@
     }
 
     #itemList {
-        @apply border-2 border-solid rounded-2xl p-2.5 min-h-40 mt-3;
+        @apply border-2 border-solid  p-2.5 h-35 mt-3 overflow-y-auto;
     }
 
     .button-normal {
-        @apply text-white border-0 px-[10px] py-[15px] rounded-2xl cursor-pointer text-2xl w-full mb-3;
+        @apply text-white border-0  rounded-2xl cursor-pointer text-2xl w-full mb-3;
     }
 
     .close {
-        @apply bg-red-700 text-white border-0 px-[10px] py-[15px] rounded-2xl text-2xl mr-2 w-full;
+        @apply bg-red-700 text-white border-0  rounded-2xl text-2xl mr-2 w-full;
     }
 
     .close:hover {
-        @apply bg-red-500 text-white border-0 px-[10px] py-[15px] rounded-2xl cursor-pointer text-2xl mr-2 w-full;
+        @apply bg-red-500 text-white border-0  rounded-2xl cursor-pointer text-2xl mr-2 w-full;
     }
 }

@@ -78,7 +78,7 @@ export const actions: Action = {
 	changedate: async ({ request }) => {
 		const data = await request.formData()
 		const date = data.get("date")?.toString()
-		redirect(302, `/transactions/${date}`)
+		redirect(302, `/inout/${date}`)
 	}
 }
 

@@ -31,7 +31,7 @@
 <Viewmodal bind:viewIsOpen {items}/>
 
 <div class="internal" id="main">
-	<div class="mx-auto max-h-[50vh] w-[90%] overflow-y-auto mb-3">
+	<div class="mx-auto max-h-[45vh] w-[90%] overflow-y-auto mb-3">
 		<table class="w-full">
 			<thead>
 				<tr>

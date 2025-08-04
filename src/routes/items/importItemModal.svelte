@@ -42,74 +42,76 @@
 	onclose={() => (importIsOpen = false)}
 	onmousedown={(e) => { if (e.target === dialog) closeModal()}}
 >
-<div id="importResultsModal" class="modal">
-	<div class="modal-content">
-		<div class="modal-header">
-			<span class="modal-title" id="modalTitle">Import Results ({importResults.successCount} success,
-				{importResults.errorCount} errors)
-			</span>
-			<!-- svelte-ignore a11y_click_events_have_key_events -->
-			<!-- svelte-ignore a11y_no_static_element_interactions -->
-			<span class="close-btn" id="closeModalBtn" onclick="{closeModal}">&times;</span>
-		</div>
-		<div id="importSummary" class="mb-5">
-			<p>Total items processed: <strong>{importResults.totalItems}</strong></p>
-			<p>Successfully imported: <strong style="color: #0d652d;">{importResults.successCount}</strong></p>
-			<p>Failed imports: <strong style="color: #c5221f;">{importResults.errorCount}</strong></p>
-		</div>
-		<div class="mb-5">
-			<div class="font-bold mb-2.5 text-gray-500">Successful Imports</div>
-			<div id="successfulImports">
-				{#if importResults.successfulItems.length === 0}
-					<p>No items were successfully imported</p>
-				{:else}
-					{#each importResults.successfulItems.slice(0,5) as i}
-						<div>{i.itemid}</div>
-					{/each}
-					{#if importResults.successfulItems.length > 5}
-						<p>{importResults.successfulItems.length - 5} more items</p>
-					{/if}
-				{/if}
+<div class="internal">
+	<div id="importResultsModal" class="modal">
+		<div class="modal-content">
+			<div class="modal-header">
+				<span class="modal-title" id="modalTitle">Import Results ({importResults.successCount} success,
+					{importResults.errorCount} errors)
+				</span>
+				<!-- svelte-ignore a11y_click_events_have_key_events -->
+				<!-- svelte-ignore a11y_no_static_element_interactions -->
+				<span class="close-btn" id="closeModalBtn" onclick="{closeModal}">&times;</span>
 			</div>
-		</div>
-		<div class="mb-5">
-			<div class="font-bold mb-2.5 text-gray-500">Failed Imports</div>
-			<div id="failedImports">
-				{#if importResults.failedItems.length === 0}
-					<p>No items failed to imported</p>
-				{:else}
-					{#each importResults.failedItems.slice(0,5) as i}
-						<div>{i.itemid}</div>
-					{/each}
-					{#if importResults.failedItems.length > 5}
-						<p>{importResults.failedItems.length - 5} more error(s)</p>
-					{/if}
-				{/if}
+			<div id="importSummary" class="mb-5">
+				<p>Total items processed: <strong>{importResults.totalItems}</strong></p>
+				<p>Successfully imported: <strong style="color: #0d652d;">{importResults.successCount}</strong></p>
+				<p>Failed imports: <strong style="color: #c5221f;">{importResults.errorCount}</strong></p>
 			</div>
-		</div>
-		<div class="mb-5">
-			<div class="font-bold mb-2.5 text-gray-500">Import Details</div>
-			<table class="w w-full border-collapse mt-2.5">
-				<tbody id="importDetails">
-					<tr>
-						<td>Row</td>
-						<td>Item ID</td>
-						<td>Status</td>
-						<td>Message</td>
-					</tr>
-					{#each importResults.details as item}
+			<div class="mb-5">
+				<div class="font-bold mb-2.5 text-gray-500">Successful Imports</div>
+				<div id="successfulImports">
+					{#if importResults.successfulItems.length === 0}
+						<p>No items were successfully imported</p>
+					{:else}
+						{#each importResults.successfulItems.slice(0,5) as i}
+							<div>{i.itemid}</div>
+						{/each}
+						{#if importResults.successfulItems.length > 5}
+							<p>{importResults.successfulItems.length - 5} more items</p>
+						{/if}
+					{/if}
+				</div>
+			</div>
+			<div class="mb-5">
+				<div class="font-bold mb-2.5 text-gray-500">Failed Imports</div>
+				<div id="failedImports">
+					{#if importResults.failedItems.length === 0}
+						<p>No items failed to imported</p>
+					{:else}
+						{#each importResults.failedItems.slice(0,5) as i}
+							<div>{i.itemid}</div>
+						{/each}
+						{#if importResults.failedItems.length > 5}
+							<p>{importResults.failedItems.length - 5} more error(s)</p>
+						{/if}
+					{/if}
+				</div>
+			</div>
+			<div class="mb-5">
+				<div class="font-bold mb-2.5 text-gray-500">Import Details</div>
+				<table class="w w-full border-collapse mt-2.5">
+					<tbody id="importDetails">
 						<tr>
-							<td>{item.row}</td>
-							<td>{item.itemid}</td>
-							<td>{item.status}</td>
-							<td>{item.messages || "-"}</td>
+							<td>Row</td>
+							<td>Item ID</td>
+							<td>Status</td>
+							<td>Message</td>
 						</tr>
-					{/each}
-				</tbody>
-			</table>
+						{#each importResults.details as item}
+							<tr>
+								<td>{item.row}</td>
+								<td>{item.itemid}</td>
+								<td>{item.status}</td>
+								<td>{item.messages || "-"}</td>
+							</tr>
+						{/each}
+					</tbody>
+				</table>
+			</div>
+			<button id="closeModalBtn2" 
+			style="margin-top: 20px;" onclick="{closeModal}">Close</button>
 		</div>
-		<button id="closeModalBtn2" 
-		style="margin-top: 20px;" onclick="{closeModal}">Close</button>
 	</div>
 </div>
 
@@ -129,9 +131,7 @@
 		background-color: rgba(66, 133, 244, 0.05);
 	}
 
-	.modal {
-		padding: 30px;
-	}
+
 
 	.modal-header {
 		display: flex;
