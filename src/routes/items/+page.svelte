@@ -202,6 +202,24 @@
         </thead>
         <tbody>
             {#each selecteditems as row}
+            {#if row.us}
+                <tr class="hover text-red-600">
+                    <td><h2 class="font-medium text-gray-900 whitespace-nowrap dark:text-white">{row.itemname}</h2></td>
+                    <td><h2>{row.SN1}</h2></td>
+                    <td><h2>{row.SN2}</h2></td>
+                    <td><h2>{row.originalholder}</h2></td>
+                    <td class="p-0">
+                        {#if (currentrole == "1") || (currentrole == "2" && currentdept == selecteddept)}
+                            <button onmousedown="{() => {openEditModal(row)}}">✏️</button>
+                        {/if}
+                    </td>
+                    <td class="p-0">
+                        {#if (currentrole == "1") || (currentrole == "2" && currentdept == selecteddept)}
+                            <button  onmousedown="{() => {openDeleteModal(row)}}">❌</button>
+                        {/if}
+                    </td>
+                </tr>
+            {/if}
             <tr class="hover">
                 <td><h2 class="font-medium text-gray-900 whitespace-nowrap dark:text-white">{row.itemname}</h2></td>
                 <td><h2>{row.SN1}</h2></td>

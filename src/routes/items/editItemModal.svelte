@@ -59,6 +59,8 @@ onmousedown={(e) => { if (e.target === dialog) closeModal()}}
 		<form method="POST" action="?/edit" id="form_edit">
 			<input type="hidden" name="id_" value={user.id}>
 			<input type="hidden" name="username" value={user.username}>
+			<input  type="hidden" name="SN1_og" value="{currentSelectedList.SN1}"> 
+			<input  type="hidden" name="SN2_og" value="{currentSelectedList.SN2}"> 
 			<div class="grid grid-cols-3 gap-y-4">
 				<input type="hidden" name="id" value="{currentSelectedList.id}">
 				<h2 class="my-auto grid" >Edit item name: </h2>

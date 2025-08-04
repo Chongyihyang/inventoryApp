@@ -246,6 +246,8 @@ export const actions = {
         const userid = data.get('id_')?.toString()?.trim() ?? ''
         const username = data.get('username')?.toString()?.trim() ?? ''
         const id = Number(data.get("id")?.toString())
+        const SN1_og = data.get('SN1_og')?.toString() ?? ""
+        const SN2_og = data.get('SN2_og')?.toString() ?? ""
         const updateData: UpdateData = {
             itemname: data.get('itemname')?.toString() ?? "",
             SN1: data.get('SN1')?.toString() ?? "",
@@ -260,7 +262,7 @@ export const actions = {
         try {
 
 
-            if (sn1Set.has(updateData.SN1)) {
+            if (sn1Set.has(updateData.SN1) && updateData.SN1 != SN1_og) {
                 throw new Error("SN1 is not unique")
             } else {
                 sn1Set.add(updateData.SN1)
@@ -269,7 +271,7 @@ export const actions = {
 
             if (!/^[0-9]*$/.test(updateData.SN2)) {
                 throw new Error("SN2 contains characters other than numerals")
-            } else if (sn2Set.has(updateData.SN2) && updateData.SN2 != "") {
+            } else if (sn2Set.has(updateData.SN2) && updateData.SN2 != "" && updateData.SN2 != SN2_og) {
                 throw new Error("SN2 is not unique")
             } else {
                 sn2Set.add(updateData.SN2)
