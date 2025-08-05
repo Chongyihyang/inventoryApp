@@ -16,7 +16,7 @@
     }
 
     .dropdown-content {
-        @apply hidden absolute bg-gray-800 min-w-[160px]
+        @apply hidden absolute bg-gray-800 min-w-[160px] z-10
     }
 
     .dropdown-content a {
@@ -71,7 +71,7 @@
     }
 
     th {
-        @apply px-6 py-4 bg-[#364153] max-sm:px-2;
+        @apply px-6 py-4 bg-[#364153] max-sm:px-2 top-0 z-[2] sticky;
     }
 
     td {

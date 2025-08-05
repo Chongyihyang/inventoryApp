@@ -32,7 +32,8 @@ export async function getItemsWithDepartments() {
         .leftJoin(
             table.departmentTable, 
             eq(table.departmentTable.id, table.itemsTable.originalholder)
-        );
+        )
+        .orderBy(table.itemsTable.category, table.itemsTable.itemname)
 }
 
 export async function getAllDepartments() {

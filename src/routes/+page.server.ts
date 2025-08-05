@@ -141,7 +141,8 @@ export const actions: Actions = {
 					SLOCitem = user.departmentid;
 				}
 				let params: Record<string, unknown> = {};
-				debugPrint("SLOCitem", SLOCitem);
+				debugPrint("SLOCitem", SLOCitem)
+				debugPrint("HOTO", HOTO)
 				if (HOTO === "temp") {
 					params = {
 						currentholder: SLOCitem
@@ -149,7 +150,7 @@ export const actions: Actions = {
 				} else if (HOTO === "perm") {
 					params = {
 						currentholder: SLOCitem,
-						orignalholder: SLOCitem
+						originalholder: SLOCitem
 					};
 				}
 				debugPrint("params", params);
@@ -158,7 +159,7 @@ export const actions: Actions = {
 						db
 							.update(table.itemsTable)
 							.set(params)
-							.where(eq(table.itemsTable.id, itemid))
+							.where(eq(table.itemsTable.id, Number(itemid)))
 					)
 				);
 			} else {
@@ -231,9 +232,9 @@ export const actions: Actions = {
 						inttime: Date.now(),
 					})
 					.where(and(
-						eq(issuer, table.transactionTable.issuer),
-						eq(issuee, table.transactionTable.issuee),
-						eq(itemid, table.transactionTable.itemid),
+						eq(table.transactionTable.issuer, String(issuer)),
+						eq(table.transactionTable.issuee, String(issuee)),
+						eq(table.transactionTable.itemid, String(itemid)),
 						isNull(table.transactionTable.inttime)
 					))
 			)

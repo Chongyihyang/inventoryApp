@@ -188,7 +188,7 @@
       </form>
     </div>
     
-    <div class="overflow-y-auto max-h-[70vh] mb-3 max-sm:w-full">
+    <div class="overflow-y-auto max-h-[70vh] mb-3 max-sm:w-full max-sm:max-h-[50vh]">
     <table>
         <thead>
             <tr>

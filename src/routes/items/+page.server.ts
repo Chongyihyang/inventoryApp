@@ -132,7 +132,6 @@ export const actions = {
     
             const SN1 = columns[1] ? columns[1].trim() : '';
             if (sn1Set.has(SN1)) {
-                console.log(`SN1: "${SN1}"`)
                 isValid = false;
                 messages.push("SN1 is not unique");
             } else if (SN1 != "") {
@@ -152,9 +151,6 @@ export const actions = {
             }
     
             const currentholdertmp = columns[3] ? columns[3].trim() : '';
-            if (i == 3) {
-                console.log(currentholdertmp, typeof currentholdertmp, departmentMap.has(currentholdertmp))
-            }
             let currentholder = 0
              if (!alphanumericRegex.test(currentholdertmp)) {
                 isValid = false;
