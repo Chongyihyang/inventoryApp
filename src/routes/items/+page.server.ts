@@ -3,7 +3,7 @@ import * as table from '$lib/server/db/schema';
 import { eq } from 'drizzle-orm';
 import { requireLogin } from '$lib';
 import { fail } from '@sveltejs/kit';
-import { department } from "$lib/shared.svelte"
+import { department, toLog } from "$lib/shared.svelte"
 import { getAllDepartments, getCategories, getItemsWithDepartments } from '$lib/utils.js';
 
 // Type definitions for better type safety
@@ -226,10 +226,12 @@ export const actions = {
                 await db.transaction(async (tx) => {
                     await tx.insert(table.itemsTable).values(params)
                 });
-                await db.insert(table.logsTable).values({
-                    time: Date.now(),
-                    item: `${userid} / ${username} UPLOADED: ${JSON.stringify(params)}`
-                })
+                if (toLog.current.values == 1) {
+                    await db.insert(table.logsTable).values({
+                        time: Date.now(),
+                        item: `${userid} / ${username} UPLOADED: ${JSON.stringify(params)}`
+                    })
+                }
             }
             return { success: true, results };
         } catch (error) {
@@ -280,10 +282,12 @@ export const actions = {
                 .update(table.itemsTable)
                 .set(updateData)
                 .where(eq(table.itemsTable.id, id));
-            await db.insert(table.logsTable).values({
-                time: Date.now(),
-                item: `${userid} / ${username} EDITED: ${JSON.stringify((await getItemsWithDepartments()).filter(x => x.id == id))} => ${JSON.stringify(updateData)}`
-            })
+            if (toLog.current.values == 1) {
+                await db.insert(table.logsTable).values({
+                    time: Date.now(),
+                    item: `${userid} / ${username} EDITED: ${JSON.stringify((await getItemsWithDepartments()).filter(x => x.id == id))} => ${JSON.stringify(updateData)}`
+                })
+            }
             return { success: true };
         } catch (error) {
             updateData.id = data.get("id")?.toString() ?? ""
@@ -301,7 +305,7 @@ export const actions = {
             const userid = data.get('id_')?.toString()?.trim() ?? '';
             const username = data.get('username')?.toString()?.trim() ?? '';
             const itemname = data.get('itemname')?.toString()?.trim() ?? '';
-            const SN1 = data.get('SN1')?.toString();
+            const SN1 = data.get('SN1')?.toString(); 
             const SN2 = data.get('SN2')?.toString();
             const remarks = data.get('remarks')?.toString();
             const currentholder = data.get('currentholder')?.toString();
@@ -345,10 +349,12 @@ export const actions = {
             };
 
             await db.insert(table.itemsTable).values(item);
-			await db.insert(table.logsTable).values({
-				time: Date.now(),
-				item: `${userid} / ${username} ADDED: ${JSON.stringify(item)}`
-			})
+            if (toLog.current.values == 1) {
+                await db.insert(table.logsTable).values({
+                    time: Date.now(),
+                    item: `${userid} / ${username} ADDED: ${JSON.stringify(item)}`
+                })
+            }
             return { success: true };
         } catch (error) {
             const message = error instanceof Error ? error.message : "Failed to create item";
@@ -378,10 +384,12 @@ export const actions = {
             validateDeleteConfirmation(itemname, confirmation);
             await db.delete(table.itemsTable)
                 .where(eq(table.itemsTable.id, Number(id)));
-            await db.insert(table.logsTable).values({
-                time: Date.now(),
-                item: `${userid} / ${username} DELETED ${id}: ${itemname} / ${SN1} / ${SN2}`
-            })
+            if (toLog.current.values == 1) {
+                await db.insert(table.logsTable).values({
+                    time: Date.now(),
+                    item: `${userid} / ${username} DELETED ${id}: ${itemname} / ${SN1} / ${SN2}`
+                })
+            }
             return { success: true };
         } catch (error) {
             const message = error instanceof Error ? error.message : "Failed to delete item";

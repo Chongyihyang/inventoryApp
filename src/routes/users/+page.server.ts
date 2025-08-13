@@ -5,6 +5,7 @@ import { requireLogin } from '$lib';
 import { fail } from '@sveltejs/kit';
 import { hash } from '@node-rs/argon2';
 import { generateUserId, validatePassword, validateUsername } from '$lib/utils';
+import { toLog } from "$lib/shared.svelte";
 
 // Type definitions for better type safety
 type UserInsert = typeof table.usersTable.$inferInsert;
@@ -91,10 +92,12 @@ export const actions = {
                 throw new Error("Passwords do not match")
             }
             
-            await db.insert(table.logsTable).values({
-                time: Date.now(),
-                item: `${userid} / ${username_} EDITED USER: ${JSON.stringify((await getUsersWithDepartments()).filter(x => x.id == id))} => ${JSON.stringify(updateData)}`
-            })
+            if (toLog.current.values == 1) {
+                await db.insert(table.logsTable).values({
+                    time: Date.now(),
+                    item: `${userid} / ${username_} EDITED USER: ${JSON.stringify((await getUsersWithDepartments()).filter(x => x.id == id))} => ${JSON.stringify(updateData)}`
+                })
+            }
 
             if (passwordHash != "" && passwordHash != undefined) {
                 updateData["passwordHash"] = passwordHash
@@ -196,10 +199,12 @@ export const actions = {
             
 
             await db.insert(table.usersTable).values(user)
-            await db.insert(table.logsTable).values({
-                time: Date.now(),
-                item: `${userid} / ${username_} CREATED USER: ${username}`
-            })
+            if (toLog.current.values == 1) {
+                await db.insert(table.logsTable).values({
+                    time: Date.now(),
+                    item: `${userid} / ${username_} CREATED USER: ${username}`
+                })
+            }
             return { success: true };
         } catch (error) {
             const message = error instanceof Error ? error.message : "Failed to create item";
@@ -228,10 +233,12 @@ export const actions = {
 
             await db.delete(table.usersTable)
             .where(eq(table.usersTable.id, id));
-            await db.insert(table.logsTable).values({
-                time: Date.now(),
-                item: `${userid} / ${username_} DELETED USER: ${id} / ${username}`
-            })
+            if (toLog.current.values == 1) {
+                await db.insert(table.logsTable).values({
+                    time: Date.now(),
+                    item: `${userid} / ${username_} DELETED USER: ${id} / ${username}`
+                })
+            }
             return { success: true };
         } catch (error) {
             const message = error instanceof Error ? error.message : "Failed to delete item";

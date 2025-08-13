@@ -7,6 +7,7 @@ import * as table from '$lib/server/db/schema';
 import type { Actions, PageServerLoad } from './$types';
 import { validatePassword, validateUsername } from '$lib/utils';
 import type { Session } from '$lib/server/db/schema';
+import { toLog } from '$lib/shared.svelte';
 
 export const load: PageServerLoad = async (event) => {
 	if (event.locals.user) {
@@ -62,11 +63,12 @@ export const actions: Actions = {
 			const sessionToken = auth.generateSessionToken();
 			const session = await auth.createSession(sessionToken, existingUser.id);
 			auth.setSessionTokenCookie(event, sessionToken, session.expiresAt);
-			await db.insert(table.logsTable).values({
-				time: Date.now(),
-				item: `${username} LOGGED IN`
-			})
-	
+			if (toLog.current.values == 1) {
+				await db.insert(table.logsTable).values({
+					time: Date.now(),
+					item: `${username} LOGGED IN`
+				})
+			}
 			return redirect(302, '/');
 		}
 

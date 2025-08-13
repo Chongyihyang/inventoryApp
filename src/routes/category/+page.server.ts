@@ -3,7 +3,7 @@ import * as table from '$lib/server/db/schema';
 import { eq } from 'drizzle-orm';
 import { requireLogin } from '$lib';
 import { fail } from '@sveltejs/kit';
-import { department } from "$lib/shared.svelte"
+import { department, toLog } from "$lib/shared.svelte"
 import { getItemsWithDepartments } from '$lib/utils.js';
 
 // Type definitions for better type safety
@@ -84,12 +84,14 @@ export const actions = {
                     .set({
                         categoryname
                     })
-                    .where(eq(table.categoriestable.id, id))
-    
-                await db.insert(table.logsTable).values({
-                    time: Date.now(),
-                    item: `${userid} / ${username} EDITED CATEGORIES: ${categorynameoriginal} =>  ${categoryname}`
-                })
+                    .where(eq(table.categoriestable.id, Number(id)))
+                
+                if (toLog.current.values == 1) {
+                    await db.insert(table.logsTable).values({
+                        time: Date.now(),
+                        item: `${userid} / ${username} EDITED CATEGORIES: ${categorynameoriginal} =>  ${categoryname}`
+                    })
+                }
             }
             return { success: true };
         } catch (error) {
@@ -113,10 +115,12 @@ export const actions = {
             await db.insert(table.categoriestable).values({
                 categoryname
             });
-			await db.insert(table.logsTable).values({
-				time: Date.now(),
-				item: `${userid} / ${username} ADDED CATEGORY: ${categoryname}`
-			})
+            if (toLog.current.values == 1) {
+                await db.insert(table.logsTable).values({
+                    time: Date.now(),
+                    item: `${userid} / ${username} ADDED CATEGORY: ${categoryname}`
+                })
+            }
             return { success: true };
 
         } catch (error) {
@@ -144,11 +148,13 @@ export const actions = {
     
             validateDeleteConfirmation(categoryname, confirmation);
             await db.delete(table.categoriestable)
-                .where(eq(table.categoriestable.id, id));
-            await db.insert(table.logsTable).values({
-                time: Date.now(),
-                item: `${userid} / ${username} DELETED CATEGORY: ${categoryname}`
-            })
+                .where(eq(table.categoriestable.id, Number(id)));
+            if (toLog.current.values == 1) {
+                await db.insert(table.logsTable).values({
+                    time: Date.now(),
+                    item: `${userid} / ${username} DELETED CATEGORY: ${categoryname}`
+                })
+            }
             return { success: true };
         } catch (error) {
             const message = error instanceof Error ? error.message : "Failed to delete item";

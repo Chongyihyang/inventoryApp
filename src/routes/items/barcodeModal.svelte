@@ -57,10 +57,10 @@
                 barcodeHeight + (borderPadding * 2)
             );
             doc.addImage(imgData, 'PNG', x, y, barcodeWidth, barcodeHeight);
-            x += barcodeWidth + 5;
-            if (x > 150) {
+            x += barcodeWidth + 10;
+            if (x > 170) {
                 x = 10;
-                y += barcodeHeight + 5;
+                y += barcodeHeight + 10;
             }
             if (y > 250) {
                 doc.addPage();
