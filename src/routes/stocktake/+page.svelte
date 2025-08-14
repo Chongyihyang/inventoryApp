@@ -1,7 +1,7 @@
 <script lang="ts">
 	// Types
 	type Item = {
-		id: string;
+		id: Number;
 		itemname: string;
 		SN1: string | null;
 		SN2: string | null;
@@ -52,11 +52,12 @@
 	// Utility Functions
 	function filterSelectedItems() {
 		selecteditems = items
-		.filter((row: Item) => row.currentholder === selecteddept)
+		.filter((row: Item) => row.currentholder === Number(selecteddept))
 
 		selecteditems.forEach((row: Item) => {
 			row.scanned = false
 		});
+
 	}
 
 	function showStatus(message: string, isSuccess: boolean) {
@@ -73,7 +74,7 @@
 		const barcode: string = scannerBuffer.trim();
 		scannerBuffer = '';
 		if (!barcode) return;
-		const foundItem = selecteditems.find((x) => x.id === barcode);
+		const foundItem = selecteditems.find((x) => x.id === Number(barcode));
 		if (foundItem) {
 			if (!scannedItems.has(barcode)) {
 				showStatus(`Added`, true);
@@ -151,22 +152,22 @@
 			</thead>
 			<tbody>
 				{#each selecteditems as row}
-					<tr class="hover" id={row.id}>
+					<tr class="hover" id={String(row.id)}>
 						<td><h2 class="font-medium whitespace-nowrap">{row.itemname}</h2></td>
 						<td><h2>{row.SN1}</h2></td>
 						<td><h2>{row.SN2}</h2></td>
 						<td><h2>{row.remarks}</h2></td>
 						<td>
 							<input type="checkbox" 
-							name={row.id} onchange="{() => {
-								const rowElem = document.getElementById(row.id)
-								const rowButton = document.querySelector(`input[type="checkbox"][name="${row.id}"]`)
+							name={String(row.id)} onchange="{() => {
+								const rowElem = document.getElementById(String(row.id))
+								const rowButton = document.querySelector(`input[type="checkbox"][name="${String(row.id)}"]`)
 								if (rowElem && rowButton) {
 									if (!rowButton.checked) {
 										accounted -= 1
 										rowElem.classList.remove("text-green-400");
 										rowElem.className = 'text-gray-400'
-										scannedItems.delete(row.id)
+										scannedItems.delete(String(row.id))
 										row.scanned = false
 									} else {
 										accounted += 1

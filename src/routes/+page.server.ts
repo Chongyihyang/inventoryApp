@@ -6,6 +6,7 @@ import * as table from '$lib/server/db/schema';
 import { and, eq, isNull, lt } from 'drizzle-orm';
 import { alias } from 'drizzle-orm/sqlite-core';
 import { requireLogin } from '$lib';
+import { toLog } from '$lib/shared.svelte';
 
 const DEBUG = false
 
@@ -94,10 +95,12 @@ export const actions: Actions = {
 		}
 		await auth.invalidateSession(event.locals.session.id);
 		auth.deleteSessionTokenCookie(event);
-		await db.insert(table.logsTable).values({
-			time: Date.now(),
-			item: `${event.locals.user?.username} LOGGED OUT`
-		})
+		if (toLog.current.values == 1) {
+			await db.insert(table.logsTable).values({
+				time: Date.now(),
+				item: `${event.locals.user?.username} LOGGED OUT`
+			})
+		}
 		return redirect(302, '/login');
 	},
 

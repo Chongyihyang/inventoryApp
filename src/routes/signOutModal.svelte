@@ -86,7 +86,7 @@
                     showStatus(`Item already signed out by ${itemDatabase[barcode].issuee}: ${itemDatabase[barcode].itemname}`, false)
                 }
             } else {
-                showStatus(`Item already scanned: ${itemDatabase[barcode]}`, false)
+                showStatus(`Item already scanned: ${itemDatabase[barcode].itemname}`, false)
             }
         } else {
             showStatus(`Invalid barcode: ${barcode.substring(0, 13)}`, false)

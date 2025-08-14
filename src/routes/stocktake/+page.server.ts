@@ -45,7 +45,7 @@ async function getAllDepartments() {
 export const actions = {
     submit: async ({ request }) => {
         const formData = await request.formData();
-        const items = formData.get("items")
+        const items = formData.get("items")?.toString() ?? ""
         const checker = formData.get("user")?.toString() ?? ""
         await db
         .insert(table.stocktakeTable)

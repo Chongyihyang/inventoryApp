@@ -85,7 +85,7 @@
                     showStatus(`Item not signed out`, false);
                 }
             } else {
-                showStatus(`Item already scanned: ${barcode}`, false);
+                showStatus(`Item already scanned: ${itemDatabase[barcode].itemname}`, false);
             }
         } else {
             showStatus(`Invalid barcode: ${barcode.substring(0, 13)}`, false);
