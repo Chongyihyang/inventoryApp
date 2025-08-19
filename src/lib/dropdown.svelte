@@ -137,7 +137,7 @@
   </div>
   
   <style>
-    .combobox-container {
+    /* .combobox-container {
       position: relative;
       margin: 1rem 0;
     }
@@ -156,7 +156,7 @@
       cursor: pointer;
       color: #666;
       pointer-events: none;
-    }
+    } */
   
     .combobox-dropdown {
       position: absolute;

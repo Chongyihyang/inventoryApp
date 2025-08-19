@@ -63,7 +63,7 @@ onmousedown={(e) => { if (e.target === dialog) closeModal()}}
 			<input  type="hidden" name="SN2_og" value="{currentSelectedList.SN2}"> 
 			<div class="grid grid-cols-3 gap-y-4">
 				<input type="hidden" name="id" value="{currentSelectedList.id}">
-				<h2 class="my-auto grid" >Edit item name: </h2>
+				<h2 class="mr-2 my-auto" >Edit item name: <span class="required">*</span></h2>
 				<input  class="box"	 type="text" name="itemname" autocomplete="off"
 				required value="{currentSelectedList.itemname}" id="itemname">
 				<h2 class="mr-2 my-auto" id="SN1" >SN1: </h2>
@@ -72,7 +72,7 @@ onmousedown={(e) => { if (e.target === dialog) closeModal()}}
 				<h2 class="mr-2 my-auto" id="SN2">SN2: </h2>
 				<input  class="box" type="text" name="SN2"
 				value="{currentSelectedList.SN2}" autocomplete="off"> 
-				<h2 class="mr-2 my-auto" id="category">Label Category: </h2>
+				<h2 class="mr-2 my-auto" id="category">Label Category: <span class="required">*</span></h2>
 				<select class="box overflow-y-auto " name="category" id="category" value={currentSelectedList.category}>
 					<option value="" disabled selected>Select an option</option>
 					{#each categories as category}

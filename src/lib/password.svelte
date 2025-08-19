@@ -32,7 +32,7 @@
 	<p class="text-[10px]">2. Consists of at least 1 upper and lowercase character</p>
 	<p class="text-[10px]">3. Contains at least 1 symbol and 1 number</p>
 </div>
-<h2 class="mr-2 my-auto" id="passwordhash">Password: </h2>
+<h2 class="mr-2 my-auto" id="passwordhash">Password:  <span class="required">*</span></h2>
 <input  class="box" type="password" name="passwordhash" bind:value={password}>
 <div class="mr-2 my-auto"></div>
 <div class="w-full mx-auto col-span-2">

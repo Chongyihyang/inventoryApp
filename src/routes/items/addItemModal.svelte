@@ -56,27 +56,27 @@
 		<div class="grid grid-cols-3 gap-y-4">
 			<input type="hidden" name="id_" value={user.id}>
 			<input type="hidden" name="username" value={user.username}>
-			<h2 class="my-auto grid" id="itemname">New item name: </h2>
+			<h2 class="mr-2 my-auto" id="itemname">New item name: <span class="required">*</span></h2>
 			<input  class="box"	 type="text" name="itemname" autocomplete="off" required>
 			<h2 class="mr-2 my-auto" id="SN1">SN1: </h2>
 			<input  class="box" type="text" name="SN1" autocomplete="off"> 
 			<h2 class="mr-2 my-auto" id="SN2">SN2: </h2>
 			<input  class="box" type="text" name="SN2" autocomplete="off"> 
-			<h2 class="mr-2 my-auto" id="SLOCHolder">currentholder: </h2>
+			<h2 class="mr-2 my-auto" id="SLOCHolder">currentholder: <span class="required">*</span></h2>
 			<select class="box overflow-y-auto"  name="currentholder" id="currentholder" required>
 				<option value="" disabled selected>Select an option</option>
 				{#each departments as department}
 					<option value="{department.id}">{department.departmentname}</option>
 				{/each}
 			</select>
-			<h2 class="mr-2 my-auto" id="originalholder">originalholder: </h2>
+			<h2 class="mr-2 my-auto" id="originalholder">originalholder: <span class="required">*</span></h2>
 			<select class="box overflow-y-auto " name="originalholder" id="originalholder">
 				<option value="" disabled selected>Select an option</option>
 				{#each departments as department}
 					<option value="{department.id}">{department.departmentname}</option>
 				{/each}
 			</select>
-			<h2 class="mr-2 my-auto" id="category">Label Category: </h2>
+			<h2 class="mr-2 my-auto" id="category">Label Category: <span class="required">*</span></h2>
 			<select class="box overflow-y-auto " name="category" id="category">
 				<option value="" disabled selected>Select an option</option>
 				{#each categories as category}

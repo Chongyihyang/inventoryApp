@@ -149,7 +149,7 @@
 		<input type="hidden" value="{data.currentuser.id}" name="issuer">
 		
 		<div class="form-group">
-			<label for="barcodeInput">Barcode Scanner Input:</label>
+			<label for="barcodeInput">Barcode Scanner Input:<span class="required">*</span></label>
 			<input type="text" placeholder="Scan items here" 
 			autocomplete="off" class="text" id="barcodeInput"
 			oninput="{(e) => {receiveBarcode(e)}}">

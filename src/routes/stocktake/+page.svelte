@@ -78,7 +78,7 @@
 		if (foundItem) {
 			if (!scannedItems.has(barcode)) {
 				accounted += 1
-				showStatus(`Added`, true);
+				showStatus(`Added: ${foundItem.itemname}`, true);
 				scannedItems.set(barcode, 1);
 				const rowElem = document.getElementById(barcode)
 				const rowButton = document.querySelector(`input[type="checkbox"][name="${barcode}"]`)

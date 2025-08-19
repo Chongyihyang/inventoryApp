@@ -128,7 +128,8 @@
     }
 
     .form-group>label,
-    dialog>label {
+    dialog>label,
+    .combobox-label {
         @apply font-bold text-[16px] block mb-2;
     }
 
@@ -178,5 +179,17 @@
 
     .close:hover {
         @apply bg-red-500 text-white border-0  rounded-2xl cursor-pointer text-2xl mr-2 w-full;
+    }
+
+    .combobox-container {
+        @apply relative
+    }
+
+    .combobox-wrapper {
+        @apply relative
+    }
+
+    .combobox-arrow {
+        @apply absolute right-[1rem] top-[60%] translate-y-[-50%] cursor-pointer text-[#666] pointer-events-none
     }
 }

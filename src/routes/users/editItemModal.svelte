@@ -77,9 +77,9 @@ onmousedown={(e) => { if (e.target === dialog) closeModal()}}
 				<input type="hidden" name="id_" value={user.id}>
 				<input type="hidden" name="username_" value={user.username}>
 				<input  class="box"	type="hidden" name="id" value="{currentSelectedList.id}">
-				<h2 class="my-auto grid" id="username">Username: </h2>
+				<h2 class="mr-2 my-auto" id="username">Username:  <span class="required">*</span></h2>
 				<input  class="box"	type="text" name="username" value="{currentSelectedList.username}" required>
-				<h2 class="mr-2 my-auto" id="departmentid">Department: </h2>
+				<h2 class="mr-2 my-auto" id="departmentid">Department:  <span class="required">*</span></h2>
 				<select class="box overflow-y-auto"  name="departmentid" id="departmentid" required>
 					{#each departments as department}
 						{#if department.id === currentSelectedList.departmentid}
@@ -89,7 +89,7 @@ onmousedown={(e) => { if (e.target === dialog) closeModal()}}
 						{/if}
 					{/each}
 				</select>
-				<h2 class="mr-2 my-auto" id="roleid">Role: </h2>
+				<h2 class="mr-2 my-auto" id="roleid">Role: <span class="required">*</span></h2>
 				<select class="box overflow-y-auto " name="role" id="role" required bind:value={selected}>
 					{#each roles as role}
 						<option value="{role.id}">{role.rolename}</option>
@@ -97,7 +97,7 @@ onmousedown={(e) => { if (e.target === dialog) closeModal()}}
 				</select> 
 				{#if selected == '1' || selected == "2"}
 					<Password {password}/>
-					<h2 class="mr-2 my-auto" id="passwordhash">Password Retype: </h2>
+					<h2 class="mr-2 my-auto" id="passwordhash">Password Retype:  <span class="required">*</span></h2>
 					<input  class="box" type="password" name="passwordretype" > 
 				{/if}
 				<input type="submit" class="submit" name="" id="">

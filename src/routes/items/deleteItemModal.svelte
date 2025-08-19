@@ -43,7 +43,7 @@
 	onmousedown={(e) => { if (e.target === dialog) closeModal()}}
 >
 	<h2 class="title">Deleting item</h2>
-    <h2 class="mx-auto w-fit">Are you sure you want to delete item: {currentSelectedList["itemname"]}?</h2>
+    <h2 class="mx-auto w-fit">Are you sure you want to delete item: {currentSelectedList["itemname"]}? <span class="required">*</span></h2>
 	{#if form?.error}
 		<p class="error">{form.error}</p>
 	{/if}
