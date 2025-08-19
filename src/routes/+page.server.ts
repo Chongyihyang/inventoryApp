@@ -198,19 +198,7 @@ export const actions: Actions = {
 	signin: async ({ request }) => {
 		const data = await request.formData();
 		const uniqueMap = new Set<string>();
-		const issuee = String(data.get('issuee') ?? '').trim();
 		const issuer = String(data.get('issuer') ?? '').trim();
-
-		const users = await getUsers();
-
-		const isValidIssuee = users.some(x => x.id == issuee);
-
-		if (!isValidIssuee) {
-			return fail(422, {
-				error: "Issuee does not exist",
-				action: "signin"
-			});
-		}
 
 		String(data.get('items') ?? '')
 			.trim()
@@ -236,7 +224,6 @@ export const actions: Actions = {
 					})
 					.where(and(
 						eq(table.transactionTable.issuer, String(issuer)),
-						eq(table.transactionTable.issuee, String(issuee)),
 						eq(table.transactionTable.itemid, String(itemid)),
 						isNull(table.transactionTable.inttime)
 					))

@@ -26,7 +26,7 @@
 {#if data.user}
 <script src="https://cdn.jsdelivr.net/npm/@tailwindplus/elements@1" type="module"></script>
 <nav data-sveltekit-preload-data data-sveltekit-reload>
-	<div class="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
+	<div class="mx-auto px-2 sm:px-6 lg:px-8">
 	  <div class="relative flex h-13 items-center justify-between">
 		<div class="absolute inset-y-0 left-0 flex items-center sm:hidden">
 		  <!-- Mobile menu button-->

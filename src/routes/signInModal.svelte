@@ -30,8 +30,7 @@
 	let scannerTimeout: NodeJS.Timeout
 	const SCANNER_DELAY = 90 // ms
 	const scannedItems = new Map()
-	let userNameInput: HTMLInputElement
-	let 	statusMessage: HTMLDivElement
+	let statusMessage: HTMLDivElement
 	let formElement: HTMLFormElement
 	let dialog: HTMLDialogElement // HTMLDialogElement
 	let { signInModalOpen = $bindable(), data, form } = $props()
@@ -124,12 +123,11 @@
 					scannerTimeout = setTimeout(handleBarcodeScan, SCANNER_DELAY)
 	}
 
-
 	const reset = () => {
 		itemList = []
-		userNameInput.value = ""
 		showStatus('Cleared all items', true)
 	}
+
 </script>
 
 <dialog
@@ -149,21 +147,6 @@
 	<form method="POST" action="?/signin" id="form" bind:this={formElement}>
 
 		<input type="hidden" value="{data.currentuser.id}" name="issuer">
-
-		<div class="form-group">
-			<label for="userName">Your Name:</label>
-			<input type="text" bind:this={userNameInput} 
-			placeholder="Enter your name"  class="text" 
-			name="issuee" list="names" required>
-			<datalist id="names">
-				{#each data.users as user}
-					<option value="{user.id}">
-						{user.username}
-					</option>
-				{/each}
-			</datalist>
-			<input type="hidden" bind:value={selectedDept}>
-		</div>
 		
 		<div class="form-group">
 			<label for="barcodeInput">Barcode Scanner Input:</label>

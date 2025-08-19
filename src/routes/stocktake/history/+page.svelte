@@ -1,7 +1,6 @@
 <script lang="ts">
 	import Viewmodal from "./viewmodal.svelte";
 
-
 	// Props
 	let { data } = $props<{
 		data: {
@@ -24,13 +23,15 @@
         items = item
         viewIsOpen = true
     }
-
+	
 
 </script>
 
 <Viewmodal bind:viewIsOpen {items}/>
 
+
 <div class="internal" id="main">
+
 	<div class="mx-auto max-h-[45vh] w-[90%] overflow-y-auto mb-3">
 		<table class="w-full">
 			<thead>

@@ -27,7 +27,7 @@
         @apply block
     }
 
-    ul {
+    /* ul {
         @apply dark:bg-gray-700 flex;
     }
 
@@ -37,7 +37,7 @@
 
     li>a {
         @apply align-middle;
-    }
+    } */
 
     a:hover {
         @apply text-gray-500;
@@ -130,6 +130,10 @@
     .form-group>label,
     dialog>label {
         @apply font-bold text-[16px] block mb-2;
+    }
+
+    .required {
+        @apply text-[#e32] ml-[2px]
     }
 
     .box {

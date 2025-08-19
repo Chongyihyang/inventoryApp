@@ -1,5 +1,5 @@
 <script lang="ts">
-
+	import Dropdown from "$lib/dropdown.svelte";
 	// Type declaration
 	type item = {
 		id: string,
@@ -32,12 +32,13 @@
 	let scannerTimeout: NodeJS.Timeout
 	const SCANNER_DELAY = 50 // ms
 	const scannedItems = new Map()
-	let userNameInput: HTMLInputElement
+	// let userNameInput: HTMLInputElement
 	let statusMessage: HTMLDivElement
 	let formElement: HTMLFormElement
 	let dialog: HTMLDialogElement // HTMLDialogElement
 	let { signOutModalOpen = $bindable(), data, form } = $props()
 	let selectedDept: string = $state("")
+	let selectedName: string = $state("")
 	let itemList: Array<string> = $state([])
 	let rows: item[] = $state(data.items)
 	let inventoryList: Transaction[] = $state(data.inventoryList)
@@ -128,10 +129,19 @@
 
 	const reset = () => {
 		itemList = []
-		userNameInput.value = ""
+		// userNameInput.value = ""
 		showStatus('Cleared all items', true)
 	}
 
+	const countries = data.users.map(x => {return {display: x.username, value: x.id}})
+
+  	let selectedCountry = $state('')
+
+
+	function handleComboboxChange(event) {
+    	console.log('Selected:', event.detail.value)
+		selectedName = event.detail.value
+  	}
 </script>
 
 <dialog
@@ -151,20 +161,20 @@
 	<form method="POST" action="?/signout" id="form" bind:this={formElement}>
 
 		<input type="hidden" value="{data.currentuser.id}" name="issuer">
+		<input type="hidden" bind:value={selectedName} name="issuee">
 
 		<div class="form-group">
-			<label for="userName">Your Name:</label>
-			<input type="text" bind:this={userNameInput} 
-			placeholder="Enter your name"  class="text" 
-			name="issuee" list="names" required>
-			<datalist id="names">
-				{#each data.users as user}
-					<option value="{user.id}">
-						{user.username}
-					</option>
-				{/each}	
-			</datalist>
-			<input type="hidden" bind:value={selectedDept}>
+		<Dropdown
+			options={countries}
+			bind:selectedValue={selectedCountry}
+			label="Your Name"
+			name="issuee1"
+			placeholder="Type to search or select..."
+			required={true}
+			disabled={false}
+			allowCustomInput={false}
+			on:change={handleComboboxChange}
+		/>
 		</div>
 		
 		<div class="form-group">

@@ -126,7 +126,7 @@
 
 	// Initial population
 	filterSelectedItems();
-</script>
+	</script>
 
 <div class="form-group mx-auto max-h-[50vh] w-[90%] mt-3" id="main">
 	<a href="/stocktake/history" class="text-decoration-line: underline">Check Stocktake Transactions →</a>
