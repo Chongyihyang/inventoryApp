@@ -77,10 +77,12 @@
 		const foundItem = selecteditems.find((x) => x.id === Number(barcode));
 		if (foundItem) {
 			if (!scannedItems.has(barcode)) {
+				accounted += 1
 				showStatus(`Added`, true);
 				scannedItems.set(barcode, 1);
 				const rowElem = document.getElementById(barcode)
 				const rowButton = document.querySelector(`input[type="checkbox"][name="${barcode}"]`)
+				foundItem.scanned = true
 				if (rowElem) {
 					rowElem.className = 'hover text-green-400';
 					(rowElem as HTMLElement).focus();
