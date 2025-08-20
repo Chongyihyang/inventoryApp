@@ -49,7 +49,7 @@ function validateItemName(itemname: string | undefined) {
     if (itemname == undefined){
         throw new Error("Item name is undefined")
     }
-    if (!itemname.match("^[a-zA-Z0-9]*$")) {
+    if (!itemname.match("^[a-zA-Z0-9 \\-]+$")) {
         throw new Error("Item names must be alphanumeric.");
     }
 }
