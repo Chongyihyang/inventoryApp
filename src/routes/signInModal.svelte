@@ -34,11 +34,20 @@
 	let formElement: HTMLFormElement
 	let dialog: HTMLDialogElement // HTMLDialogElement
 	let { signInModalOpen = $bindable(), data, form } = $props()
-	let selectedDept: string = $state("")
 	let itemList: Array<string> = $state([])
 	let rows: item[] = $state(data.items)
 	let inventoryList: Transaction[] = $state(data.inventoryList)
 	let itemDatabase: Record<string, Detail> = $derived(init_(inventoryList, rows))
+	
+
+	function playAlertSound() {
+    	const sound = document.getElementById('alertSound') as HTMLVideoElement | null
+		if (sound) {
+			sound.play().catch((error: string) => {
+				console.error("Error playing sound:", error);
+			});
+		}
+	}
 		
 	function init_(inventoryList: Transaction[], rows: item[]) {
 		const db: Record<string, Detail> = {}
@@ -87,6 +96,7 @@
                 showStatus(`Item already scanned: ${itemDatabase[barcode].itemname}`, false);
             }
         } else {
+			playAlertSound()
             showStatus(`Invalid barcode: ${barcode.substring(0, 13)}`, false);
         }
 		const barcodeInput = document.getElementById("barcodeInput")
@@ -128,6 +138,7 @@
 		showStatus('Cleared all items', true)
 	}
 
+
 </script>
 
 <dialog
@@ -139,7 +150,7 @@
 	}}}
 >
 <div class="internal">
-
+	<audio id="alertSound" src="src\routes\stocktake\sound.mp3" preload="auto" class="hidden"></audio>
 	<h1 class="title">Inventory Sign-In</h1>
 	{#if form?.error && form?.action == 'signin'}
 		<p class="error">{form.error}</p>

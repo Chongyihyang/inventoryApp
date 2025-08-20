@@ -50,6 +50,16 @@
 	let results = $state("")
 
 	// Utility Functions
+
+	function playAlertSound() {
+    	const sound = document.getElementById('alertSound') as HTMLVideoElement | null
+		if (sound) {
+			sound.play().catch((error: string) => {
+				console.error("Error playing sound:", error);
+			});
+		}
+	}
+
 	function filterSelectedItems() {
 		selecteditems = items
 		.filter((row: Item) => row.currentholder === Number(selecteddept))
@@ -70,7 +80,6 @@
 	}
 
 	function handleBarcodeScan() {
-		filterSelectedItems();
 		const barcode: string = scannerBuffer.trim();
 		scannerBuffer = '';
 		if (!barcode) return;
@@ -95,6 +104,7 @@
 				showStatus(`Item already scanned`, false);
 			}
 		} else {
+			playAlertSound()
 			showStatus(`Invalid barcode: ${barcode}`, false);
 		}
 		const barcodeInput = document.getElementById("barcodeInput")
@@ -121,7 +131,7 @@
 
 	// Effects
 	$effect(() => {
-		results = JSON.stringify(selecteditems)
+		results = JSON.stringify(selecteditems) 
 	});
 
 	// Initial population
@@ -142,6 +152,7 @@
 	<br />
 	<br />
 	<div class="mx-auto max-h-[50vh] w-full overflow-y-auto mb-3">
+		<audio id="alertSound" src="src\routes\stocktake\sound.mp3" preload="auto" class="hidden"></audio>
 		<table class="m-0 mx-auto w-full">
 			<thead>
 				<tr>

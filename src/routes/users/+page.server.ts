@@ -107,7 +107,7 @@ export const actions = {
             }
 
 
-            if (roleid == "1" || roleid == "2") {
+            if ((roleid == "1" || roleid == "2") && passwordHash != "" && passwordHash != undefined) {
                 passwordHash = await hash(passwordHash ?? "", {
                     // recommended minimum parameters
                     memoryCost: 19456,
@@ -116,7 +116,7 @@ export const actions = {
                     parallelism: 1
                 });
                 updateData["passwordHash"] = passwordHash
-            } else {
+            } else if (roleid == "3") {
                 updateData["passwordHash"] = null
             }
 
